@@ -6,8 +6,6 @@
     <title>재개발 러너 (RUNNER)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-    
-    <!-- 카카오 맵 API (회원님의 JavaScript 키 적용 완료) -->
     <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=10d2911cc3c5bedf397ff5b602bd52dd&libraries=services"></script>
     
     <style>
@@ -36,34 +34,39 @@
         .runner-container { position: absolute; display: flex; justify-content: center; align-items: flex-end; }
         .runner-container.active { z-index: 9999 !important; }
 
-        .character { position: relative; width: 44px; height: 68px; display: flex; flex-direction: column; align-items: center; cursor: pointer; filter: drop-shadow(0 3px 3px rgba(0,0,0,0.3)); }
+        .character { position: relative; display: flex; flex-direction: column; align-items: center; cursor: pointer; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.4)); }
 
-        .head { width: 34px; height: 34px; border-radius: 50%; background-color: #fce7f3; border: 2.5px solid #4b5563; z-index: 3; display: flex; justify-content: center; align-items: center; font-size: 16px; overflow: hidden; position: relative; transition: transform 0.2s; }
+        .head { width: 36px; height: 36px; border-radius: 50%; background-color: #fce7f3; border: 3px solid white; box-shadow: 0 4px 6px rgba(0,0,0,0.2); z-index: 10; display: flex; justify-content: center; align-items: center; font-size: 20px; font-weight: 900; color: #1f2937; overflow: hidden; position: relative; transition: transform 0.2s; margin-bottom: -10px; }
         .head:hover { transform: scale(1.25); border-color: #2563eb; }
-        .head.sad { background-color: #fecaca; border-color: #ef4444; }
+        .head.sad { background-color: #fecaca; }
         .head .emoji { pointer-events: none; }
         .head img { width: 100%; height: 100%; object-fit: cover; display: none; pointer-events: none; }
 
-        .body-vest { width: 28px; height: 22px; border-radius: 5px; z-index: 2; margin-top: -5px; display: flex; justify-content: center; align-items: center; color: white; font-weight: bold; font-size: 10px; }
-        .vest-red { background-color: #ef4444; }
-        .vest-blue { background-color: #3b82f6; }
+        .theme-red.vest { background: linear-gradient(135deg, #f87171, #dc2626); }
+        .theme-blue.vest { background: linear-gradient(135deg, #60a5fa, #2563eb); }
+        .theme-red.bldg { background: linear-gradient(to bottom, #f87171, #991b1b); border-bottom: 6px solid #7f1d1d; }
+        .theme-blue.bldg { background: linear-gradient(to bottom, #94a3b8, #475569); border-bottom: 6px solid #334155; }
+        .theme-red.ground { background: linear-gradient(to bottom, #fca5a5, #dc2626); box-shadow: inset 0 3px 0 rgba(255,255,255,0.5), 0 6px 0 #7f1d1d, 0 10px 5px rgba(0,0,0,0.3); }
+        .theme-blue.ground { background: linear-gradient(to bottom, #4ade80, #16a34a); box-shadow: inset 0 3px 0 rgba(255,255,255,0.5), 0 6px 0 #a16207, 0 10px 5px rgba(0,0,0,0.3); color: white !important; }
 
-        .legs { display: flex; gap: 6px; margin-top: -3px; z-index: 1; }
-        .leg { width: 6px; height: 16px; background-color: #1f2937; border-radius: 3px; transform-origin: top center; animation-play-state: paused; }
+        .vest { width: 48px; height: 32px; border-radius: 10px; display: flex; justify-content: center; align-items: center; color: white; font-weight: 900; font-size: 12px; z-index: 5; box-shadow: inset 0 -3px 0 rgba(0,0,0,0.2), 0 4px 4px rgba(0,0,0,0.2); }
+        .legs { display: flex; gap: 10px; margin-top: -6px; z-index: 1; }
+        .leg { width: 8px; height: 18px; background: linear-gradient(to bottom, #4b5563, #111827); border-radius: 4px; transform-origin: top center; box-shadow: 0 2px 2px rgba(0,0,0,0.3); animation-play-state: paused; }
         
+        .bldg { width: 54px; height: 56px; border-radius: 6px 6px 2px 2px; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; color: white; font-weight: 900; font-size: 11px; z-index: 5; padding-bottom: 6px; box-shadow: inset 0 2px 0 rgba(255,255,255,0.4), inset -4px 0 0 rgba(0,0,0,0.1), 0 5px 5px rgba(0,0,0,0.3); line-height: 1.3; }
+        .bldg .icon { font-size: 20px; margin-bottom: 2px; text-shadow: 0 2px 2px rgba(0,0,0,0.3); }
+        .ground { width: 60px; height: 32px; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: white; font-weight: 900; font-size: 12px; z-index: 5; margin-top: 5px; }
+
         .running .left-leg { animation: run-leg var(--run-speed) infinite linear; animation-play-state: running; }
         .running .right-leg { animation: run-leg var(--run-speed) infinite linear; animation-delay: calc(var(--run-speed) / -2); animation-play-state: running; }
-        @keyframes run-leg { 0% { transform: rotate(-45deg); } 50% { transform: rotate(45deg); } 100% { transform: rotate(-45deg); } }
-
+        @keyframes run-leg { 0% { transform: rotate(-25deg); } 50% { transform: rotate(25deg); } 100% { transform: rotate(-25deg); } }
         .running-bounce { animation: bob var(--run-speed) infinite ease-in-out; }
-        @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+        @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
 
-        .speech-bubble { position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); background-color: white; color: #111827; border: 2px solid #e5e7eb; padding: 10px 14px; border-radius: 12px; font-size: 14px; font-weight: 600; white-space: nowrap; display: none; z-index: 30; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3); pointer-events: none; }
+        .speech-bubble { position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); background-color: white; color: #111827; border: 2px solid #e5e7eb; padding: 10px 14px; border-radius: 12px; font-size: 14px; font-weight: 600; white-space: nowrap; display: none; z-index: 30; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3); pointer-events: none; margin-bottom: 5px; }
         .speech-bubble::after { content: ''; position: absolute; top: 100%; left: 50%; margin-left: -6px; border-width: 6px; border-style: solid; border-color: white transparent transparent transparent; }
         .runner-container.active .speech-bubble { display: block; animation: pop 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         @keyframes pop { 0% { transform: translateX(-50%) scale(0.8); opacity: 0; } 100% { transform: translateX(-50%) scale(1); opacity: 1; } }
-
-        .name-label { position: absolute; top: 100%; left: 50%; transform: translateX(-50%); font-size: 11px; color: #111827; font-weight: 800; white-space: nowrap; margin-top: 3px; background: rgba(255,255,255,0.9); padding: 2px 6px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
 
         #loading { position: absolute; inset: 0; background: rgba(255,255,255,0.8); display: flex; justify-content: center; align-items: center; z-index: 100; font-size: 24px; font-weight: bold; color: #3b82f6; flex-direction: column; }
     </style>
@@ -74,9 +77,9 @@
             <div>
                 <h1 class="text-3xl font-extrabold text-blue-700">🏃‍♂️ 재개발 러너 (RUNNER)</h1>
                 <p class="text-sm text-gray-500 mt-2 font-medium">
-                    <span class="inline-block w-3 h-3 bg-blue-500 rounded-sm mr-1"></span>투자금 투입 (파란) &nbsp;|&nbsp; 
+                    <span class="inline-block w-3 h-3 bg-blue-500 rounded-sm mr-1"></span>법인/개인 (파란) &nbsp;|&nbsp; 
                     <span class="inline-block w-3 h-3 bg-red-500 rounded-sm mr-1"></span>순수 위탁 (빨간) &nbsp;|&nbsp; 
-                    💡 얼굴 클릭 시 사진 등록
+                    💡 얼굴 클릭 시 사진 영구 등록
                 </p>
             </div>
             
@@ -96,7 +99,6 @@
                 <div class="time-marker" style="left: 50%;"><span>중반(50%)</span></div>
                 <div class="time-marker" style="left: 75%;"><span>후반(75%)</span></div>
             </div>
-
             <div class="track-lines"></div>
             <div class="finish-line"></div>
             <div class="finish-banner">FINISH<br>(100%)</div>
@@ -117,6 +119,7 @@
         const photoInput = document.getElementById('photoInput');
         let currentHeadElement = null;
         let currentEmojiElement = null;
+        let currentAssetId = null;
 
         function switchTab(mode) {
             document.getElementById('view-marathon').style.display = (mode === 'marathon') ? 'block' : 'none';
@@ -131,7 +134,6 @@
             } else {
                 btnMap.className = 'tab-btn tab-active';
                 btnMarathon.className = 'tab-btn tab-inactive';
-                
                 if (!mapInitialized) {
                     initKakaoMap();
                     mapInitialized = true;
@@ -139,12 +141,18 @@
             }
         }
 
+        // 사진 첨부 시 브라우저 Local Storage에 Base64로 영구 저장
         photoInput.addEventListener('change', (e) => {
-            if (e.target.files && e.target.files[0]) {
-                const imgUrl = URL.createObjectURL(e.target.files[0]);
-                currentHeadElement.src = imgUrl;
-                currentHeadElement.style.display = 'block';
-                currentEmojiElement.style.display = 'none';
+            if (e.target.files && e.target.files[0] && currentAssetId) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const base64Str = event.target.result;
+                    currentHeadElement.src = base64Str;
+                    currentHeadElement.style.display = 'block';
+                    currentEmojiElement.style.display = 'none';
+                    localStorage.setItem('photo_' + currentAssetId, base64Str);
+                };
+                reader.readAsDataURL(e.target.files[0]);
             }
         });
 
@@ -166,6 +174,7 @@
             const idxId = getCol('자산ID');
             const idxManager = getCol('관리주체');
             const idxOwner = getCol('소유주');
+            const idxType = getCol('유형'); 
             const idxState = getCol('상태'); 
             const idxDate = getCol('취득일'); 
             const idxMethod = getCol('사업방식');
@@ -186,7 +195,8 @@
 
             runnersData = dataRows.map(row => {
                 const manager = row[idxManager] || '';
-                const owner = row[idxOwner] || '';
+                let owner = row[idxOwner] ? row[idxOwner].split('(')[0].trim() : '익명';
+                const typeStr = idxType >= 0 ? (row[idxType] || '').trim() : '';
                 const state = row[idxState] || '';
                 const method = idxMethod >= 0 ? (row[idxMethod] || '').trim() : '';
                 const progressStr = idxProgress >= 0 ? (row[idxProgress] || '') : '';
@@ -194,21 +204,24 @@
                 const customSpeech = idxSpeech >= 0 ? row[idxSpeech] : '';
                 const address = idxAddress >= 0 ? row[idxAddress] : '';
 
-                return { id: row[idxId], owner, manager, state, method, progressStr, dateStr, customSpeech, address };
-            }).filter(data => data.method.toLowerCase() !== 'x') // ★ 사업방식 'x' 제외 로직 추가
-              .map(data => {
+                let markerType = 'runner';
+                if (method.toLowerCase() === 'x' || method === '' || progressStr === '해당없음' || progressStr.includes('취소')) {
+                    if (typeStr.includes('토지')) markerType = 'land';
+                    else markerType = 'building'; 
+                }
+
                 let progressYear = 0;
                 let maxYear = 15;
-                const m = data.method.replace(/\s+/g, '');
+                const m = method.replace(/\s+/g, '');
                 const mData = methodData[m] || methodData['default'];
                 maxYear = mData.max;
 
-                const stageMatch = data.progressStr.match(/^(\d+)/);
+                const stageMatch = progressStr.match(/^(\d+)/);
                 const stageNum = stageMatch ? parseInt(stageMatch[1], 10) : -1;
 
-                if (data.state.includes('매각완료')) {
+                if (state.includes('매각완료')) {
                     progressYear = maxYear;
-                } else if (data.progressStr.includes('취소') || stageNum === -1 || data.progressStr === '해당없음') {
+                } else if (markerType !== 'runner') {
                     progressYear = 0;
                 } else {
                     progressYear = (stageNum >= 0 && stageNum < mData.years.length) ? mData.years[stageNum] : 0;
@@ -218,17 +231,18 @@
                 let progressScore = Math.min(90, completionPercent * 90);
 
                 let acqYear = 2026; let acqMonth = 9;
-                if (data.dateStr) {
-                    const parts = data.dateStr.split('.');
+                if (dateStr) {
+                    const parts = dateStr.split('.');
                     acqYear = parseInt(parts[0]) || 2026; acqMonth = parseInt(parts[1]) || 1;
                 }
                 const monthsHeld = Math.max(1, (2026 - acqYear) * 12 + (9 - acqMonth));
                 
                 let speed = 50, status = 'normal';
-                if (data.state.includes('매각완료')) {
+                
+                if (markerType !== 'runner') {
+                    speed = 0; status = 'normal'; 
+                } else if (state.includes('매각완료')) {
                     speed = 0; status = 'finished';
-                } else if (data.progressStr.includes('취소') || data.method === '' || data.progressStr === '해당없음') {
-                    speed = 0; status = 'bad';
                 } else {
                     const actualYears = monthsHeld / 12;
                     const efficiency = progressYear / (actualYears || 1); 
@@ -237,19 +251,18 @@
                     else if (efficiency < 0.3 && actualYears > 3) status = 'bad'; 
                 }
 
-                let msg = data.customSpeech.trim();
+                let msg = customSpeech.trim();
                 if (!msg) {
-                    if (status === 'finished') msg = `[${data.method}] 나 먼저 간다~ 🏆 (매각완료)`;
-                    else if (data.progressStr.includes('취소')) msg = "재개발 취소라니 😭 발이 안 떨어져...";
-                    else if (data.progressStr === '해당없음' || !data.method) msg = "여긴 어디? 나는 누구? 멍...";
-                    else if (status === 'bad') msg = `산 지 ${Math.floor(monthsHeld/12)}년인데 😭 (${data.progressStr})`;
+                    if (status === 'finished') msg = `[${method}] 나 먼저 간다~ 🏆 (매각완료)`;
+                    else if (markerType !== 'runner') msg = `[${typeStr}] 묵묵히 운용 중 💼`;
+                    else if (status === 'bad') msg = `산 지 ${Math.floor(monthsHeld/12)}년인데 😭 (${progressStr})`;
                     else {
-                        let shortStage = data.progressStr.split('/')[0].trim();
-                        msg = `[${data.method}] ${shortStage} (${progressYear}년차/총${maxYear}년) 🏃`;
+                        let shortStage = progressStr.split('/')[0].trim();
+                        msg = `[${method}] ${shortStage} (${progressYear}년차/총${maxYear}년) 🏃`;
                     }
                 }
 
-                return { ...data, status, speed, msg, progressScore };
+                return { id: row[idxId], owner, manager, typeStr, markerType, status, speed, msg, progressScore, address };
             });
 
             document.getElementById('loading').style.display = 'none';
@@ -266,46 +279,75 @@
             const character = document.createElement('div');
             character.className = 'character';
             
-            if (!isMapMode && data.status !== 'finished' && data.speed > 0) {
+            if (!isMapMode && data.markerType === 'runner' && data.status !== 'finished' && data.speed > 0) {
                 character.classList.add('running', 'running-bounce');
             }
 
             const head = document.createElement('div');
             head.className = `head ${data.status === 'bad' ? 'sad' : ''}`;
             
-            let faceEmoji = '😎';
-            if (data.status === 'finished') faceEmoji = '🏆';
-            else if (data.status === 'good') faceEmoji = '😃';
-            else if (data.status === 'normal') faceEmoji = '😐';
-            else if (data.status === 'bad') faceEmoji = '😭';
+            // 이름별 이모지 설정 (고미=G, 뉴푸드=N)
+            let faceText = '😎';
+            if (data.owner.includes('뉴푸드')) faceText = 'N';
+            else if (data.owner.includes('고미')) faceText = 'G';
+            else if (data.status === 'finished') faceText = '🏆';
+            else if (data.status === 'good') faceText = '😃';
+            else if (data.status === 'bad') faceText = '😭';
+            else if (data.markerType === 'land') faceText = '👨';
+            else if (data.markerType === 'building') faceText = '👩';
 
             const emojiSpan = document.createElement('span');
-            emojiSpan.className = 'emoji'; emojiSpan.textContent = faceEmoji;
+            emojiSpan.className = 'emoji'; 
+            emojiSpan.textContent = faceText;
             
             const uploadedImg = document.createElement('img');
+            
+            // LocalStorage에서 저장된 사진 불러오기
+            const savedPhoto = localStorage.getItem('photo_' + data.id);
+            if (savedPhoto) {
+                uploadedImg.src = savedPhoto;
+                uploadedImg.style.display = 'block';
+                emojiSpan.style.display = 'none';
+            }
+
             head.appendChild(emojiSpan); head.appendChild(uploadedImg);
 
             head.addEventListener('click', (e) => {
                 e.stopPropagation();
                 currentHeadElement = uploadedImg;
                 currentEmojiElement = emojiSpan;
+                currentAssetId = data.id; // 현재 수정 중인 자산 ID 추적
                 photoInput.click();
             });
 
-            const vest = document.createElement('div');
-            vest.className = `body-vest ${data.manager === '위탁' ? 'vest-red' : 'vest-blue'}`;
-            vest.innerHTML = `<span>${data.manager ? data.manager.substring(0,1) : '문'}</span>`;
+            const ownerName = data.owner; 
+            const themeClass = data.manager === '위탁' ? 'theme-red' : 'theme-blue';
 
-            const legs = document.createElement('div');
-            legs.className = 'legs';
-            legs.innerHTML = `<div class="leg left-leg"></div><div class="leg right-leg"></div>`;
+            character.appendChild(head);
 
-            character.appendChild(head); character.appendChild(vest); character.appendChild(legs);
-
-            const nameLabel = document.createElement('div');
-            nameLabel.className = 'name-label';
-            nameLabel.textContent = data.owner || '익명';
-            character.appendChild(nameLabel);
+            if (data.markerType === 'runner') {
+                const vest = document.createElement('div');
+                vest.className = `vest ${themeClass}`;
+                vest.textContent = ownerName;
+                
+                const legs = document.createElement('div');
+                legs.className = 'legs';
+                legs.innerHTML = `<div class="leg left-leg"></div><div class="leg right-leg"></div>`;
+                
+                character.appendChild(vest); character.appendChild(legs);
+            } 
+            else if (data.markerType === 'building') {
+                const bldg = document.createElement('div');
+                bldg.className = `bldg ${themeClass}`;
+                bldg.innerHTML = `<div class="icon">🏢</div><div>${ownerName}</div>`;
+                character.appendChild(bldg);
+            } 
+            else if (data.markerType === 'land') {
+                const ground = document.createElement('div');
+                ground.className = `ground ${themeClass}`;
+                ground.textContent = ownerName;
+                character.appendChild(ground);
+            }
 
             const speech = document.createElement('div');
             speech.className = 'speech-bubble';
@@ -326,9 +368,8 @@
             const trackArea = document.getElementById('runners-area');
             const trackHeight = document.getElementById('view-marathon').clientHeight;
             
-            runnersData.forEach((data) => {
+            runnersData.filter(d => d.markerType === 'runner').forEach((data) => {
                 const charDOM = createCharacterDOM(data, false);
-                
                 const topPos = Math.random() * (trackHeight * 0.7) + (trackHeight * 0.15);
                 charDOM.style.top = `${topPos}px`;
                 charDOM.style.zIndex = Math.floor(topPos);
@@ -342,16 +383,10 @@
         }
 
         function initKakaoMap() {
-            if (typeof kakao === 'undefined' || !kakao.maps) {
-                alert("카카오 지도 API를 불러올 수 없습니다. JavaScript 키와 도메인 설정을 확인해주세요!");
-                return;
-            }
+            if (typeof kakao === 'undefined' || !kakao.maps) return;
 
             const mapContainer = document.getElementById('view-map');
-            const mapOption = {
-                center: new kakao.maps.LatLng(37.5255, 126.9954), 
-                level: 7 
-            };
+            const mapOption = { center: new kakao.maps.LatLng(37.5255, 126.9954), level: 7 };
             kakaoMap = new kakao.maps.Map(mapContainer, mapOption);
             geocoder = new kakao.maps.services.Geocoder();
 
@@ -364,7 +399,6 @@
             const addressGroups = {};
             runnersData.forEach(data => {
                 if (!data.address || data.address.includes('인천')) return; 
-                
                 const searchAddr = cleanAddress(data.address);
                 if (!addressGroups[searchAddr]) addressGroups[searchAddr] = [];
                 addressGroups[searchAddr].push(data);
@@ -379,7 +413,7 @@
 
                         group.forEach((runnerData, index) => {
                             const charDOM = createCharacterDOM(runnerData, true);
-                            const offsetX = (index - (count - 1) / 2) * 45; 
+                            const offsetX = (index - (count - 1) / 2) * 55;
                             
                             const overlayWrap = document.createElement('div');
                             overlayWrap.style.transform = `translateX(${offsetX}px)`;

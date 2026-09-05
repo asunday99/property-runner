@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>재개발 러너 (RUNNER)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    
+    <!-- 카카오 맵 API (회원님의 JavaScript 키 적용 완료) -->
+    <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=10d2911cc3c5bedf397ff5b602bd52dd&libraries=services"></script>
+    
+    <style>
+        body { margin: 0; overflow: hidden; font-family: 'Pretendard', sans-serif; user-select: none; background-color: #f3f4f6; }
+        #app-container { position: relative; width: 100vw; height: 100vh; display: flex; flex-direction: column; }
+        
+        #header { background: white; padding: 15px 30px; border-bottom: 2px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; z-index: 50; }
+        
+        .tab-btn { padding: 10px 24px; border-radius: 8px; font-weight: 800; font-size: 16px; cursor: pointer; transition: all 0.2s; border: 2px solid transparent; }
+        .tab-active { background-color: #2563eb; color: white; border-color: #1d4ed8; box-shadow: 0 4px 6px rgba(37,99,235,0.2); }
+        .tab-inactive { background-color: #e5e7eb; color: #4b5563; hover:background-color: #d1d5db; }
+
+        #view-marathon, #view-map { flex-grow: 1; position: relative; width: 100%; height: 100%; }
+        #view-map { display: none; }
+        
+        #view-marathon { background: linear-gradient(to bottom, #d1d5db 0%, #9ca3af 100%); overflow: hidden; }
+        .track-lines { position: absolute; top: 15%; bottom: 15%; left: 0; right: 0; border-top: 3px dashed rgba(255,255,255,0.4); border-bottom: 3px dashed rgba(255,255,255,0.4); pointer-events: none; }
+        
+        .timeline-container { position: absolute; left: 0; right: 10%; top: 0; bottom: 0; pointer-events: none; z-index: 5; }
+        .time-marker { position: absolute; top: 0; bottom: 0; border-left: 2px dashed rgba(255,255,255,0.7); display: flex; flex-direction: column; justify-content: flex-start; padding-left: 8px; padding-top: 15px; }
+        .time-marker span { font-size: 18px; font-weight: 900; color: #1e3a8a; text-shadow: 2px 2px 0px rgba(255,255,255,0.8), -2px -2px 0px rgba(255,255,255,0.8), 2px -2px 0px rgba(255,255,255,0.8), -2px 2px 0px rgba(255,255,255,0.8); opacity: 0.9; }
+
+        .finish-line { position: absolute; right: 10%; top: 0; bottom: 0; width: 25px; background: repeating-linear-gradient(45deg, white, white 15px, #ef4444 15px, #ef4444 30px); box-shadow: -10px 0 20px rgba(0,0,0,0.15); z-index: 10; }
+        .finish-banner { position: absolute; right: calc(10% - 60px); top: 20px; background: #2563eb; color: white; padding: 8px 16px; border-radius: 6px; font-weight: 900; font-size: 20px; z-index: 11; letter-spacing: 2px; box-shadow: 0 4px 6px rgba(0,0,0,0.2); text-align: center; }
+
+        .runner-container { position: absolute; display: flex; justify-content: center; align-items: flex-end; }
+        .runner-container.active { z-index: 9999 !important; }
+
+        .character { position: relative; width: 44px; height: 68px; display: flex; flex-direction: column; align-items: center; cursor: pointer; filter: drop-shadow(0 3px 3px rgba(0,0,0,0.3)); }
+
+        .head { width: 34px; height: 34px; border-radius: 50%; background-color: #fce7f3; border: 2.5px solid #4b5563; z-index: 3; display: flex; justify-content: center; align-items: center; font-size: 16px; overflow: hidden; position: relative; transition: transform 0.2s; }
+        .head:hover { transform: scale(1.25); border-color: #2563eb; }
+        .head.sad { background-color: #fecaca; border-color: #ef4444; }
+        .head .emoji { pointer-events: none; }
+        .head img { width: 100%; height: 100%; object-fit: cover; display: none; pointer-events: none; }
+
+        .body-vest { width: 28px; height: 22px; border-radius: 5px; z-index: 2; margin-top: -5px; display: flex; justify-content: center; align-items: center; color: white; font-weight: bold; font-size: 10px; }
+        .vest-red { background-color: #ef4444; }
+        .vest-blue { background-color: #3b82f6; }
+
+        .legs { display: flex; gap: 6px; margin-top: -3px; z-index: 1; }
+        .leg { width: 6px; height: 16px; background-color: #1f2937; border-radius: 3px; transform-origin: top center; animation-play-state: paused; }
+        
+        .running .left-leg { animation: run-leg var(--run-speed) infinite linear; animation-play-state: running; }
+        .running .right-leg { animation: run-leg var(--run-speed) infinite linear; animation-delay: calc(var(--run-speed) / -2); animation-play-state: running; }
+        @keyframes run-leg { 0% { transform: rotate(-45deg); } 50% { transform: rotate(45deg); } 100% { transform: rotate(-45deg); } }
+
+        .running-bounce { animation: bob var(--run-speed) infinite ease-in-out; }
+        @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+
+        .speech-bubble { position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); background-color: white; color: #111827; border: 2px solid #e5e7eb; padding: 10px 14px; border-radius: 12px; font-size: 14px; font-weight: 600; white-space: nowrap; display: none; z-index: 30; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3); pointer-events: none; }
+        .speech-bubble::after { content: ''; position: absolute; top: 100%; left: 50%; margin-left: -6px; border-width: 6px; border-style: solid; border-color: white transparent transparent transparent; }
+        .runner-container.active .speech-bubble { display: block; animation: pop 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes pop { 0% { transform: translateX(-50%) scale(0.8); opacity: 0; } 100% { transform: translateX(-50%) scale(1); opacity: 1; } }
+
+        .name-label { position: absolute; top: 100%; left: 50%; transform: translateX(-50%); font-size: 11px; color: #111827; font-weight: 800; white-space: nowrap; margin-top: 3px; background: rgba(255,255,255,0.9); padding: 2px 6px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+
+        #loading { position: absolute; inset: 0; background: rgba(255,255,255,0.8); display: flex; justify-content: center; align-items: center; z-index: 100; font-size: 24px; font-weight: bold; color: #3b82f6; flex-direction: column; }
+    </style>
+</head>
+<body>
+    <div id="app-container">
+        <div id="header">
+            <div>
+                <h1 class="text-3xl font-extrabold text-blue-700">🏃‍♂️ 재개발 러너 (RUNNER)</h1>
+                <p class="text-sm text-gray-500 mt-2 font-medium">
+                    <span class="inline-block w-3 h-3 bg-blue-500 rounded-sm mr-1"></span>투자금 투입 (파란) &nbsp;|&nbsp; 
+                    <span class="inline-block w-3 h-3 bg-red-500 rounded-sm mr-1"></span>순수 위탁 (빨간) &nbsp;|&nbsp; 
+                    💡 얼굴 클릭 시 사진 등록
+                </p>
+            </div>
+            
+            <div class="flex gap-3">
+                <button id="btn-marathon" class="tab-btn tab-active" onclick="switchTab('marathon')">🏃‍♂️ 마라톤 뷰</button>
+                <button id="btn-map" class="tab-btn tab-inactive" onclick="switchTab('map')">🗺️ 지도 뷰</button>
+            </div>
+        </div>
+        
+        <input type="file" id="photoInput" accept="image/*" style="display: none;">
+        <div id="loading">구글 시트 데이터 불러오는 중... 🏃‍♂️💨</div>
+
+        <div id="view-marathon">
+            <div class="timeline-container">
+                <div class="time-marker" style="left: 0%;"><span>START</span></div>
+                <div class="time-marker" style="left: 25%;"><span>초기(25%)</span></div>
+                <div class="time-marker" style="left: 50%;"><span>중반(50%)</span></div>
+                <div class="time-marker" style="left: 75%;"><span>후반(75%)</span></div>
+            </div>
+
+            <div class="track-lines"></div>
+            <div class="finish-line"></div>
+            <div class="finish-banner">FINISH<br>(100%)</div>
+            <div id="runners-area"></div>
+        </div>
+
+        <div id="view-map"></div>
+    </div>
+
+    <script>
+        const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQUFrd48p3c6nFJA7rYjoeK43cMqrGTNT_Tv2W0QizuPnrUufbbuKfPN1VCZwtsfpmuljur_TOLtk8i/pub?gid=2053604895&single=true&output=csv';
+        
+        let runnersData = [];
+        let mapInitialized = false;
+        let kakaoMap = null;
+        let geocoder = null;
+
+        const photoInput = document.getElementById('photoInput');
+        let currentHeadElement = null;
+        let currentEmojiElement = null;
+
+        function switchTab(mode) {
+            document.getElementById('view-marathon').style.display = (mode === 'marathon') ? 'block' : 'none';
+            document.getElementById('view-map').style.display = (mode === 'map') ? 'block' : 'none';
+            
+            const btnMarathon = document.getElementById('btn-marathon');
+            const btnMap = document.getElementById('btn-map');
+            
+            if (mode === 'marathon') {
+                btnMarathon.className = 'tab-btn tab-active';
+                btnMap.className = 'tab-btn tab-inactive';
+            } else {
+                btnMap.className = 'tab-btn tab-active';
+                btnMarathon.className = 'tab-btn tab-inactive';
+                
+                if (!mapInitialized) {
+                    initKakaoMap();
+                    mapInitialized = true;
+                }
+            }
+        }
+
+        photoInput.addEventListener('change', (e) => {
+            if (e.target.files && e.target.files[0]) {
+                const imgUrl = URL.createObjectURL(e.target.files[0]);
+                currentHeadElement.src = imgUrl;
+                currentHeadElement.style.display = 'block';
+                currentEmojiElement.style.display = 'none';
+            }
+        });
+
+        async function fetchAndParseData() {
+            Papa.parse(CSV_URL, {
+                download: true,
+                header: false,
+                complete: function(results) { processData(results.data); }
+            });
+        }
+
+        function processData(data) {
+            let headerRowIndex = data.findIndex(row => row[0] && row[0].includes('자산ID'));
+            if (headerRowIndex === -1) return;
+
+            const headers = data[headerRowIndex];
+            const getCol = (name) => headers.findIndex(h => h && h.replace(/\s+/g, '') === name.replace(/\s+/g, ''));
+            
+            const idxId = getCol('자산ID');
+            const idxManager = getCol('관리주체');
+            const idxOwner = getCol('소유주');
+            const idxState = getCol('상태'); 
+            const idxDate = getCol('취득일'); 
+            const idxMethod = getCol('사업방식');
+            const idxProgress = getCol('개발진행단계');
+            const idxSpeech = headers.findIndex(h => h && (h.includes('말풍선') || h.includes('대사')));
+            const idxAddress = getCol('주소'); 
+
+            const dataRows = data.filter(row => row[idxId] && row[idxId].startsWith('Re_'));
+
+            const methodData = {
+                '민간도심복합개발': { years: [1, 2, 3, 4, 5, 6, 8, 8.5], max: 8.5 },
+                '모아타운': { years: [1, 1.5, 2.5, 3.5, 4.5, 5.5, 8, 9], max: 9 },
+                '역세권시프트': { years: [1, 2, 3, 4.5, 6, 7.5, 9, 12], max: 12 },
+                '재건축': { years: [1, 2.5, 4, 5.5, 7, 8, 9.5, 13], max: 13 },
+                '재개발': { years: [1, 3, 5, 7, 9, 11, 14, 15], max: 15 },
+                'default': { years: [1, 2, 3, 5, 7, 9, 11, 14], max: 15 }
+            };
+
+            runnersData = dataRows.map(row => {
+                const manager = row[idxManager] || '';
+                const owner = row[idxOwner] || '';
+                const state = row[idxState] || '';
+                const method = idxMethod >= 0 ? (row[idxMethod] || '').trim() : '';
+                const progressStr = idxProgress >= 0 ? (row[idxProgress] || '') : '';
+                const dateStr = idxDate >= 0 ? (row[idxDate] || '') : '';
+                const customSpeech = idxSpeech >= 0 ? row[idxSpeech] : '';
+                const address = idxAddress >= 0 ? row[idxAddress] : '';
+
+                return { id: row[idxId], owner, manager, state, method, progressStr, dateStr, customSpeech, address };
+            }).filter(data => data.method.toLowerCase() !== 'x') // ★ 사업방식 'x' 제외 로직 추가
+              .map(data => {
+                let progressYear = 0;
+                let maxYear = 15;
+                const m = data.method.replace(/\s+/g, '');
+                const mData = methodData[m] || methodData['default'];
+                maxYear = mData.max;
+
+                const stageMatch = data.progressStr.match(/^(\d+)/);
+                const stageNum = stageMatch ? parseInt(stageMatch[1], 10) : -1;
+
+                if (data.state.includes('매각완료')) {
+                    progressYear = maxYear;
+                } else if (data.progressStr.includes('취소') || stageNum === -1 || data.progressStr === '해당없음') {
+                    progressYear = 0;
+                } else {
+                    progressYear = (stageNum >= 0 && stageNum < mData.years.length) ? mData.years[stageNum] : 0;
+                }
+
+                let completionPercent = (progressYear / maxYear);
+                let progressScore = Math.min(90, completionPercent * 90);
+
+                let acqYear = 2026; let acqMonth = 9;
+                if (data.dateStr) {
+                    const parts = data.dateStr.split('.');
+                    acqYear = parseInt(parts[0]) || 2026; acqMonth = parseInt(parts[1]) || 1;
+                }
+                const monthsHeld = Math.max(1, (2026 - acqYear) * 12 + (9 - acqMonth));
+                
+                let speed = 50, status = 'normal';
+                if (data.state.includes('매각완료')) {
+                    speed = 0; status = 'finished';
+                } else if (data.progressStr.includes('취소') || data.method === '' || data.progressStr === '해당없음') {
+                    speed = 0; status = 'bad';
+                } else {
+                    const actualYears = monthsHeld / 12;
+                    const efficiency = progressYear / (actualYears || 1); 
+                    speed = Math.max(15, Math.min(100, efficiency * 25)); 
+                    if (efficiency >= 1.5) status = 'good';
+                    else if (efficiency < 0.3 && actualYears > 3) status = 'bad'; 
+                }
+
+                let msg = data.customSpeech.trim();
+                if (!msg) {
+                    if (status === 'finished') msg = `[${data.method}] 나 먼저 간다~ 🏆 (매각완료)`;
+                    else if (data.progressStr.includes('취소')) msg = "재개발 취소라니 😭 발이 안 떨어져...";
+                    else if (data.progressStr === '해당없음' || !data.method) msg = "여긴 어디? 나는 누구? 멍...";
+                    else if (status === 'bad') msg = `산 지 ${Math.floor(monthsHeld/12)}년인데 😭 (${data.progressStr})`;
+                    else {
+                        let shortStage = data.progressStr.split('/')[0].trim();
+                        msg = `[${data.method}] ${shortStage} (${progressYear}년차/총${maxYear}년) 🏃`;
+                    }
+                }
+
+                return { ...data, status, speed, msg, progressScore };
+            });
+
+            document.getElementById('loading').style.display = 'none';
+            renderMarathon();
+        }
+
+        function createCharacterDOM(data, isMapMode = false) {
+            const container = document.createElement('div');
+            container.className = 'runner-container';
+            
+            const runSpeedDuration = 1.6 - (data.speed / 100) * 1.4;
+            container.style.setProperty('--run-speed', `${runSpeedDuration}s`);
+
+            const character = document.createElement('div');
+            character.className = 'character';
+            
+            if (!isMapMode && data.status !== 'finished' && data.speed > 0) {
+                character.classList.add('running', 'running-bounce');
+            }
+
+            const head = document.createElement('div');
+            head.className = `head ${data.status === 'bad' ? 'sad' : ''}`;
+            
+            let faceEmoji = '😎';
+            if (data.status === 'finished') faceEmoji = '🏆';
+            else if (data.status === 'good') faceEmoji = '😃';
+            else if (data.status === 'normal') faceEmoji = '😐';
+            else if (data.status === 'bad') faceEmoji = '😭';
+
+            const emojiSpan = document.createElement('span');
+            emojiSpan.className = 'emoji'; emojiSpan.textContent = faceEmoji;
+            
+            const uploadedImg = document.createElement('img');
+            head.appendChild(emojiSpan); head.appendChild(uploadedImg);
+
+            head.addEventListener('click', (e) => {
+                e.stopPropagation();
+                currentHeadElement = uploadedImg;
+                currentEmojiElement = emojiSpan;
+                photoInput.click();
+            });
+
+            const vest = document.createElement('div');
+            vest.className = `body-vest ${data.manager === '위탁' ? 'vest-red' : 'vest-blue'}`;
+            vest.innerHTML = `<span>${data.manager ? data.manager.substring(0,1) : '문'}</span>`;
+
+            const legs = document.createElement('div');
+            legs.className = 'legs';
+            legs.innerHTML = `<div class="leg left-leg"></div><div class="leg right-leg"></div>`;
+
+            character.appendChild(head); character.appendChild(vest); character.appendChild(legs);
+
+            const nameLabel = document.createElement('div');
+            nameLabel.className = 'name-label';
+            nameLabel.textContent = data.owner || '익명';
+            character.appendChild(nameLabel);
+
+            const speech = document.createElement('div');
+            speech.className = 'speech-bubble';
+            speech.textContent = data.msg;
+            container.appendChild(speech);
+
+            character.addEventListener('click', (e) => {
+                if(e.target.closest('.head')) return;
+                document.querySelectorAll('.runner-container').forEach(c => c.classList.remove('active'));
+                container.classList.add('active');
+            });
+
+            container.appendChild(character);
+            return container;
+        }
+
+        function renderMarathon() {
+            const trackArea = document.getElementById('runners-area');
+            const trackHeight = document.getElementById('view-marathon').clientHeight;
+            
+            runnersData.forEach((data) => {
+                const charDOM = createCharacterDOM(data, false);
+                
+                const topPos = Math.random() * (trackHeight * 0.7) + (trackHeight * 0.15);
+                charDOM.style.top = `${topPos}px`;
+                charDOM.style.zIndex = Math.floor(topPos);
+                
+                let finalLeft = data.progressScore + (Math.random() * 2 - 1);
+                if (data.status === 'finished') finalLeft = 90 + Math.random() * 2;
+                charDOM.style.left = `${finalLeft}%`;
+                
+                trackArea.appendChild(charDOM);
+            });
+        }
+
+        function initKakaoMap() {
+            if (typeof kakao === 'undefined' || !kakao.maps) {
+                alert("카카오 지도 API를 불러올 수 없습니다. JavaScript 키와 도메인 설정을 확인해주세요!");
+                return;
+            }
+
+            const mapContainer = document.getElementById('view-map');
+            const mapOption = {
+                center: new kakao.maps.LatLng(37.5255, 126.9954), 
+                level: 7 
+            };
+            kakaoMap = new kakao.maps.Map(mapContainer, mapOption);
+            geocoder = new kakao.maps.services.Geocoder();
+
+            function cleanAddress(addr) {
+                let clean = addr.split(',')[0].split('.')[0].trim();
+                clean = clean.replace(/외\s*\d+필지/g, '').replace(/제상가동.*/g, '').replace(/번지.*/g, '');
+                return clean.trim();
+            }
+
+            const addressGroups = {};
+            runnersData.forEach(data => {
+                if (!data.address || data.address.includes('인천')) return; 
+                
+                const searchAddr = cleanAddress(data.address);
+                if (!addressGroups[searchAddr]) addressGroups[searchAddr] = [];
+                addressGroups[searchAddr].push(data);
+            });
+
+            Object.keys(addressGroups).forEach(addr => {
+                geocoder.addressSearch(addr, function(result, status) {
+                    if (status === kakao.maps.services.Status.OK) {
+                        const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+                        const group = addressGroups[addr];
+                        const count = group.length;
+
+                        group.forEach((runnerData, index) => {
+                            const charDOM = createCharacterDOM(runnerData, true);
+                            const offsetX = (index - (count - 1) / 2) * 45; 
+                            
+                            const overlayWrap = document.createElement('div');
+                            overlayWrap.style.transform = `translateX(${offsetX}px)`;
+                            charDOM.style.position = 'relative';
+                            charDOM.style.left = '0'; 
+                            charDOM.style.top = '0';
+
+                            overlayWrap.appendChild(charDOM);
+
+                            new kakao.maps.CustomOverlay({
+                                map: kakaoMap,
+                                position: coords,
+                                content: overlayWrap,
+                                yAnchor: 1 
+                            });
+                        });
+                    }
+                });
+            });
+        }
+
+        document.body.addEventListener('click', (e) => {
+            if (!e.target.closest('.runner-container') && !e.target.closest('.tab-btn')) {
+                document.querySelectorAll('.runner-container').forEach(c => c.classList.remove('active'));
+            }
+        });
+
+        window.addEventListener('DOMContentLoaded', fetchAndParseData);
+    </script>
+</body>
+</html>

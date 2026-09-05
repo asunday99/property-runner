@@ -6,6 +6,8 @@
     <title>재개발 러너 (RUNNER)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    
+    <!-- 카카오 맵 API -->
     <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=10d2911cc3c5bedf397ff5b602bd52dd&libraries=services"></script>
     
     <style>
@@ -36,33 +38,50 @@
 
         .character { position: relative; display: flex; flex-direction: column; align-items: center; cursor: pointer; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.4)); }
 
-        .head { width: 36px; height: 36px; border-radius: 50%; background-color: #fce7f3; border: 3px solid white; box-shadow: 0 4px 6px rgba(0,0,0,0.2); z-index: 10; display: flex; justify-content: center; align-items: center; font-size: 20px; font-weight: 900; color: #1f2937; overflow: hidden; position: relative; transition: transform 0.2s; margin-bottom: -10px; }
+        .head { width: 36px; height: 36px; border-radius: 50%; background-color: #fce7f3; border: 3px solid white; box-shadow: 0 4px 6px rgba(0,0,0,0.2); z-index: 10; display: flex; justify-content: center; align-items: center; font-size: 20px; font-weight: 900; color: #1f2937; overflow: hidden; position: relative; transition: transform 0.2s; margin-bottom: -6px; }
         .head:hover { transform: scale(1.25); border-color: #2563eb; }
         .head.sad { background-color: #fecaca; }
         .head .emoji { pointer-events: none; }
         .head img { width: 100%; height: 100%; object-fit: cover; display: none; pointer-events: none; }
 
-        .theme-red.vest { background: linear-gradient(135deg, #f87171, #dc2626); }
-        .theme-blue.vest { background: linear-gradient(135deg, #60a5fa, #2563eb); }
-        .theme-red.bldg { background: linear-gradient(to bottom, #f87171, #991b1b); border-bottom: 6px solid #7f1d1d; }
-        .theme-blue.bldg { background: linear-gradient(to bottom, #94a3b8, #475569); border-bottom: 6px solid #334155; }
-        .theme-red.ground { background: linear-gradient(to bottom, #fca5a5, #dc2626); box-shadow: inset 0 3px 0 rgba(255,255,255,0.5), 0 6px 0 #7f1d1d, 0 10px 5px rgba(0,0,0,0.3); }
-        .theme-blue.ground { background: linear-gradient(to bottom, #4ade80, #16a34a); box-shadow: inset 0 3px 0 rgba(255,255,255,0.5), 0 6px 0 #a16207, 0 10px 5px rgba(0,0,0,0.3); color: white !important; }
+        /* 테마별 색상 */
+        .theme-red { background-color: #dc2626 !important; }
+        .theme-blue { background-color: #2563eb !important; }
 
-        .vest { width: 48px; height: 32px; border-radius: 10px; display: flex; justify-content: center; align-items: center; color: white; font-weight: 900; font-size: 12px; z-index: 5; box-shadow: inset 0 -3px 0 rgba(0,0,0,0.2), 0 4px 4px rgba(0,0,0,0.2); }
-        .legs { display: flex; gap: 10px; margin-top: -6px; z-index: 1; }
-        .leg { width: 8px; height: 18px; background: linear-gradient(to bottom, #4b5563, #111827); border-radius: 4px; transform-origin: top center; box-shadow: 0 2px 2px rgba(0,0,0,0.3); animation-play-state: paused; }
+        /* 픽토그램 러너 스타일 */
+        .pictogram { position: relative; width: 44px; height: 50px; display: flex; justify-content: center; z-index: 5; margin-top: -6px; }
         
-        .bldg { width: 54px; height: 56px; border-radius: 6px 6px 2px 2px; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; color: white; font-weight: 900; font-size: 11px; z-index: 5; padding-bottom: 6px; box-shadow: inset 0 2px 0 rgba(255,255,255,0.4), inset -4px 0 0 rgba(0,0,0,0.1), 0 5px 5px rgba(0,0,0,0.3); line-height: 1.3; }
-        .bldg .icon { font-size: 20px; margin-bottom: 2px; text-shadow: 0 2px 2px rgba(0,0,0,0.3); }
-        .ground { width: 60px; height: 32px; border-radius: 50%; display: flex; justify-content: center; align-items: center; color: white; font-weight: 900; font-size: 12px; z-index: 5; margin-top: 5px; }
+        .pic-torso { width: 34px; height: 36px; border-radius: 12px; position: relative; z-index: 5; display: flex; justify-content: center; align-items: center; transform: rotate(10deg); box-shadow: 0 4px 6px rgba(0,0,0,0.2); }
+        .bib { background: white; color: #111827; padding: 2px 4px; border-radius: 3px; font-size: 10px; font-weight: 900; letter-spacing: -0.5px; box-shadow: 0 1px 2px rgba(0,0,0,0.2); transform: rotate(-10deg); }
 
-        .running .left-leg { animation: run-leg var(--run-speed) infinite linear; animation-play-state: running; }
-        .running .right-leg { animation: run-leg var(--run-speed) infinite linear; animation-delay: calc(var(--run-speed) / -2); animation-play-state: running; }
-        @keyframes run-leg { 0% { transform: rotate(-25deg); } 50% { transform: rotate(25deg); } 100% { transform: rotate(-25deg); } }
-        .running-bounce { animation: bob var(--run-speed) infinite ease-in-out; }
-        @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+        .pic-arm { position: absolute; width: 10px; height: 22px; border-radius: 5px; transform-origin: top center; top: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .pic-arm-left { left: 16px; z-index: 4; filter: brightness(0.7); transform: rotate(20deg); }
+        .pic-arm-right { right: 16px; z-index: 6; transform: rotate(-20deg); }
 
+        .pic-leg { position: absolute; width: 12px; height: 24px; border-radius: 6px; transform-origin: top center; top: 30px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        .pic-leg-left { left: 12px; z-index: 4; filter: brightness(0.7); transform: rotate(-15deg); }
+        .pic-leg-right { right: 12px; z-index: 6; transform: rotate(15deg); }
+
+        /* 건물/토지 아이콘과 하단 이름 라벨 */
+        .static-asset { display: flex; flex-direction: column; align-items: center; margin-top: 10px; z-index: 5; }
+        .static-icon { font-size: 40px; line-height: 1; filter: drop-shadow(0 3px 3px rgba(0,0,0,0.2)); margin-bottom: 6px; }
+        .name-label { padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 900; box-shadow: 0 2px 4px rgba(0,0,0,0.2); border: 2px solid white; color: white; }
+        .theme-red.name-label { background-color: #dc2626; }
+        .theme-blue.name-label { background-color: #2563eb; }
+
+        /* 픽토그램 러닝 애니메이션 */
+        .running .pic-arm-left { animation: swing var(--run-speed) infinite alternate ease-in-out; }
+        .running .pic-arm-right { animation: swing-opp var(--run-speed) infinite alternate ease-in-out; }
+        .running .pic-leg-left { animation: swing-opp var(--run-speed) infinite alternate ease-in-out; }
+        .running .pic-leg-right { animation: swing var(--run-speed) infinite alternate ease-in-out; }
+
+        @keyframes swing { 0% { transform: rotate(45deg); } 100% { transform: rotate(-45deg); } }
+        @keyframes swing-opp { 0% { transform: rotate(-45deg); } 100% { transform: rotate(45deg); } }
+        
+        .running-bounce { animation: bob var(--run-speed) infinite alternate ease-in-out; }
+        @keyframes bob { 0% { transform: translateY(0); } 100% { transform: translateY(-4px); } }
+
+        /* 말풍선 */
         .speech-bubble { position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); background-color: white; color: #111827; border: 2px solid #e5e7eb; padding: 10px 14px; border-radius: 12px; font-size: 14px; font-weight: 600; white-space: nowrap; display: none; z-index: 30; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3); pointer-events: none; margin-bottom: 5px; }
         .speech-bubble::after { content: ''; position: absolute; top: 100%; left: 50%; margin-left: -6px; border-width: 6px; border-style: solid; border-color: white transparent transparent transparent; }
         .runner-container.active .speech-bubble { display: block; animation: pop 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
@@ -117,8 +136,6 @@
         let geocoder = null;
 
         const photoInput = document.getElementById('photoInput');
-        let currentHeadElement = null;
-        let currentEmojiElement = null;
         let currentAssetId = null;
 
         function switchTab(mode) {
@@ -141,16 +158,22 @@
             }
         }
 
-        // 사진 첨부 시 브라우저 Local Storage에 Base64로 영구 저장
         photoInput.addEventListener('change', (e) => {
             if (e.target.files && e.target.files[0] && currentAssetId) {
                 const reader = new FileReader();
                 reader.onload = function(event) {
                     const base64Str = event.target.result;
-                    currentHeadElement.src = base64Str;
-                    currentHeadElement.style.display = 'block';
-                    currentEmojiElement.style.display = 'none';
                     localStorage.setItem('photo_' + currentAssetId, base64Str);
+                    
+                    document.querySelectorAll(`.character[data-asset-id="${currentAssetId}"]`).forEach(char => {
+                        const img = char.querySelector('img');
+                        const emoji = char.querySelector('.emoji');
+                        if(img && emoji) {
+                            img.src = base64Str;
+                            img.style.display = 'block';
+                            emoji.style.display = 'none';
+                        }
+                    });
                 };
                 reader.readAsDataURL(e.target.files[0]);
             }
@@ -273,11 +296,13 @@
             const container = document.createElement('div');
             container.className = 'runner-container';
             
+            // 달리기 속도 (100점일 때 0.2초, 0점일 때 1.6초)
             const runSpeedDuration = 1.6 - (data.speed / 100) * 1.4;
             container.style.setProperty('--run-speed', `${runSpeedDuration}s`);
 
             const character = document.createElement('div');
             character.className = 'character';
+            character.dataset.assetId = data.id; 
             
             if (!isMapMode && data.markerType === 'runner' && data.status !== 'finished' && data.speed > 0) {
                 character.classList.add('running', 'running-bounce');
@@ -286,15 +311,12 @@
             const head = document.createElement('div');
             head.className = `head ${data.status === 'bad' ? 'sad' : ''}`;
             
-            // 이름별 이모지 설정 (고미=G, 뉴푸드=N)
             let faceText = '😎';
             if (data.owner.includes('뉴푸드')) faceText = 'N';
             else if (data.owner.includes('고미')) faceText = 'G';
             else if (data.status === 'finished') faceText = '🏆';
             else if (data.status === 'good') faceText = '😃';
             else if (data.status === 'bad') faceText = '😭';
-            else if (data.markerType === 'land') faceText = '👨';
-            else if (data.markerType === 'building') faceText = '👩';
 
             const emojiSpan = document.createElement('span');
             emojiSpan.className = 'emoji'; 
@@ -302,7 +324,6 @@
             
             const uploadedImg = document.createElement('img');
             
-            // LocalStorage에서 저장된 사진 불러오기
             const savedPhoto = localStorage.getItem('photo_' + data.id);
             if (savedPhoto) {
                 uploadedImg.src = savedPhoto;
@@ -314,9 +335,7 @@
 
             head.addEventListener('click', (e) => {
                 e.stopPropagation();
-                currentHeadElement = uploadedImg;
-                currentEmojiElement = emojiSpan;
-                currentAssetId = data.id; // 현재 수정 중인 자산 ID 추적
+                currentAssetId = data.id;
                 photoInput.click();
             });
 
@@ -326,27 +345,50 @@
             character.appendChild(head);
 
             if (data.markerType === 'runner') {
-                const vest = document.createElement('div');
-                vest.className = `vest ${themeClass}`;
-                vest.textContent = ownerName;
+                // 픽토그램 스타일 몸통 조립
+                const picWrap = document.createElement('div');
+                picWrap.className = 'pictogram';
+
+                const armL = document.createElement('div');
+                armL.className = `pic-arm pic-arm-left ${themeClass}`;
+                const legL = document.createElement('div');
+                legL.className = `pic-leg pic-leg-left ${themeClass}`;
                 
-                const legs = document.createElement('div');
-                legs.className = 'legs';
-                legs.innerHTML = `<div class="leg left-leg"></div><div class="leg right-leg"></div>`;
+                const torso = document.createElement('div');
+                torso.className = `pic-torso ${themeClass}`;
+                const bib = document.createElement('div');
+                bib.className = 'bib';
+                bib.textContent = ownerName; // 등에 붙은 번호표(이름표)
+                torso.appendChild(bib);
+
+                const armR = document.createElement('div');
+                armR.className = `pic-arm pic-arm-right ${themeClass}`;
+                const legR = document.createElement('div');
+                legR.className = `pic-leg pic-leg-right ${themeClass}`;
+
+                picWrap.appendChild(armL);
+                picWrap.appendChild(legL);
+                picWrap.appendChild(torso);
+                picWrap.appendChild(armR);
+                picWrap.appendChild(legR);
                 
-                character.appendChild(vest); character.appendChild(legs);
-            } 
-            else if (data.markerType === 'building') {
-                const bldg = document.createElement('div');
-                bldg.className = `bldg ${themeClass}`;
-                bldg.innerHTML = `<div class="icon">🏢</div><div>${ownerName}</div>`;
-                character.appendChild(bldg);
-            } 
-            else if (data.markerType === 'land') {
-                const ground = document.createElement('div');
-                ground.className = `ground ${themeClass}`;
-                ground.textContent = ownerName;
-                character.appendChild(ground);
+                character.appendChild(picWrap);
+            } else {
+                // 상가, 토지는 건물/나무 모양 아이콘과 이름표
+                const staticWrap = document.createElement('div');
+                staticWrap.className = 'static-asset';
+                
+                const icon = document.createElement('div');
+                icon.className = 'static-icon';
+                icon.textContent = data.markerType === 'building' ? '🏢' : '🌱';
+                
+                const nameLabel = document.createElement('div');
+                nameLabel.className = `name-label ${themeClass}`;
+                nameLabel.textContent = ownerName;
+
+                staticWrap.appendChild(icon);
+                staticWrap.appendChild(nameLabel);
+                character.appendChild(staticWrap);
             }
 
             const speech = document.createElement('div');
@@ -382,7 +424,7 @@
             });
         }
 
-        function initKakaoMap() {
+        async function initKakaoMap() {
             if (typeof kakao === 'undefined' || !kakao.maps) return;
 
             const mapContainer = document.getElementById('view-map');
@@ -396,41 +438,51 @@
                 return clean.trim();
             }
 
-            const addressGroups = {};
-            runnersData.forEach(data => {
-                if (!data.address || data.address.includes('인천')) return; 
+            // 정확한 좌표 기준으로 묶기
+            let coordsMap = {};
+            const geocodePromises = runnersData.map(data => {
+                if (!data.address || data.address.includes('인천')) return Promise.resolve();
+                
                 const searchAddr = cleanAddress(data.address);
-                if (!addressGroups[searchAddr]) addressGroups[searchAddr] = [];
-                addressGroups[searchAddr].push(data);
+                return new Promise(resolve => {
+                    geocoder.addressSearch(searchAddr, function(result, status) {
+                        if (status === kakao.maps.services.Status.OK) {
+                            const key = `${result[0].y}_${result[0].x}`;
+                            if (!coordsMap[key]) {
+                                coordsMap[key] = { coords: new kakao.maps.LatLng(result[0].y, result[0].x), items: [] };
+                            }
+                            coordsMap[key].items.push(data);
+                        }
+                        resolve();
+                    });
+                });
             });
 
-            Object.keys(addressGroups).forEach(addr => {
-                geocoder.addressSearch(addr, function(result, status) {
-                    if (status === kakao.maps.services.Status.OK) {
-                        const coords = new kakao.maps.LatLng(result[0].y, result[0].x);
-                        const group = addressGroups[addr];
-                        const count = group.length;
+            await Promise.all(geocodePromises);
 
-                        group.forEach((runnerData, index) => {
-                            const charDOM = createCharacterDOM(runnerData, true);
-                            const offsetX = (index - (count - 1) / 2) * 55;
-                            
-                            const overlayWrap = document.createElement('div');
-                            overlayWrap.style.transform = `translateX(${offsetX}px)`;
-                            charDOM.style.position = 'relative';
-                            charDOM.style.left = '0'; 
-                            charDOM.style.top = '0';
+            Object.values(coordsMap).forEach(group => {
+                const count = group.items.length;
+                group.items.forEach((runnerData, index) => {
+                    const charDOM = createCharacterDOM(runnerData, true);
+                    
+                    const offsetX = (index - (count - 1) / 2) * 60;
+                    
+                    const overlayWrap = document.createElement('div');
+                    overlayWrap.style.transform = `translateX(${offsetX}px)`;
+                    overlayWrap.style.zIndex = Math.floor(1000 - index); 
+                    
+                    charDOM.style.position = 'relative';
+                    charDOM.style.left = '0'; 
+                    charDOM.style.top = '0';
 
-                            overlayWrap.appendChild(charDOM);
+                    overlayWrap.appendChild(charDOM);
 
-                            new kakao.maps.CustomOverlay({
-                                map: kakaoMap,
-                                position: coords,
-                                content: overlayWrap,
-                                yAnchor: 1 
-                            });
-                        });
-                    }
+                    new kakao.maps.CustomOverlay({
+                        map: kakaoMap,
+                        position: group.coords,
+                        content: overlayWrap,
+                        yAnchor: 1 
+                    });
                 });
             });
         }

@@ -27,34 +27,39 @@
         .timeline-container { position: absolute; left: 0; right: 10%; top: 0; bottom: 0; pointer-events: none; z-index: 5; }
         .time-marker { position: absolute; top: 0; bottom: 0; border-left: 2px dashed rgba(255,255,255,0.7); display: flex; flex-direction: column; justify-content: flex-start; padding-left: 8px; padding-top: 15px; }
         .time-marker span { font-size: 18px; font-weight: 900; color: #1e3a8a; text-shadow: 2px 2px 0px rgba(255,255,255,0.8), -2px -2px 0px rgba(255,255,255,0.8), 2px -2px 0px rgba(255,255,255,0.8), -2px 2px 0px rgba(255,255,255,0.8); opacity: 0.9; }
+        .year-label { position: absolute; bottom: 20px; font-size: 16px; font-weight: 900; color: #1f2937; left: 10px; background: rgba(255,255,255,0.6); padding: 2px 6px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
 
         .finish-line { position: absolute; right: 10%; top: 0; bottom: 0; width: 25px; background: repeating-linear-gradient(45deg, white, white 15px, #ef4444 15px, #ef4444 30px); box-shadow: -10px 0 20px rgba(0,0,0,0.15); z-index: 10; }
         .finish-banner { position: absolute; right: calc(10% - 60px); top: 20px; background: #2563eb; color: white; padding: 8px 16px; border-radius: 6px; font-weight: 900; font-size: 20px; z-index: 11; letter-spacing: 2px; box-shadow: 0 4px 6px rgba(0,0,0,0.2); text-align: center; }
 
         .runner-container { position: absolute; display: flex; justify-content: center; align-items: flex-end; }
-        .runner-container.active { z-index: 9999 !important; }
+        
+        .character { position: relative; display: flex; flex-direction: column; align-items: center; }
 
-        .character { position: relative; display: flex; flex-direction: column; align-items: center; cursor: pointer; }
-
-        /* 얼굴 크기 키우고 위치 조정 (바디 이미지의 머리 위로 덮기) */
-        .head { width: 44px; height: 44px; border-radius: 50%; background-color: #fce7f3; border: 3px solid white; box-shadow: 0 4px 6px rgba(0,0,0,0.3); z-index: 10; display: flex; justify-content: center; align-items: center; font-size: 22px; font-weight: 900; color: #1f2937; overflow: hidden; position: absolute; top: -5px; left: 50%; transform: translateX(-50%); transition: transform 0.2s; }
-        .head:hover { transform: translateX(-50%) scale(1.25); border-color: #2563eb; }
+        /* 얼굴 크기 20% 축소 (44px -> 35px) 및 확대 효과 */
+        .head { width: 35px; height: 35px; border-radius: 50%; background-color: #fce7f3; border: 2px solid white; box-shadow: 0 4px 6px rgba(0,0,0,0.3); z-index: 20; display: flex; justify-content: center; align-items: center; font-size: 16px; font-weight: 900; color: #1f2937; overflow: hidden; position: absolute; top: -4px; left: 50%; transform: translateX(-50%); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer; }
+        .head.zoomed { transform: translateX(-50%) scale(2); z-index: 50; box-shadow: 0 6px 12px rgba(0,0,0,0.4); border-color: #2563eb; }
         .head.sad { background-color: #fecaca; }
         .head .emoji { pointer-events: none; }
-        .head img { width: 100%; height: 100%; object-fit: cover; display: none; pointer-events: none; }
+        .head img.face-img { width: 100%; height: 100%; object-fit: cover; display: none; pointer-events: none; }
 
         .theme-red { background-color: #dc2626 !important; }
         .theme-blue { background-color: #2563eb !important; }
 
-        /* 3D 클레이 몸통 스타일 */
-        .clay-body-wrap { position: relative; width: 65px; display: flex; justify-content: center; z-index: 5; margin-top: 15px; }
-        .clay-body-img { width: 100%; display: block; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.3)); }
-        .clay-bib { position: absolute; top: 48%; left: 45%; transform: translateX(-50%) rotate(-5deg); background: white; color: #111827; padding: 2px 4px; border-radius: 3px; font-size: 10px; font-weight: 900; letter-spacing: -0.5px; box-shadow: 0 2px 4px rgba(0,0,0,0.3); border: 1px solid #e5e7eb; }
+        /* 3D 클레이 몸통 사이즈 20% 축소 (65px -> 52px) */
+        .clay-body-wrap { position: relative; width: 52px; display: flex; justify-content: center; z-index: 5; margin-top: 15px; cursor: pointer; }
+        .clay-body-img { width: 100%; display: block; filter: drop-shadow(0 4px 4px rgba(0,0,0,0.3)); transition: filter 0.3s; }
+        
+        /* 상의 색상 구분을 위한 필터 (위탁 = 빨강 계열, 나머지 = 파랑 계열) */
+        .shirt-red { filter: drop-shadow(0 4px 4px rgba(0,0,0,0.3)) hue-rotate(-20deg) saturate(1.3); }
+        .shirt-blue { filter: drop-shadow(0 4px 4px rgba(0,0,0,0.3)) hue-rotate(190deg); }
+
+        .clay-bib { position: absolute; top: 48%; left: 45%; transform: translateX(-50%) rotate(-5deg); background: white; color: #111827; padding: 2px 3px; border-radius: 2px; font-size: 9px; font-weight: 900; letter-spacing: -0.5px; box-shadow: 0 2px 4px rgba(0,0,0,0.3); border: 1px solid #e5e7eb; white-space: nowrap; }
 
         /* 건물/토지 아이콘과 하단 이름 라벨 */
-        .static-asset { display: flex; flex-direction: column; align-items: center; margin-top: 45px; z-index: 5; }
-        .static-icon { font-size: 40px; line-height: 1; filter: drop-shadow(0 3px 3px rgba(0,0,0,0.2)); margin-bottom: 6px; }
-        .name-label { padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 900; box-shadow: 0 2px 4px rgba(0,0,0,0.2); border: 2px solid white; color: white; }
+        .static-asset { display: flex; flex-direction: column; align-items: center; margin-top: 35px; z-index: 5; }
+        .static-icon { font-size: 32px; line-height: 1; filter: drop-shadow(0 3px 3px rgba(0,0,0,0.2)); margin-bottom: 4px; }
+        .name-label { padding: 3px 8px; border-radius: 10px; font-size: 10px; font-weight: 900; box-shadow: 0 2px 4px rgba(0,0,0,0.2); border: 1px solid white; color: white; }
         .theme-red.name-label { background-color: #dc2626; }
         .theme-blue.name-label { background-color: #2563eb; }
 
@@ -63,13 +68,18 @@
         .running-bounce .head { animation: bob-head var(--run-speed) infinite alternate ease-in-out; }
         
         @keyframes bob { 0% { transform: translateY(0) rotate(0deg); } 100% { transform: translateY(-4px) rotate(2deg); } }
-        @keyframes bob-head { 0% { top: -5px; } 100% { top: -9px; } }
+        @keyframes bob-head { 0% { top: -4px; } 100% { top: -8px; } }
 
-        /* 말풍선 */
-        .speech-bubble { position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); background-color: white; color: #111827; border: 2px solid #e5e7eb; padding: 10px 14px; border-radius: 12px; font-size: 14px; font-weight: 600; white-space: nowrap; display: none; z-index: 30; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3); pointer-events: none; margin-bottom: 15px; }
-        .speech-bubble::after { content: ''; position: absolute; top: 100%; left: 50%; margin-left: -6px; border-width: 6px; border-style: solid; border-color: white transparent transparent transparent; }
-        .runner-container.active .speech-bubble { display: block; animation: pop 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        @keyframes pop { 0% { transform: translateX(-50%) scale(0.8); opacity: 0; } 100% { transform: translateX(-50%) scale(1); opacity: 1; } }
+        /* 말풍선 및 스탯 박스 */
+        .speech-bubble, .stats-bubble { position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); background-color: white; color: #111827; border: 2px solid #e5e7eb; padding: 10px 14px; border-radius: 12px; font-size: 13px; font-weight: 700; white-space: nowrap; opacity: 0; visibility: hidden; z-index: 60; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3); pointer-events: none; margin-bottom: 15px; transition: all 0.2s; }
+        .speech-bubble::after, .stats-bubble::after { content: ''; position: absolute; top: 100%; left: 50%; margin-left: -6px; border-width: 6px; border-style: solid; border-color: white transparent transparent transparent; }
+        
+        .stats-bubble { background-color: #1f2937; color: white; border-color: #374151; font-size: 12px; }
+        .stats-bubble::after { border-color: #1f2937 transparent transparent transparent; }
+
+        .speech-bubble.active, .stats-bubble.active { opacity: 1; visibility: visible; transform: translateX(-50%) scale(1); animation: pop 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        
+        @keyframes pop { 0% { transform: translateX(-50%) scale(0.5); opacity: 0; } 100% { transform: translateX(-50%) scale(1); opacity: 1; } }
     </style>
 </head>
 <body>
@@ -78,9 +88,9 @@
             <div>
                 <h1 class="text-3xl font-extrabold text-blue-700">🏃‍♂️ 재개발 러너 (RUNNER)</h1>
                 <p class="text-sm text-gray-500 mt-2 font-medium">
-                    <span class="inline-block w-3 h-3 bg-blue-500 rounded-sm mr-1"></span>법인/개인 (파란) &nbsp;|&nbsp; 
-                    <span class="inline-block w-3 h-3 bg-red-500 rounded-sm mr-1"></span>순수 위탁 (빨간) &nbsp;|&nbsp; 
-                    💡 얼굴 클릭 시 사진 영구 등록
+                    <span class="inline-block w-3 h-3 bg-blue-500 rounded-sm mr-1"></span>법인/개인 등 (파란 상의) &nbsp;|&nbsp; 
+                    <span class="inline-block w-3 h-3 bg-red-500 rounded-sm mr-1"></span>순수 위탁 (빨간 상의) &nbsp;|&nbsp; 
+                    💡 얼굴 클릭: 사진등록 / 속마음 보기 &nbsp;|&nbsp; 몸통 클릭: 진행현황 보기
                 </p>
             </div>
             
@@ -94,13 +104,26 @@
 
         <div id="view-marathon">
             <div class="timeline-container">
-                <div class="time-marker" style="left: 0%;"><span>START</span></div>
-                <div class="time-marker" style="left: 25%;"><span>초기(25%)</span></div>
-                <div class="time-marker" style="left: 50%;"><span>중반(50%)</span></div>
-                <div class="time-marker" style="left: 75%;"><span>후반(75%)</span></div>
+                <div class="time-marker" style="left: 0%;">
+                    <span>START</span>
+                    <div class="year-label">0년</div>
+                </div>
+                <div class="time-marker" style="left: 25%;">
+                    <span>초기(25%)</span>
+                    <div class="year-label">약 4년</div>
+                </div>
+                <div class="time-marker" style="left: 50%;">
+                    <span>중반(50%)</span>
+                    <div class="year-label">7.5년</div>
+                </div>
+                <div class="time-marker" style="left: 75%;">
+                    <span>후반(75%)</span>
+                    <div class="year-label">약 11년</div>
+                </div>
             </div>
             <div class="track-lines"></div>
             <div class="finish-line"></div>
+            <div class="finish-banner" style="bottom: 10px; top: auto;">15년</div>
             <div class="finish-banner">FINISH<br>(100%)</div>
             <div id="runners-area"></div>
         </div>
@@ -117,7 +140,7 @@
         let geocoder = null;
 
         const photoInput = document.getElementById('photoInput');
-        let currentAssetId = null;
+        let currentUploadName = null;
 
         function switchTab(mode) {
             document.getElementById('view-marathon').style.display = (mode === 'marathon') ? 'block' : 'none';
@@ -139,20 +162,24 @@
             }
         }
 
+        // 사진 업로드 이벤트 (이름 기준으로 전역 저장)
         photoInput.addEventListener('change', (e) => {
-            if (e.target.files && e.target.files[0] && currentAssetId) {
+            if (e.target.files && e.target.files[0] && currentUploadName) {
                 const reader = new FileReader();
                 reader.onload = function(event) {
                     const base64Str = event.target.result;
-                    localStorage.setItem('photo_' + currentAssetId, base64Str);
+                    localStorage.setItem('photo_' + currentUploadName, base64Str);
                     
-                    document.querySelectorAll(`.character[data-asset-id="${currentAssetId}"]`).forEach(char => {
-                        const img = char.querySelector('img');
-                        const emoji = char.querySelector('.emoji');
-                        if(img && emoji) {
-                            img.src = base64Str;
-                            img.style.display = 'block';
-                            emoji.style.display = 'none';
+                    document.querySelectorAll('.character').forEach(char => {
+                        if (char.dataset.ownerName === currentUploadName) {
+                            const img = char.querySelector('img.face-img');
+                            const emoji = char.querySelector('.emoji');
+                            if(img && emoji) {
+                                img.src = base64Str;
+                                img.style.display = 'block';
+                                emoji.style.display = 'none';
+                                char.dataset.hasPhoto = 'true';
+                            }
                         }
                     });
                 };
@@ -240,33 +267,44 @@
                     acqYear = parseInt(parts[0]) || 2026; acqMonth = parseInt(parts[1]) || 1;
                 }
                 const monthsHeld = Math.max(1, (2026 - acqYear) * 12 + (9 - acqMonth));
+                let actualYears = Math.floor(monthsHeld / 12);
+                let remainYears = Math.max(0, Math.ceil(maxYear - (monthsHeld/12)));
                 
                 let speed = 50, status = 'normal';
-                
                 if (markerType !== 'runner') {
                     speed = 0; status = 'normal'; 
                 } else if (state.includes('매각완료')) {
                     speed = 0; status = 'finished';
                 } else {
-                    const actualYears = monthsHeld / 12;
                     const efficiency = progressYear / (actualYears || 1); 
                     speed = Math.max(15, Math.min(100, efficiency * 25)); 
                     if (efficiency >= 1.5) status = 'good';
                     else if (efficiency < 0.3 && actualYears > 3) status = 'bad'; 
                 }
 
+                // 말풍선 내용 (속마음)
                 let msg = customSpeech.trim();
                 if (!msg) {
-                    if (status === 'finished') msg = `[${method}] 나 먼저 간다~ 🏆 (매각완료)`;
+                    if (status === 'finished') msg = `나 먼저 간다~ 🏆 (매각완료)`;
                     else if (markerType !== 'runner') msg = `[${typeStr}] 묵묵히 운용 중 💼`;
-                    else if (status === 'bad') msg = `산 지 ${Math.floor(monthsHeld/12)}년인데 😭 (${progressStr})`;
-                    else {
-                        let shortStage = progressStr.split('/')[0].trim();
-                        msg = `[${method}] ${shortStage} (${progressYear}년차/총${maxYear}년) 🏃`;
-                    }
+                    else if (status === 'bad') msg = `산 지 ${actualYears}년인데 언제 오르냐 😭`;
+                    else msg = `가즈아! 🏃`;
                 }
 
-                return { id: row[idxId], owner, manager, typeStr, markerType, status, speed, msg, progressScore, address };
+                // 몸통 클릭 시 보일 스탯 텍스트 (예: 2단계 / 4년차 / 6년 남음)
+                let stageNumStr = (stageNum >= 0) ? stageNum + "단계" : progressStr.split('/')[0].trim();
+                if (!stageNumStr || stageNumStr === "해당없음") stageNumStr = "준비중";
+                
+                let statsText = '';
+                if (markerType === 'runner' && status !== 'finished') {
+                    statsText = `${stageNumStr} / ${actualYears}년차 / ${remainYears}년 남음`;
+                } else if (status === 'finished') {
+                    statsText = `매각 완료 (총 ${maxYear}년 소요)`;
+                } else {
+                    statsText = `[${typeStr}] 보유 ${actualYears}년차`;
+                }
+
+                return { id: row[idxId], owner, manager, typeStr, markerType, status, speed, msg, statsText, progressScore, address };
             });
 
             renderMarathon();
@@ -281,7 +319,7 @@
 
             const character = document.createElement('div');
             character.className = 'character';
-            character.dataset.assetId = data.id; 
+            character.dataset.ownerName = data.owner; 
             
             if (!isMapMode && data.markerType === 'runner' && data.status !== 'finished' && data.speed > 0) {
                 character.classList.add('running', 'running-bounce');
@@ -302,46 +340,90 @@
             emojiSpan.textContent = faceText;
             
             const uploadedImg = document.createElement('img');
+            uploadedImg.className = 'face-img';
             
-            const savedPhoto = localStorage.getItem('photo_' + data.id);
+            // 이름 기준으로 등록된 사진 확인
+            const savedPhoto = localStorage.getItem('photo_' + data.owner);
+            let hasPhoto = false;
             if (savedPhoto) {
                 uploadedImg.src = savedPhoto;
                 uploadedImg.style.display = 'block';
                 emojiSpan.style.display = 'none';
+                hasPhoto = true;
+                character.dataset.hasPhoto = 'true';
             }
 
             head.appendChild(emojiSpan); head.appendChild(uploadedImg);
+            character.appendChild(head);
 
+            const thoughtBubble = document.createElement('div');
+            thoughtBubble.className = 'speech-bubble';
+            thoughtBubble.textContent = data.msg;
+            container.appendChild(thoughtBubble);
+
+            const statsBubble = document.createElement('div');
+            statsBubble.className = 'stats-bubble';
+            statsBubble.textContent = data.statsText;
+            container.appendChild(statsBubble);
+
+            // 얼굴 클릭 이벤트
             head.addEventListener('click', (e) => {
                 e.stopPropagation();
-                currentAssetId = data.id;
+                // 1. 등록된 사진이 없으면 사진 등록 창 열기
+                if (character.dataset.hasPhoto !== 'true') {
+                    currentUploadName = data.owner;
+                    photoInput.click();
+                } else {
+                    // 2. 등록된 사진이 있으면 2배 확대 및 속마음 띄우기
+                    const isZoomed = head.classList.contains('zoomed');
+                    
+                    // 다른 열린 요소들 닫기
+                    document.querySelectorAll('.head').forEach(h => h.classList.remove('zoomed'));
+                    document.querySelectorAll('.speech-bubble, .stats-bubble').forEach(b => b.classList.remove('active'));
+                    
+                    if (!isZoomed) {
+                        head.classList.add('zoomed');
+                        thoughtBubble.classList.add('active');
+                    }
+                }
+            });
+
+            // 얼굴 사진 재등록을 원할 경우 더블클릭
+            head.addEventListener('dblclick', (e) => {
+                e.stopPropagation();
+                currentUploadName = data.owner;
                 photoInput.click();
             });
 
-            const ownerName = data.owner; 
-            const themeClass = data.manager === '위탁' ? 'theme-red' : 'theme-blue';
-
-            character.appendChild(head);
-
             if (data.markerType === 'runner') {
-                // 3D 클레이 이미지 몸통 사용
                 const bodyWrap = document.createElement('div');
                 bodyWrap.className = 'clay-body-wrap';
                 
                 const bodyImg = document.createElement('img');
-                bodyImg.className = 'clay-body-img';
-                bodyImg.src = './runner.png'; // 깃허브에 함께 올릴 투명 이미지 파일
+                // 위탁은 빨간 상의, 나머지는 파란 상의
+                bodyImg.className = data.manager === '위탁' ? 'clay-body-img shirt-red' : 'clay-body-img shirt-blue';
+                bodyImg.src = './runner.png'; 
                 
                 const bib = document.createElement('div');
                 bib.className = 'clay-bib';
-                bib.textContent = ownerName; // 배에 붙는 번호표(이름)
+                // 이름표: 성을 제외하고 2글자만 출력 (2글자 이하면 그대로)
+                let firstName = data.owner.length > 2 ? data.owner.substring(1) : data.owner;
+                bib.textContent = firstName; 
                 
                 bodyWrap.appendChild(bodyImg);
                 bodyWrap.appendChild(bib);
-                
                 character.appendChild(bodyWrap);
+
+                // 몸통 클릭 이벤트
+                bodyWrap.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    document.querySelectorAll('.head').forEach(h => h.classList.remove('zoomed'));
+                    document.querySelectorAll('.speech-bubble, .stats-bubble').forEach(b => b.classList.remove('active'));
+                    
+                    statsBubble.classList.add('active'); // 스탯 말풍선 띄우기
+                });
+
             } else {
-                // 상가, 토지는 건물/나무 모양 아이콘과 이름표
                 const staticWrap = document.createElement('div');
                 staticWrap.className = 'static-asset';
                 
@@ -349,25 +431,22 @@
                 icon.className = 'static-icon';
                 icon.textContent = data.markerType === 'building' ? '🏢' : '🌱';
                 
+                const themeClass = data.manager === '위탁' ? 'theme-red' : 'theme-blue';
                 const nameLabel = document.createElement('div');
                 nameLabel.className = `name-label ${themeClass}`;
-                nameLabel.textContent = ownerName;
+                nameLabel.textContent = data.owner;
 
                 staticWrap.appendChild(icon);
                 staticWrap.appendChild(nameLabel);
                 character.appendChild(staticWrap);
+
+                staticWrap.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    document.querySelectorAll('.head').forEach(h => h.classList.remove('zoomed'));
+                    document.querySelectorAll('.speech-bubble, .stats-bubble').forEach(b => b.classList.remove('active'));
+                    statsBubble.classList.add('active');
+                });
             }
-
-            const speech = document.createElement('div');
-            speech.className = 'speech-bubble';
-            speech.textContent = data.msg;
-            container.appendChild(speech);
-
-            character.addEventListener('click', (e) => {
-                if(e.target.closest('.head')) return;
-                document.querySelectorAll('.runner-container').forEach(c => c.classList.remove('active'));
-                container.classList.add('active');
-            });
 
             container.appendChild(character);
             return container;
@@ -405,7 +484,6 @@
                 return clean.trim();
             }
 
-            // 정확한 좌표 기준으로 묶기
             let coordsMap = {};
             const geocodePromises = runnersData.map(data => {
                 if (!data.address || data.address.includes('인천')) return Promise.resolve();
@@ -454,9 +532,11 @@
             });
         }
 
+        // 바깥 클릭 시 모든 확대/말풍선 닫기
         document.body.addEventListener('click', (e) => {
-            if (!e.target.closest('.runner-container') && !e.target.closest('.tab-btn')) {
-                document.querySelectorAll('.runner-container').forEach(c => c.classList.remove('active'));
+            if (!e.target.closest('.character')) {
+                document.querySelectorAll('.head').forEach(h => h.classList.remove('zoomed'));
+                document.querySelectorAll('.speech-bubble, .stats-bubble').forEach(b => b.classList.remove('active'));
             }
         });
 

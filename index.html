@@ -54,6 +54,7 @@
         .timeline-container { position: absolute; left: 0; right: 10%; top: 0; bottom: 0; pointer-events: none; z-index: 5; }
         .time-marker { position: absolute; top: 0; bottom: 0; border-left: 2px dashed rgba(255,255,255,0.7); display: flex; flex-direction: column; justify-content: flex-start; padding-left: 8px; padding-top: 15px; }
         .time-marker span { font-size: 18px; font-weight: 900; color: #1e3a8a; text-shadow: 2px 2px 0px rgba(255,255,255,0.8), -2px -2px 0px rgba(255,255,255,0.8), 2px -2px 0px rgba(255,255,255,0.8), -2px 2px 0px rgba(255,255,255,0.8); opacity: 0.9; }
+        .year-label { position: absolute; bottom: 20px; font-size: 15px; font-weight: 900; color: #1f2937; left: 10px; background: rgba(255,255,255,0.8); padding: 4px 8px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border: 1px solid #d1d5db; }
 
         .finish-line { position: absolute; right: 10%; top: 0; bottom: 0; width: 25px; background: repeating-linear-gradient(45deg, white, white 15px, #ef4444 15px, #ef4444 30px); box-shadow: -10px 0 20px rgba(0,0,0,0.15); z-index: 10; }
         .finish-banner { position: absolute; right: calc(10% - 60px); top: 20px; background: #2563eb; color: white; padding: 8px 16px; border-radius: 6px; font-weight: 900; font-size: 20px; z-index: 11; letter-spacing: 2px; box-shadow: 0 4px 6px rgba(0,0,0,0.2); text-align: center; }
@@ -100,7 +101,7 @@
         .speech-bubble, .stats-bubble { position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); background-color: white; color: #111827; border: 2px solid #e5e7eb; padding: 10px 14px; border-radius: 12px; font-size: 13px; font-weight: 700; white-space: nowrap; opacity: 0; visibility: hidden; z-index: 60; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3); pointer-events: none; margin-bottom: 15px; transition: all 0.2s; }
         .speech-bubble::after, .stats-bubble::after { content: ''; position: absolute; top: 100%; left: 50%; margin-left: -6px; border-width: 6px; border-style: solid; border-color: white transparent transparent transparent; }
         
-        .stats-bubble { background-color: #1f2937; color: white; border-color: #374151; font-size: 13px; padding: 10px 16px; }
+        .stats-bubble { background-color: #1f2937; color: white; border-color: #374151; font-size: 13px; padding: 10px 16px; letter-spacing: -0.3px;}
         .stats-bubble::after { border-color: #1f2937 transparent transparent transparent; }
 
         .speech-bubble.active, .stats-bubble.active { opacity: 1; visibility: visible; transform: translateX(-50%) scale(1); animation: pop 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
@@ -126,22 +127,28 @@
 
         <div id="view-marathon">
             <div class="timeline-container">
+                <!-- 마라톤 환산 거리 지수로 통일 -->
                 <div class="time-marker" style="left: 0%;">
                     <span>START</span>
+                    <div class="year-label">0 km</div>
                 </div>
                 <div class="time-marker" style="left: 25%;">
                     <span>초기(25%)</span>
+                    <div class="year-label">10.5 km</div>
                 </div>
                 <div class="time-marker" style="left: 50%;">
                     <span>중반(50%)</span>
+                    <div class="year-label">21.1 km (하프)</div>
                 </div>
                 <div class="time-marker" style="left: 75%;">
                     <span>후반(75%)</span>
+                    <div class="year-label">31.6 km</div>
                 </div>
             </div>
             <div class="track-lines"></div>
             <div class="finish-line"></div>
-            <div class="finish-banner">FINISH<br>(100%)</div>
+            <div class="finish-banner" style="bottom: 15px; top: auto; background: #111827;">42.195 km</div>
+            <div class="finish-banner">FINISH<br>(완주)</div>
             <div id="runners-area"></div>
         </div>
 
@@ -239,13 +246,14 @@
 
             const dataRows = data.filter(row => row[idxId] && row[idxId].startsWith('Re_'));
 
+            // 사용자가 제공한 이종 공정 소요기간 정규화 수치 적용
             const methodData = {
-                '민간도심복합개발': { years: [1, 2, 3, 4, 5, 6, 8, 8.5], max: 8.5 },
-                '모아타운': { years: [1, 1.5, 2.5, 3.5, 4.5, 5.5, 8, 9], max: 9 },
-                '역세권시프트': { years: [1, 2, 3, 4.5, 6, 7.5, 9, 12], max: 12 },
-                '재건축': { years: [1, 2.5, 4, 5.5, 7, 8, 9.5, 13], max: 13 },
-                '재개발': { years: [1, 3, 5, 7, 9, 11, 14, 15], max: 15 },
-                'default': { years: [1, 2, 3, 5, 7, 9, 11, 14], max: 15 }
+                '민간도심복합개발': { years: [1, 2, 3, 4, 4.5, 5, 5.5, 6], max: 6 },
+                '모아타운': { years: [0.5, 1, 2, 3, 3.5, 4, 4.5, 5], max: 5 },
+                '역세권시프트': { years: [1, 2, 3, 4.5, 6, 7.5, 8.5, 9], max: 9 },
+                '재건축': { years: [1, 2.5, 4, 5.5, 7, 8.5, 10, 11], max: 11 },
+                '재개발': { years: [1, 3, 5, 7, 9, 10.5, 11.5, 12], max: 12 },
+                'default': { years: [1, 2, 3, 5, 7, 9, 11, 12], max: 12 }
             };
 
             runnersData = dataRows.map(row => {
@@ -266,7 +274,7 @@
                 }
 
                 let progressYear = 0;
-                let maxYear = 15;
+                let maxYear = 12;
                 const m = method.replace(/\s+/g, '');
                 const mData = methodData[m] || methodData['default'];
                 maxYear = mData.max;
@@ -285,6 +293,13 @@
                 let completionPercent = (progressYear / maxYear);
                 let progressScore = Math.min(90, completionPercent * 90);
 
+                // 마라톤 환산 거리 지수 산출 (42.195km 기준)
+                let marathonKm = (completionPercent * 42.195).toFixed(1);
+                
+                // 예상 잔여 연차 산출
+                let remainYears = Math.max(0, maxYear - progressYear).toFixed(1);
+                remainYears = remainYears.endsWith('.0') ? remainYears.slice(0, -2) : remainYears;
+
                 let acqYear = 2026; let acqMonth = 9;
                 if (dateStr) {
                     const parts = dateStr.split('.');
@@ -292,7 +307,6 @@
                 }
                 const monthsHeld = Math.max(1, (2026 - acqYear) * 12 + (9 - acqMonth));
                 let actualYears = Math.floor(monthsHeld / 12);
-                let remainYears = Math.max(0, Math.ceil(maxYear - (monthsHeld/12)));
                 
                 let speed = 50, status = 'normal';
                 if (markerType !== 'runner') {
@@ -320,13 +334,12 @@
                 
                 let fullStageStr = dongName ? `${dongName}${stageNumStr}` : stageNumStr;
 
-                let displayMethod = method ? method : typeStr;
+                // 스크린샷 요구사항에 맞춘 정규화 라벨 텍스트 적용
                 let statsText = '';
                 if (markerType === 'runner' && status !== 'finished') {
-                    // 개별 라벨 표기 적용: [모아타운/총9년] 처럼 표시
-                    statsText = `[${displayMethod}/총${maxYear}년] ${fullStageStr} / ${actualYears}년차 / ${remainYears}년 남음`;
+                    statsText = `[🏃 ${marathonKm}km] ${fullStageStr} / 약 ${remainYears}년 후 입주`;
                 } else if (status === 'finished') {
-                    statsText = `[${displayMethod}] 매각 완료 (총 ${maxYear}년 소요)`;
+                    statsText = `[🏆 42.195km 완주] 매각 완료`;
                 } else {
                     statsText = `[${typeStr}] 보유 ${actualYears}년차`;
                 }

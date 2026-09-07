@@ -52,17 +52,12 @@
         .pic-torso { width: 34px; height: 36px; border-radius: 12px; position: relative; z-index: 5; display: flex; justify-content: center; align-items: center; transform: rotate(10deg); box-shadow: 0 4px 6px rgba(0,0,0,0.2); cursor: pointer; }
         .bib { background: white; color: #111827; padding: 2px 4px; border-radius: 3px; font-size: 10px; font-weight: 900; letter-spacing: -0.5px; box-shadow: 0 1px 2px rgba(0,0,0,0.2); transform: rotate(-10deg); white-space: nowrap; }
 
-        .pic-arm { position: absolute; width: 10px; height: 22px; border-radius: 5px; transform-origin: top center; top: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
-        .pic-arm-left { left: 16px; z-index: 4; filter: brightness(0.7); transform: rotate(20deg); }
-        .pic-arm-right { right: 16px; z-index: 6; transform: rotate(-20deg); }
+        /* 다리를 얇은 검정 라인으로 변경 (팔은 제거됨) */
+        .pic-leg { position: absolute; width: 4px; height: 20px; background-color: #111827; border-radius: 2px; transform-origin: top center; top: 32px; z-index: 4; }
+        .pic-leg-left { left: 15px; transform: rotate(-15deg); }
+        .pic-leg-right { right: 15px; transform: rotate(15deg); }
 
-        .pic-leg { position: absolute; width: 12px; height: 24px; border-radius: 6px; transform-origin: top center; top: 30px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
-        .pic-leg-left { left: 12px; z-index: 4; filter: brightness(0.7); transform: rotate(-15deg); }
-        .pic-leg-right { right: 12px; z-index: 6; transform: rotate(15deg); }
-
-        /* 픽토그램 러닝 애니메이션 */
-        .running .pic-arm-left { animation: swing var(--run-speed) infinite alternate ease-in-out; }
-        .running .pic-arm-right { animation: swing-opp var(--run-speed) infinite alternate ease-in-out; }
+        /* 픽토그램 러닝 애니메이션 (다리만) */
         .running .pic-leg-left { animation: swing-opp var(--run-speed) infinite alternate ease-in-out; }
         .running .pic-leg-right { animation: swing var(--run-speed) infinite alternate ease-in-out; }
 
@@ -429,10 +424,8 @@
                 const picWrap = document.createElement('div');
                 picWrap.className = 'pictogram';
 
-                const armL = document.createElement('div');
-                armL.className = `pic-arm pic-arm-left ${themeClass}`;
                 const legL = document.createElement('div');
-                legL.className = `pic-leg pic-leg-left ${themeClass}`;
+                legL.className = 'pic-leg pic-leg-left';
                 
                 const torso = document.createElement('div');
                 torso.className = `pic-torso ${themeClass}`;
@@ -444,15 +437,11 @@
                 bib.textContent = firstName; 
                 torso.appendChild(bib);
 
-                const armR = document.createElement('div');
-                armR.className = `pic-arm pic-arm-right ${themeClass}`;
                 const legR = document.createElement('div');
-                legR.className = `pic-leg pic-leg-right ${themeClass}`;
+                legR.className = 'pic-leg pic-leg-right';
 
-                picWrap.appendChild(armL);
                 picWrap.appendChild(legL);
                 picWrap.appendChild(torso);
-                picWrap.appendChild(armR);
                 picWrap.appendChild(legR);
                 
                 character.appendChild(picWrap);

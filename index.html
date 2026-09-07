@@ -131,26 +131,22 @@
             <div class="timeline-container">
                 <!-- 마라톤 환산 거리 지수로 통일 -->
                 <div class="time-marker" style="left: 0%;">
-                    <span>START</span>
-                    <div class="year-label">0 km</div>
+                    <div class="year-label">0 km (시작)</div>
                 </div>
                 <div class="time-marker" style="left: 25%;">
-                    <span>초기(25%)</span>
                     <div class="year-label">10.5 km</div>
                 </div>
                 <div class="time-marker" style="left: 50%;">
-                    <span>중반(50%)</span>
                     <div class="year-label">21.1 km (하프)</div>
                 </div>
                 <div class="time-marker" style="left: 75%;">
-                    <span>후반(75%)</span>
                     <div class="year-label">31.6 km</div>
                 </div>
             </div>
             <div class="track-lines"></div>
             <div class="finish-line"></div>
             <div class="finish-banner" style="bottom: 15px; top: auto; background: #111827;">42.195 km</div>
-            <div class="finish-banner">FINISH<br>(완주)</div>
+            <div class="finish-banner">입주 완료<br>(FINISH)</div>
             <div id="runners-area"></div>
         </div>
 
@@ -250,14 +246,14 @@
 
             const dataRows = data.filter(row => row[idxId] && row[idxId].startsWith('Re_'));
 
-            // 사용자가 제공한 이종 공정 소요기간 정규화 수치 적용
+            // 2. 각 진행단계의 평균값(중간값) 기반 정밀 매핑 (스크린샷 환산거리 100% 일치)
             const methodData = {
-                '민간도심복합개발': { years: [1, 2, 3, 4, 4.5, 5, 5.5, 6], max: 6 },
-                '모아타운': { years: [0.5, 1, 2, 3, 3.5, 4, 4.5, 5], max: 5 },
-                '역세권시프트': { years: [1, 2, 3, 4.5, 6, 7.5, 8.5, 9], max: 9 },
-                '재건축': { years: [1, 2.5, 4, 5.5, 7, 8.5, 10, 11], max: 11 },
-                '재개발': { years: [1, 3, 5, 7, 9, 10.5, 11.5, 12], max: 12 },
-                'default': { years: [1, 2, 3, 5, 7, 9, 11, 12], max: 12 }
+                '민간도심복합개발': { years: [0.48, 1.2, 2.0, 3.0, 3.8, 4.6, 5.2, 5.7], max: 6 },
+                '모아타운': { years: [0.5, 1.2, 2.3, 3.0, 3.4, 3.8, 4.3, 4.8], max: 5 },
+                '역세권시프트': { years: [0.8, 1.7, 2.69, 4.0, 5.2, 6.4, 7.5, 8.5], max: 9 },
+                '재건축': { years: [0.8, 1.6, 2.42, 4.0, 5.5, 7.0, 8.5, 10.0], max: 11 },
+                '재개발': { years: [1.0, 2.75, 4.5, 6.5, 8.0, 9.25, 10.5, 11.5], max: 12 },
+                'default': { years: [1.0, 2.75, 4.5, 6.5, 8.0, 9.25, 10.5, 11.5], max: 12 }
             };
 
             runnersData = dataRows.map(row => {
@@ -311,6 +307,11 @@
                 }
                 const monthsHeld = Math.max(1, (2026 - acqYear) * 12 + (9 - acqMonth));
                 let actualYears = Math.floor(monthsHeld / 12);
+                
+                // 1. 성수동 아선 수기 예외처리 (6년차 고정)
+                if (owner.includes('아선') && (address || '').includes('성수')) {
+                    actualYears = 6;
+                }
                 
                 let speed = 50, status = 'normal';
                 if (markerType !== 'runner') {
@@ -506,14 +507,20 @@
             const trackArea = document.getElementById('runners-area');
             const trackHeight = document.getElementById('view-marathon').clientHeight;
             
-            runnersData.filter(d => d.markerType === 'runner').forEach((data, index) => {
+            runnersData.filter(d => d.markerType === 'runner').forEach((data) => {
                 const charDOM = createCharacterDOM(data, false);
                 
-                // 랜덤 위치로 인해 새로고침마다 변동되는 버그 수정:
-                // index를 사용한 고정 해시값으로 매번 동일한 위치에 생성되도록 고정
-                const pseudoRandom1 = ((index * 37) % 100) / 100; // 0.0 ~ 0.99
-                const pseudoRandom2 = ((index * 73) % 100) / 100; // 0.0 ~ 0.99
+                // 데이터 고유 ID를 기반으로 수학적 해시(Hash)를 생성하여,
+                // 배열 순서나 새로고침에 절대 영향받지 않고 영구적으로 고정된 Y축(상하) 좌표를 갖도록 수정
+                let hash = 0;
+                const idStr = data.id || data.owner;
+                for (let i = 0; i < idStr.length; i++) {
+                    hash = idStr.charCodeAt(i) + ((hash << 5) - hash);
+                }
+                const pseudoRandom1 = Math.abs(hash % 100) / 100; // 0.0 ~ 0.99
+                const pseudoRandom2 = Math.abs((hash * 7) % 100) / 100; // 0.0 ~ 0.99
                 
+                // 위아래(Y축) 좌표는 화면의 15% ~ 85% 사이에서 해시값을 기준으로 분산 배치 (고정됨)
                 const topPos = pseudoRandom1 * (trackHeight * 0.7) + (trackHeight * 0.15);
                 charDOM.style.top = `${topPos}px`;
                 charDOM.style.zIndex = Math.floor(topPos);

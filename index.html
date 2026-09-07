@@ -12,10 +12,8 @@
         body { margin: 0; overflow: hidden; font-family: 'Pretendard', sans-serif; user-select: none; background-color: #f3f4f6; }
         #app-container { position: relative; width: 100vw; height: 100vh; display: flex; flex-direction: column; }
         
-        /* 다크 그레이 테마 헤더 (올블랙 아님, #161616 사용) */
         #header { background: #161616; padding: 40px 20px 0 20px; display: flex; flex-direction: column; align-items: center; flex-shrink: 0; z-index: 50; border-bottom: 1px solid #2a2a2a; }
         
-        /* 금덩어리 반짝이는 텍스트 효과 (밝은 중앙, 어두운 가장자리) */
         .main-title { 
             font-size: 34px; 
             font-weight: 900; 
@@ -30,7 +28,6 @@
             filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.6));
         }
         
-        /* 캡처 이미지와 동일한 느낌의 설명 텍스트 */
         .subtitle { 
             font-size: 14px; 
             color: #b5a892; 
@@ -57,7 +54,6 @@
         .timeline-container { position: absolute; left: 0; right: 10%; top: 0; bottom: 0; pointer-events: none; z-index: 5; }
         .time-marker { position: absolute; top: 0; bottom: 0; border-left: 2px dashed rgba(255,255,255,0.7); display: flex; flex-direction: column; justify-content: flex-start; padding-left: 8px; padding-top: 15px; }
         .time-marker span { font-size: 18px; font-weight: 900; color: #1e3a8a; text-shadow: 2px 2px 0px rgba(255,255,255,0.8), -2px -2px 0px rgba(255,255,255,0.8), 2px -2px 0px rgba(255,255,255,0.8), -2px 2px 0px rgba(255,255,255,0.8); opacity: 0.9; }
-        .year-label { position: absolute; bottom: 20px; font-size: 16px; font-weight: 900; color: #1f2937; left: 10px; background: rgba(255,255,255,0.6); padding: 2px 6px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
 
         .finish-line { position: absolute; right: 10%; top: 0; bottom: 0; width: 25px; background: repeating-linear-gradient(45deg, white, white 15px, #ef4444 15px, #ef4444 30px); box-shadow: -10px 0 20px rgba(0,0,0,0.15); z-index: 10; }
         .finish-banner { position: absolute; right: calc(10% - 60px); top: 20px; background: #2563eb; color: white; padding: 8px 16px; border-radius: 6px; font-weight: 900; font-size: 20px; z-index: 11; letter-spacing: 2px; box-shadow: 0 4px 6px rgba(0,0,0,0.2); text-align: center; }
@@ -114,7 +110,6 @@
 </head>
 <body>
     <div id="app-container">
-        <!-- 캡처 이미지 느낌을 살린 헤더 -->
         <div id="header">
             <div style="text-align: center;">
                 <h1 class="main-title">PROPERTY_RUNNER</h1>
@@ -133,24 +128,19 @@
             <div class="timeline-container">
                 <div class="time-marker" style="left: 0%;">
                     <span>START</span>
-                    <div class="year-label">0년</div>
                 </div>
                 <div class="time-marker" style="left: 25%;">
                     <span>초기(25%)</span>
-                    <div class="year-label">약 4년</div>
                 </div>
                 <div class="time-marker" style="left: 50%;">
                     <span>중반(50%)</span>
-                    <div class="year-label">7.5년</div>
                 </div>
                 <div class="time-marker" style="left: 75%;">
                     <span>후반(75%)</span>
-                    <div class="year-label">약 11년</div>
                 </div>
             </div>
             <div class="track-lines"></div>
             <div class="finish-line"></div>
-            <div class="finish-banner" style="bottom: 10px; top: auto;">15년</div>
             <div class="finish-banner">FINISH<br>(100%)</div>
             <div id="runners-area"></div>
         </div>
@@ -189,7 +179,6 @@
             }
         }
 
-        // 사진 업로드 이벤트
         photoInput.addEventListener('change', (e) => {
             if (e.target.files && e.target.files[0] && currentUploadName) {
                 const reader = new FileReader();
@@ -331,11 +320,13 @@
                 
                 let fullStageStr = dongName ? `${dongName}${stageNumStr}` : stageNumStr;
 
+                let displayMethod = method ? method : typeStr;
                 let statsText = '';
                 if (markerType === 'runner' && status !== 'finished') {
-                    statsText = `${fullStageStr} / ${actualYears}년차 / ${remainYears}년 남음`;
+                    // 개별 라벨 표기 적용: [모아타운/총9년] 처럼 표시
+                    statsText = `[${displayMethod}/총${maxYear}년] ${fullStageStr} / ${actualYears}년차 / ${remainYears}년 남음`;
                 } else if (status === 'finished') {
-                    statsText = `매각 완료 (총 ${maxYear}년 소요)`;
+                    statsText = `[${displayMethod}] 매각 완료 (총 ${maxYear}년 소요)`;
                 } else {
                     statsText = `[${typeStr}] 보유 ${actualYears}년차`;
                 }

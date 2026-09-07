@@ -497,14 +497,21 @@
             const trackArea = document.getElementById('runners-area');
             const trackHeight = document.getElementById('view-marathon').clientHeight;
             
-            runnersData.filter(d => d.markerType === 'runner').forEach((data) => {
+            runnersData.filter(d => d.markerType === 'runner').forEach((data, index) => {
                 const charDOM = createCharacterDOM(data, false);
-                const topPos = Math.random() * (trackHeight * 0.7) + (trackHeight * 0.15);
+                
+                // 랜덤 위치로 인해 새로고침마다 변동되는 버그 수정:
+                // index를 사용한 고정 해시값으로 매번 동일한 위치에 생성되도록 고정
+                const pseudoRandom1 = ((index * 37) % 100) / 100; // 0.0 ~ 0.99
+                const pseudoRandom2 = ((index * 73) % 100) / 100; // 0.0 ~ 0.99
+                
+                const topPos = pseudoRandom1 * (trackHeight * 0.7) + (trackHeight * 0.15);
                 charDOM.style.top = `${topPos}px`;
                 charDOM.style.zIndex = Math.floor(topPos);
                 
-                let finalLeft = data.progressScore + (Math.random() * 2 - 1);
-                if (data.status === 'finished') finalLeft = 90 + Math.random() * 2;
+                // 마라톤 환산 거리 지표(progressScore)를 기반으로 고정 배치
+                let finalLeft = data.progressScore + (pseudoRandom2 * 2 - 1);
+                if (data.status === 'finished') finalLeft = 90 + (pseudoRandom2 * 2);
                 charDOM.style.left = `${finalLeft}%`;
                 
                 trackArea.appendChild(charDOM);

@@ -106,6 +106,8 @@
 
         .speech-bubble.active, .stats-bubble.active { opacity: 1; visibility: visible; transform: translateX(-50%) scale(1); animation: pop 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         
+        .track-km-label { position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.75); color: #fbbf24; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: 900; white-space: nowrap; z-index: 20; letter-spacing: -0.5px; box-shadow: 0 2px 4px rgba(0,0,0,0.3); pointer-events: none; }
+
         @keyframes pop { 0% { transform: translateX(-50%) scale(0.5); opacity: 0; } 100% { transform: translateX(-50%) scale(1); opacity: 1; } }
     </style>
 </head>
@@ -346,7 +348,7 @@
                     statsText = `보유 ${actualYears}년차 [${typeStr}]`;
                 }
 
-                return { id: row[idxId], owner, manager, typeStr, markerType, status, speed, msg, statsText, progressScore, address };
+                return { id: row[idxId], owner, manager, typeStr, markerType, status, speed, msg, statsText, progressScore, address, marathonKm };
             });
 
             renderMarathon();
@@ -457,6 +459,13 @@
                 picWrap.appendChild(legR);
                 
                 character.appendChild(picWrap);
+                
+                if (data.status !== 'finished') {
+                    const kmLabel = document.createElement('div');
+                    kmLabel.className = 'track-km-label';
+                    kmLabel.textContent = `${data.marathonKm} km`;
+                    character.appendChild(kmLabel);
+                }
 
                 picWrap.addEventListener('click', (e) => {
                     e.stopPropagation();

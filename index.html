@@ -220,10 +220,12 @@
 
         function extractNeighborhood(addr) {
             if (!addr) return "";
-            let match = addr.match(/([가-힣]+)(?:동|읍|면)(?:\d*가)?/);
-            if (match) return match[1];
             let parts = addr.split(' ');
-            return parts.length > 1 ? parts[1] : parts[0];
+            let dongPart = parts.find(p => p.endsWith('동') || p.endsWith('읍') || p.endsWith('면') || p.match(/동\d*가$/));
+            if (!dongPart) dongPart = parts.length > 2 ? parts[2] : (parts[1] || parts[0] || "");
+            
+            let nameMatch = dongPart.match(/^([가-힣a-zA-Z0-9]+?)(?:[0-9]*동|[0-9]*가|동|읍|면)+$/);
+            return (nameMatch && nameMatch[1]) ? nameMatch[1] : dongPart;
         }
 
         function processData(data) {
@@ -337,11 +339,11 @@
                 // 스크린샷 요구사항에 맞춘 정규화 라벨 텍스트 적용
                 let statsText = '';
                 if (markerType === 'runner' && status !== 'finished') {
-                    statsText = `[🏃 ${marathonKm}km] ${fullStageStr} / 약 ${remainYears}년 후 입주`;
+                    statsText = `${fullStageStr} / 🏃 ${marathonKm}km / 약 ${remainYears}년 후 입주`;
                 } else if (status === 'finished') {
-                    statsText = `[🏆 42.195km 완주] 매각 완료`;
+                    statsText = `매각 완료 (🏆 42.195km 완주)`;
                 } else {
-                    statsText = `[${typeStr}] 보유 ${actualYears}년차`;
+                    statsText = `보유 ${actualYears}년차 [${typeStr}]`;
                 }
 
                 return { id: row[idxId], owner, manager, typeStr, markerType, status, speed, msg, statsText, progressScore, address };

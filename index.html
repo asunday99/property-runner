@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>재개발 러너 (RUNNER)</title>
+    <title>PROPERTY_RUNNER</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=10d2911cc3c5bedf397ff5b602bd52dd&libraries=services"></script>
@@ -12,11 +12,17 @@
         body { margin: 0; overflow: hidden; font-family: 'Pretendard', sans-serif; user-select: none; background-color: #f3f4f6; }
         #app-container { position: relative; width: 100vw; height: 100vh; display: flex; flex-direction: column; }
         
-        #header { background: white; padding: 15px 30px; border-bottom: 2px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; z-index: 50; }
+        /* 다크 테마 헤더 및 탭 스타일 */
+        #header { background: #0a0a0a; padding: 20px 30px 0 30px; display: flex; justify-content: space-between; align-items: flex-end; flex-shrink: 0; z-index: 50; border-bottom: 1px solid #1f2937; }
         
-        .tab-btn { padding: 10px 24px; border-radius: 8px; font-weight: 800; font-size: 16px; cursor: pointer; transition: all 0.2s; border: 2px solid transparent; }
-        .tab-active { background-color: #2563eb; color: white; border-color: #1d4ed8; box-shadow: 0 4px 6px rgba(37,99,235,0.2); }
-        .tab-inactive { background-color: #e5e7eb; color: #4b5563; hover:background-color: #d1d5db; }
+        .main-title { font-size: 26px; font-weight: 900; color: #e3c58b; font-family: 'Arial Black', sans-serif; letter-spacing: 1px; margin: 0; line-height: 1; text-transform: uppercase; }
+        .subtitle { font-size: 13px; color: #9ca3af; margin-top: 8px; margin-bottom: 20px; font-weight: 500; }
+
+        .tabs-container { display: flex; gap: 20px; margin-bottom: -1px; }
+        .tab-btn { padding: 10px 4px; border-radius: 0; font-weight: 700; font-size: 15px; cursor: pointer; transition: all 0.2s; border: none; background: transparent; }
+        .tab-active { color: white; border-bottom: 3px solid #60a5fa; }
+        .tab-inactive { color: #6b7280; border-bottom: 3px solid transparent; }
+        .tab-inactive:hover { color: #9ca3af; }
 
         #view-marathon, #view-map { flex-grow: 1; position: relative; width: 100%; height: 100%; }
         #view-map { display: none; }
@@ -43,21 +49,22 @@
         .head .emoji { pointer-events: none; }
         .head img.face-img { width: 100%; height: 100%; object-fit: cover; display: none; pointer-events: none; }
 
-        .theme-red { background-color: #dc2626 !important; }
-        .theme-blue { background-color: #2563eb !important; }
+        /* 팀별 이름택 색상 */
+        .team-gold { background-color: #e3c58b; color: #111827; }
+        .team-blue { background-color: #3b82f6; color: white; }
 
-        /* 픽토그램 러너 스타일 */
+        /* 픽토그램 러너 스타일 (몸통 블랙) */
         .pictogram { position: relative; width: 44px; height: 50px; display: flex; justify-content: center; z-index: 5; }
         
-        .pic-torso { width: 34px; height: 36px; border-radius: 12px; position: relative; z-index: 5; display: flex; justify-content: center; align-items: center; transform: rotate(10deg); box-shadow: 0 4px 6px rgba(0,0,0,0.2); cursor: pointer; }
-        .bib { background: white; color: #111827; padding: 2px 4px; border-radius: 3px; font-size: 10px; font-weight: 900; letter-spacing: -0.5px; box-shadow: 0 1px 2px rgba(0,0,0,0.2); transform: rotate(-10deg); white-space: nowrap; }
+        .pic-torso { width: 34px; height: 36px; border-radius: 12px; position: relative; z-index: 5; display: flex; justify-content: center; align-items: center; transform: rotate(10deg); box-shadow: 0 4px 6px rgba(0,0,0,0.5); cursor: pointer; background-color: #1a1a1a; border: 1px solid #333; }
+        .bib { padding: 2px 4px; border-radius: 3px; font-size: 10px; font-weight: 900; letter-spacing: -0.5px; box-shadow: 0 1px 2px rgba(0,0,0,0.2); transform: rotate(-10deg); white-space: nowrap; border: 1px solid rgba(255,255,255,0.2); }
 
-        /* 다리를 얇은 검정 라인으로 변경 (팔은 제거됨) */
+        /* 다리 검정 라인 */
         .pic-leg { position: absolute; width: 4px; height: 20px; background-color: #111827; border-radius: 2px; transform-origin: top center; top: 32px; z-index: 4; }
         .pic-leg-left { left: 15px; transform: rotate(-15deg); }
         .pic-leg-right { right: 15px; transform: rotate(15deg); }
 
-        /* 픽토그램 러닝 애니메이션 (다리만) */
+        /* 픽토그램 러닝 애니메이션 */
         .running .pic-leg-left { animation: swing-opp var(--run-speed) infinite alternate ease-in-out; }
         .running .pic-leg-right { animation: swing var(--run-speed) infinite alternate ease-in-out; }
 
@@ -71,12 +78,11 @@
         @keyframes bob { 0% { transform: translateY(0) rotate(0deg); } 100% { transform: translateY(-4px) rotate(2deg); } }
         @keyframes bob-head { 0% { top: 0px; } 100% { top: -4px; } }
 
-        /* 건물/토지 아이콘과 하단 이름 라벨 */
-        .static-asset { display: flex; flex-direction: column; align-items: center; margin-top: 10px; z-index: 5; cursor: pointer; }
-        .static-icon { font-size: 32px; line-height: 1; filter: drop-shadow(0 3px 3px rgba(0,0,0,0.2)); margin-bottom: 4px; }
-        .name-label { padding: 3px 8px; border-radius: 10px; font-size: 10px; font-weight: 900; box-shadow: 0 2px 4px rgba(0,0,0,0.2); border: 1px solid white; color: white; }
-        .theme-red.name-label { background-color: #dc2626; }
-        .theme-blue.name-label { background-color: #2563eb; }
+        /* 선명한 건물/토지 아이콘 뱃지 */
+        .static-asset-wrap { display: flex; flex-direction: column; align-items: center; margin-top: 10px; z-index: 5; cursor: pointer; }
+        .static-icon-circle { width: 42px; height: 42px; background-color: white; border: 3px solid #1f2937; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 22px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); margin-bottom: 4px; z-index: 10; transition: transform 0.2s; }
+        .static-asset-wrap:hover .static-icon-circle { transform: scale(1.1); }
+        .name-label { padding: 3px 8px; border-radius: 10px; font-size: 11px; font-weight: 900; box-shadow: 0 2px 4px rgba(0,0,0,0.3); border: 2px solid white; z-index: 11; }
 
         /* 말풍선 및 스탯 박스 */
         .speech-bubble, .stats-bubble { position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); background-color: white; color: #111827; border: 2px solid #e5e7eb; padding: 10px 14px; border-radius: 12px; font-size: 13px; font-weight: 700; white-space: nowrap; opacity: 0; visibility: hidden; z-index: 60; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3); pointer-events: none; margin-bottom: 15px; transition: all 0.2s; }
@@ -92,19 +98,16 @@
 </head>
 <body>
     <div id="app-container">
+        <!-- 다크 테마 헤더 -->
         <div id="header">
             <div>
-                <h1 class="text-3xl font-extrabold text-blue-700">🏃‍♂️ 재개발 러너 (RUNNER)</h1>
-                <p class="text-sm text-gray-500 mt-2 font-medium">
-                    <span class="inline-block w-3 h-3 bg-blue-500 rounded-sm mr-1"></span>법인/개인 등 (파란 상의) &nbsp;|&nbsp; 
-                    <span class="inline-block w-3 h-3 bg-red-500 rounded-sm mr-1"></span>순수 위탁 (빨간 상의) &nbsp;|&nbsp; 
-                    💡 얼굴 클릭: 확대 및 속마음 보기 (등록안된 경우 사진등록) &nbsp;|&nbsp; 몸통 클릭: 상세 현황
-                </p>
+                <h1 class="main-title">PROPERTY_RUNNER</h1>
+                <p class="subtitle">이름클릭: 상세현황 / 얼굴클릭: 말풍선</p>
             </div>
             
-            <div class="flex gap-3">
-                <button id="btn-marathon" class="tab-btn tab-active" onclick="switchTab('marathon')">🏃‍♂️ 마라톤 뷰</button>
-                <button id="btn-map" class="tab-btn tab-inactive" onclick="switchTab('map')">🗺️ 지도 뷰</button>
+            <div class="tabs-container">
+                <button id="btn-marathon" class="tab-btn tab-active" onclick="switchTab('marathon')">러너 뷰</button>
+                <button id="btn-map" class="tab-btn tab-inactive" onclick="switchTab('map')">지도 뷰</button>
             </div>
         </div>
         
@@ -170,7 +173,7 @@
             }
         }
 
-        // 사진 업로드 이벤트 (이름 기준으로 전역 저장 - 재부팅해도 유지됨)
+        // 사진 업로드 이벤트
         photoInput.addEventListener('change', (e) => {
             if (e.target.files && e.target.files[0] && currentUploadName) {
                 const reader = new FileReader();
@@ -203,13 +206,11 @@
             });
         }
 
-        // 주소에서 동네 이름 추출기 (예: 성수동2가 -> 성수, 아현동 -> 아현)
+        // 동네 이름 추출
         function extractNeighborhood(addr) {
             if (!addr) return "";
-            // '동', '읍', '면' 앞부분의 한글 추출
             let match = addr.match(/([가-힣]+)(?:동|읍|면)(?:\d*가)?/);
             if (match) return match[1];
-            // 동이 없으면 공백 기준 두 번째 단어 (예: 경기 남양주시 -> 남양주시)
             let parts = addr.split(' ');
             return parts.length > 1 ? parts[1] : parts[0];
         }
@@ -301,7 +302,6 @@
                     else if (efficiency < 0.3 && actualYears > 3) status = 'bad'; 
                 }
 
-                // 말풍선 내용 (속마음)
                 let msg = customSpeech.trim();
                 if (!msg) {
                     if (status === 'finished') msg = `나 먼저 간다~ 🏆 (매각완료)`;
@@ -310,16 +310,12 @@
                     else msg = `가즈아! 🏃`;
                 }
 
-                // 동네 이름 추출
                 let dongName = extractNeighborhood(address);
-                // 진행단계 텍스트 생성
                 let stageNumStr = (stageNum >= 0) ? stageNum + "단계" : progressStr.split('/')[0].trim();
                 if (!stageNumStr || stageNumStr === "해당없음") stageNumStr = "준비중";
                 
-                // 동네 이름이 있으면 "성수3단계", 없으면 "3단계"
                 let fullStageStr = dongName ? `${dongName}${stageNumStr}` : stageNumStr;
 
-                // 몸통 클릭 시 보일 스탯 텍스트 (예: 성수3단계 / 4년차 / 6년 남음)
                 let statsText = '';
                 if (markerType === 'runner' && status !== 'finished') {
                     statsText = `${fullStageStr} / ${actualYears}년차 / ${remainYears}년 남음`;
@@ -367,7 +363,6 @@
             const uploadedImg = document.createElement('img');
             uploadedImg.className = 'face-img';
             
-            // 이름 기준으로 등록된 사진 확인 (로컬 스토리지 - 영구 유지)
             const savedPhoto = localStorage.getItem('photo_' + data.owner);
             let hasPhoto = false;
             if (savedPhoto) {
@@ -391,15 +386,13 @@
             statsBubble.textContent = data.statsText;
             container.appendChild(statsBubble);
 
-            // 얼굴 클릭 이벤트
+            // 얼굴 클릭: 사진 등록 또는 말풍선 띄우기
             head.addEventListener('click', (e) => {
                 e.stopPropagation();
-                // 1. 등록된 사진이 없으면 사진 등록 창 열기
                 if (character.dataset.hasPhoto !== 'true') {
                     currentUploadName = data.owner;
                     photoInput.click();
                 } else {
-                    // 2. 등록된 사진이 있으면 확대 및 속마음 띄우기
                     const isZoomed = head.classList.contains('zoomed');
                     
                     document.querySelectorAll('.head').forEach(h => h.classList.remove('zoomed'));
@@ -412,27 +405,30 @@
                 }
             });
 
-            // 얼굴 더블클릭 시 사진 재등록
             head.addEventListener('dblclick', (e) => {
                 e.stopPropagation();
                 currentUploadName = data.owner;
                 photoInput.click();
             });
 
+            // 팀 색상 판단
+            const isConsignment = data.manager === '위탁';
+            const teamClass = isConsignment ? 'team-gold' : 'team-blue';
+
             if (data.markerType === 'runner') {
-                const themeClass = data.manager === '위탁' ? 'theme-red' : 'theme-blue';
                 const picWrap = document.createElement('div');
                 picWrap.className = 'pictogram';
 
                 const legL = document.createElement('div');
                 legL.className = 'pic-leg pic-leg-left';
                 
+                // 몸통은 항상 블랙
                 const torso = document.createElement('div');
-                torso.className = `pic-torso ${themeClass}`;
+                torso.className = `pic-torso`;
                 
+                // 이름표(bib)만 팀 색상
                 const bib = document.createElement('div');
-                bib.className = 'bib';
-                // 이름표: 성을 제외하고 출력 (두 글자 이상일 때만 앞글자 제거)
+                bib.className = `bib ${teamClass}`;
                 let firstName = data.owner.length > 2 ? data.owner.substring(1) : data.owner;
                 bib.textContent = firstName; 
                 torso.appendChild(bib);
@@ -446,7 +442,7 @@
                 
                 character.appendChild(picWrap);
 
-                // 몸통 클릭 이벤트
+                // 이름(몸통) 클릭: 상세현황 띄우기
                 picWrap.addEventListener('click', (e) => {
                     e.stopPropagation();
                     document.querySelectorAll('.head').forEach(h => h.classList.remove('zoomed'));
@@ -456,19 +452,21 @@
                 });
 
             } else {
+                // 상가/토지 에셋
                 const staticWrap = document.createElement('div');
-                staticWrap.className = 'static-asset';
+                staticWrap.className = 'static-asset-wrap';
                 
-                const icon = document.createElement('div');
-                icon.className = 'static-icon';
-                icon.textContent = data.markerType === 'building' ? '🏢' : '🌱';
+                // 선명한 아이콘 뱃지
+                const iconCircle = document.createElement('div');
+                iconCircle.className = 'static-icon-circle';
+                iconCircle.textContent = data.markerType === 'building' ? '🏢' : '🌱';
                 
-                const themeClass = data.manager === '위탁' ? 'theme-red' : 'theme-blue';
+                // 라벨도 팀 색상
                 const nameLabel = document.createElement('div');
-                nameLabel.className = `name-label ${themeClass}`;
+                nameLabel.className = `name-label ${teamClass}`;
                 nameLabel.textContent = data.owner;
 
-                staticWrap.appendChild(icon);
+                staticWrap.appendChild(iconCircle);
                 staticWrap.appendChild(nameLabel);
                 character.appendChild(staticWrap);
 
@@ -564,7 +562,6 @@
             });
         }
 
-        // 바깥 클릭 시 모든 확대/말풍선 닫기
         document.body.addEventListener('click', (e) => {
             if (!e.target.closest('.character')) {
                 document.querySelectorAll('.head').forEach(h => h.classList.remove('zoomed'));

@@ -1,113 +1,722 @@
-Ran command: `python -c "
-with open('property_runner.html', 'r', encoding='utf-8') as f:
-    text = f.read()
-import re
-match = re.search(r'const today = .*?;', text)
-if match:
-    print(match.group(0))
-"`
-Ran command: `python -c "
-with open('property_runner.html', 'r', encoding='utf-8') as f:
-    for line in f:
-        if 'Date' in line or 'today' in line:
-            print(line.strip())
-"`
-Ran command: `python -c "
-import math
-from datetime import datetime
-today = datetime(2026, 9, 8)
-dates = ['2015.5', '2018.3', '2021.7', '2025.1', '2025.7', '2027.5']
-for acq in dates:
-    parts = acq.split('.')
-    y = int(parts[0])
-    m = int(parts[1])
-    dt = datetime(y, m, 1)
-    diff = (today - dt).days
-    raw = diff / 365
-    print(f'{acq} -> diff={diff} days, raw={raw:.3f}, rounded={round(raw, 1)}')
-"`
-Ran command: `python -c "
-import csv
-import urllib.request
-url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQUFrd48p3c6nFJA7rYjoeK43cMqrGTNT_Tv2W0QizuPnrUufbbuKfPN1VCZwtsfpmuljur_TOLtk8i/pub?gid=2053604895&single=true&output=csv'
-req = urllib.request.Request(url)
-with urllib.request.urlopen(req) as response:
-    lines = [line.decode('utf-8') for line in response.readlines()]
-reader = list(csv.reader(lines))
-header_idx = -1
-for i, r in enumerate(reader):
-    if r and '자산ID' in r[0]:
-        header_idx = i
-        break
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PROPERTY_RUNNER</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=10d2911cc3c5bedf397ff5b602bd52dd&libraries=services"></script>
+    
+    <style>
+        body { margin: 0; overflow: hidden; font-family: 'Pretendard', sans-serif; user-select: none; background-color: #f3f4f6; }
+        #app-container { position: relative; width: 100vw; height: 100vh; display: flex; flex-direction: column; }
+        
+        /* Header & Tabs Layout (Reduced height & horizontal layout) */
+        #header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1f2937; background-color: #111827; z-index: 50; position: relative; }
+        .title-area { display: flex; flex-direction: column; }
+        .main-title { 
+            font-family: 'Arial Black', 'Pretendard', sans-serif; 
+            font-size: 26px; 
+            font-weight: 900; 
+            letter-spacing: -1px; 
+            margin: 0; 
+            line-height: 1; 
+            text-transform: uppercase; 
+            background: linear-gradient(to bottom, #c5a059 0%, #fdf5a9 40%, #fdf5a9 60%, #99732b 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.6));
+        }
+        .subtitle { font-size: 11px; color: #b5a892; margin-top: 4px; font-weight: 500; text-align: left; line-height: 1.3; margin-bottom: 0; }
 
-if header_idx != -1:
-    headers = reader[header_idx]
-    for i, h in enumerate(headers):
-        print(f'{i}: {h}')
-"`
-Ran command: `cat .system_generated/tasks/task-1063.log`
-Ran command: `python -c "
-import csv
-import urllib.request
-url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQUFrd48p3c6nFJA7rYjoeK43cMqrGTNT_Tv2W0QizuPnrUufbbuKfPN1VCZwtsfpmuljur_TOLtk8i/pub?gid=2053604895&single=true&output=csv'
-req = urllib.request.Request(url)
-with urllib.request.urlopen(req) as response:
-    lines = [line.decode('utf-8') for line in response.readlines()]
-reader = list(csv.reader(lines))
-header_idx = -1
-for i, r in enumerate(reader):
-    if r and '자산ID' in r[0]:
-        header_idx = i
-        break
-with open('headers.txt', 'w', encoding='utf-8') as f:
-    if header_idx != -1:
-        for i, h in enumerate(reader[header_idx]):
-            f.write(f'{i}: {h}\n')
-"`
-Ran command: `python -c "
-import csv
-import urllib.request
-url = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQUFrd48p3c6nFJA7rYjoeK43cMqrGTNT_Tv2W0QizuPnrUufbbuKfPN1VCZwtsfpmuljur_TOLtk8i/pub?gid=2053604895&single=true&output=csv'
-req = urllib.request.Request(url)
-with urllib.request.urlopen(req) as response:
-    lines = [line.decode('utf-8') for line in response.readlines()]
-reader = list(csv.reader(lines))
-header_idx = -1
-for i, r in enumerate(reader):
-    if r and '자산ID' in r[0]:
-        header_idx = i
-        break
-if header_idx != -1:
-    headers = reader[header_idx]
-    date_col = next((i for i, h in enumerate(headers) if '취득일' in h.replace(' ', '')), -1)
-    owner_col = next((i for i, h in enumerate(headers) if '소유주' in h.replace(' ', '')), -1)
-    for row in reader[header_idx+1:]:
-        if len(row) > date_col and row[0].startswith('Re_'):
-            print(f'{row[owner_col]} - 취득일: {row[date_col]}')
-"`
-Ran command: `cat .system_generated/tasks/task-1070.log`
-Edited index.html
-Ran command: `python -c "
-from datetime import datetime
-import math
+        .tabs-container { display: flex; gap: 15px; width: auto; margin: 0; }
+        .tab-btn { padding: 8px 12px; border-radius: 4px; font-weight: 700; font-size: 14px; cursor: pointer; transition: all 0.2s; border: none; background: transparent; }
+        .tab-active { color: white; background: rgba(255,255,255,0.1); border-bottom: none; }
+        .tab-inactive { color: #6b7280; border-bottom: none; }
+        .tab-inactive:hover { color: #9ca3af; background: rgba(255,255,255,0.05); }
 
-dates = ['2015.5', '2018.3', '2025.1', '2025.7', '2026.2', '2027.5']
-today = datetime(2026, 9, 8)
-for acq in dates:
-    y, m = map(int, acq.split('.'))
-    dt = datetime(y, m, 1)
-    diff = (today - dt).days
-    raw = diff / 365
-    if raw < 0.1: raw = 0.1
-    print(f'{acq} -> {raw:.1f}년차')
-"`
+        #view-marathon, #view-map { flex-grow: 1; position: relative; width: 100%; height: 100%; }
+        #view-map { display: none; }
+        
+        #view-marathon { background: linear-gradient(to bottom, #d1d5db 0%, #9ca3af 100%); overflow: hidden; }
+        .track-lines { position: absolute; left: 0; right: 0; top: 0; bottom: 0; 
+            background-image: linear-gradient(to right, 
+                transparent 0%, transparent calc(15% - 1px), 
+                rgba(255,255,255,0.3) 15%, 
+                transparent calc(15% + 1px), transparent calc(33.75% - 1px), 
+                rgba(255,255,255,0.3) 33.75%, 
+                transparent calc(33.75% + 1px), transparent calc(52.5% - 1px), 
+                rgba(255,255,255,0.3) 52.5%, 
+                transparent calc(52.5% + 1px), transparent calc(71.25% - 1px), 
+                rgba(255,255,255,0.3) 71.25%, 
+                transparent calc(71.25% + 1px), transparent 100%);
+            z-index: 1; pointer-events: none; }
+        
+        /* X-Axis and Timeline */
+        .x-axis-line { position: absolute; bottom: 35px; left: 0; right: 0; border-bottom: 2px solid #374151; z-index: 5; pointer-events: none; }
+        .timeline-container { position: absolute; left: 0; right: 10%; top: 0; bottom: 0; pointer-events: none; z-index: 5; }
+        .time-marker { position: absolute; top: 0; bottom: 0; display: flex; flex-direction: column; justify-content: flex-end; align-items: flex-start; }
+        .time-marker::after { content: ''; position: absolute; bottom: 35px; left: 0; width: 2px; height: 6px; background: #374151; }
+        .year-label { position: absolute; bottom: 12px; left: 6px; font-size: 11px; font-weight: 700; color: #374151; white-space: nowrap; letter-spacing: -0.5px; }
 
-앗, 정말 죄송합니다! 제가 이전 코드에서 기준일(오늘 날짜)을 임의로 '2025년 1월 1일'로 고정해두는 치명적인 실수를 저질렀습니다. 
+        /* Finish Line & Demolition Line */
+        .finish-line { position: absolute; right: 10%; top: 0; bottom: 0; width: 25px; background: repeating-linear-gradient(45deg, white, white 15px, #2563eb 15px, #2563eb 30px); box-shadow: -5px 0 10px rgba(0,0,0,0.1); z-index: 10; }
+        .finish-banner { position: absolute; right: calc(10% - 25px); top: 20px; background: #2563eb; color: white; padding: 6px 12px; border-radius: 6px; font-weight: 900; font-size: 16px; z-index: 11; letter-spacing: 1px; box-shadow: 0 4px 6px rgba(0,0,0,0.2); transform: translateX(50%); white-space: nowrap; }
 
-이 때문에 2025년에 취득하신 매물들이 모조리 '아직 오지 않은 미래'로 인식되어 0.0년차로 렌더링되고 있었습니다. 😭
+        .demolition-line { position: absolute; right: 24%; top: 0; bottom: 0; border-left: 3px dashed #ef4444; z-index: 8; }
+        .demolition-banner { position: absolute; right: calc(24% - 25px); top: 60px; background: #ef4444; color: white; padding: 4px 10px; border-radius: 6px; font-weight: 800; font-size: 14px; z-index: 9; transform: translateX(50%); white-space: nowrap; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
 
-**[수정 완료]**
-1. **기준일 정상화**: 하드코딩된 날짜를 지우고, 사용자가 앱을 여는 **'진짜 오늘 날짜(현재 시간)'** 기준으로 계산되도록 수정했습니다. 이제 2025.1월 취득 매물은 정상적으로 약 **1.7년차**로 정확히 표시됩니다.
-2. **0.0년차 완벽 차단**: 혹시라도 취득일이 며칠 전이거나 입주예정일(미래)로 적혀있어 기간이 0 이하로 떨어지는 경우에도, "0.0년차"라는 어색한 표현 대신 최소 단위인 **0.1년차**로 표기되도록 안전장치를 걸어두었습니다.
+        .runner-container { position: absolute; display: flex; justify-content: center; align-items: flex-end; transition: z-index 0.2s; }
+        .runner-container:hover { z-index: 9999 !important; }
+        
+        .character { position: relative; display: flex; flex-direction: column; align-items: center; }
+        .head { width: 35px; height: 35px; border-radius: 50%; background-color: #fce7f3; border: 2px solid white; box-shadow: 0 4px 6px rgba(0,0,0,0.3); z-index: 20; display: flex; justify-content: center; align-items: center; font-size: 16px; font-weight: 900; color: #1f2937; overflow: hidden; position: relative; top: 0; margin-bottom: -4px; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer; }
+        .head.zoomed { transform: scale(2.2); z-index: 50; box-shadow: 0 6px 12px rgba(0,0,0,0.4); border-color: #2563eb; }
+        .head.sad { background-color: #fecaca; }
+        .head .emoji { pointer-events: none; }
+        .head img.face-img { width: 100%; height: 100%; object-fit: cover; display: none; pointer-events: none; }
+        .track-year-label { position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.75); color: #fbbf24; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: 900; white-space: nowrap; z-index: 20; letter-spacing: -0.5px; box-shadow: 0 2px 4px rgba(0,0,0,0.3); pointer-events: none; }
+        
+        /* 캐릭터 픽토그램 스타일 */
+        .pictogram { position: relative; width: 44px; height: 50px; display: flex; justify-content: center; z-index: 5; }
+        .pic-torso { width: 34px; height: 36px; border-radius: 12px; position: relative; z-index: 5; display: flex; justify-content: center; align-items: center; transform: rotate(10deg); box-shadow: 0 4px 6px rgba(0,0,0,0.5); cursor: pointer; }
+        .bib { background: white; color: #111827; padding: 2px 4px; border-radius: 3px; font-size: 10px; font-weight: 900; letter-spacing: -0.5px; box-shadow: 0 1px 2px rgba(0,0,0,0.2); transform: rotate(-10deg); }
+        .pic-leg { position: absolute; width: 4px; height: 20px; border-radius: 2px; transform-origin: top center; top: 32px; z-index: 4; }
+        .pic-leg-left { left: 15px; transform: rotate(-15deg); }
+        .pic-leg-right { right: 15px; transform: rotate(15deg); }
+        
+        .team-consignment .pic-torso { background-color: #4A148C; border: 1px solid #310863; }
+        .team-consignment .bib { background-color: #FFD600; color: #000000; border: 1px solid #cca800; }
+        .team-consignment .pic-leg { background-color: #2d0a59; }
 
-이제 새로고침(F5) 하시면 0.0년차는 영원히 사라지고, 오늘 날짜를 기준으로 가장 정확한 소수점 연차가 표시됩니다!! 확인 부탁드립니다!
+        .team-self .pic-torso { background-color: #0B192C; border: 1px solid #050b14; }
+        .team-self .bib { background-color: #FF6500; color: #000000; border: 1px solid #cc5200; }
+        .team-self .pic-leg { background-color: #050b14; }
+
+        .running .pic-leg-left { animation: swing-opp var(--run-speed) infinite alternate ease-in-out; }
+        .running .pic-leg-right { animation: swing var(--run-speed) infinite alternate ease-in-out; }
+        .running-bounce .pictogram { animation: bob var(--run-speed) infinite alternate ease-in-out; }
+        .running-bounce .head { animation: bob-head var(--run-speed) infinite alternate ease-in-out; }
+
+        @keyframes swing { 0% { transform: rotate(-30deg); } 100% { transform: rotate(30deg); } }
+        @keyframes swing-opp { 0% { transform: rotate(30deg); } 100% { transform: rotate(-30deg); } }
+        @keyframes bob { 0% { top: 0px; } 100% { top: -6px; } }
+        @keyframes bob-head { 0% { top: 0px; } 100% { top: -4px; } }
+
+        /* 준비중(대기) 자세 */
+        .sitting .pic-torso { transform: rotate(15deg) translateY(4px); }
+        .sitting .head { top: 5px; transform: rotate(10deg); }
+        .sitting .pictogram { top: 5px; }        /* 상태 말풍선 및 스탯 */
+        .speech-bubble { position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); background-color: white; color: #111827; border: 2px solid #e5e7eb; padding: 10px 14px; border-radius: 12px; font-size: 14px; font-weight: 600; white-space: nowrap; display: none; z-index: 30; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3); pointer-events: none; margin-bottom: 5px; }
+        .stats-bubble { position: absolute; top: 100%; left: 50%; transform: translateX(-50%); background-color: #1f2937; color: white; padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; white-space: nowrap; display: none; z-index: 40; box-shadow: 0 4px 6px rgba(0,0,0,0.3); margin-top: 5px; pointer-events: none; }
+        
+        .speech-bubble.active, .stats-bubble.active { display: block; }
+        
+        /* 지도 모드 자산 스타일 */
+        .static-asset-wrap { display: flex; flex-direction: column; align-items: center; margin-top: 10px; z-index: 5; cursor: pointer; }
+        .static-icon-circle { width: 42px; height: 42px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 22px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); margin-bottom: 4px; z-index: 10; transition: transform 0.2s; background-color: #475569; border: 3px solid #F8FAFC; }
+        .name-label { padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 900; box-shadow: 0 2px 4px rgba(0,0,0,0.2); border: 2px solid white; color: white; }
+        .team-static .static-icon-circle { background-color: #475569; border: 3px solid #F8FAFC; }
+        .team-static .name-label { background-color: #475569; color: #F8FAFC; border: 1px solid #F8FAFC; }
+        .static-asset-wrap:hover .static-icon-circle { transform: scale(1.1); }
+        .speech-bubble::after, .stats-bubble::after { content: ''; position: absolute; top: 100%; left: 50%; margin-left: -6px; border-width: 6px; border-style: solid; border-color: white transparent transparent transparent; }
+        
+        .stats-bubble { background-color: #1f2937; color: white; border-color: #374151; font-size: 13px; padding: 10px 16px; letter-spacing: -0.3px;}
+        .stats-bubble::after { border-color: #1f2937 transparent transparent transparent; }
+
+        .speech-bubble.active, .stats-bubble.active { opacity: 1; visibility: visible; transform: translateX(-50%) scale(1); animation: pop 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        
+        .track-km-label { position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.75); color: #fbbf24; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: 900; white-space: nowrap; z-index: 20; letter-spacing: -0.5px; box-shadow: 0 2px 4px rgba(0,0,0,0.3); pointer-events: none; }
+
+        @keyframes pop { 0% { transform: translateX(-50%) scale(0.5); opacity: 0; } 100% { transform: translateX(-50%) scale(1); opacity: 1; } }
+    </style>
+</head>
+<body>
+    <div id="app-container">
+        <div id="header">
+            <div class="title-area">
+                <h1 class="main-title">PROPERTY_RUNNER</h1>
+                <p class="subtitle">이 앱은 "아파트 분양 및 개발 시세차익"을 목적으로 한 러너들의 현위치를 한눈에 시각화하기 위해 제작되었습니다.</p>
+            </div>
+            <div class="tabs-container">
+                <button id="btn-marathon" class="tab-btn tab-active" onclick="switchTab('marathon')">러너 뷰</button>
+                <button id="btn-map" class="tab-btn tab-inactive" onclick="switchTab('map')">지도 뷰</button>
+            </div>
+        </div>
+        
+        <input type="file" id="photoInput" accept="image/*" style="display: none;">
+
+        <div id="view-marathon">
+            <div class="x-axis-line"></div>
+            <div class="timeline-container">
+                <div class="time-marker" style="left: 5%;">
+                    <div class="year-label">준비중</div>
+                </div>
+                <div class="time-marker" style="left: 15%;">
+                    <div class="year-label">출발</div>
+                </div>
+                <div class="time-marker" style="left: 33.75%;">
+                    <div class="year-label">25%</div>
+                </div>
+                <div class="time-marker" style="left: 52.5%;">
+                    <div class="year-label">50%</div>
+                </div>
+                <div class="time-marker" style="left: 71.25%;">
+                    <div class="year-label">75%</div>
+                </div>
+            </div>
+            <div class="track-lines"></div>
+            
+            <div class="demolition-line"></div>
+            <div class="demolition-banner">철거</div>
+
+            <div class="finish-line"></div>
+            <div class="finish-banner">입주</div>
+            <div id="runners-area"></div>
+        </div>
+
+        <div id="view-map"></div>
+    </div>
+
+    <script>
+        const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQUFrd48p3c6nFJA7rYjoeK43cMqrGTNT_Tv2W0QizuPnrUufbbuKfPN1VCZwtsfpmuljur_TOLtk8i/pub?gid=2053604895&single=true&output=csv';
+        
+        let runnersData = [];
+        let mapInitialized = false;
+        let kakaoMap = null;
+        let geocoder = null;
+
+        const photoInput = document.getElementById('photoInput');
+        let currentUploadName = null;
+
+        function switchTab(mode) {
+            document.getElementById('view-marathon').style.display = (mode === 'marathon') ? 'block' : 'none';
+            document.getElementById('view-map').style.display = (mode === 'map') ? 'block' : 'none';
+            
+            const btnMarathon = document.getElementById('btn-marathon');
+            const btnMap = document.getElementById('btn-map');
+            
+            if (mode === 'marathon') {
+                btnMarathon.className = 'tab-btn tab-active';
+                btnMap.className = 'tab-btn tab-inactive';
+            } else {
+                btnMap.className = 'tab-btn tab-active';
+                btnMarathon.className = 'tab-btn tab-inactive';
+                if (!mapInitialized) {
+                    initKakaoMap();
+                    mapInitialized = true;
+                } else if (kakaoMap) {
+                    kakaoMap.relayout();
+                }
+            }
+        }
+
+        photoInput.addEventListener('change', (e) => {
+            if (e.target.files && e.target.files[0] && currentUploadName) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const base64Str = event.target.result;
+                    localStorage.setItem('photo_' + currentUploadName, base64Str);
+                    
+                    document.querySelectorAll('.character').forEach(char => {
+                        if (char.dataset.ownerName === currentUploadName) {
+                            const img = char.querySelector('img.face-img');
+                            const emoji = char.querySelector('.emoji');
+                            if(img && emoji) {
+                                img.src = base64Str;
+                                img.style.display = 'block';
+                                emoji.style.display = 'none';
+                                char.dataset.hasPhoto = 'true';
+                            }
+                        }
+                    });
+                };
+                reader.readAsDataURL(e.target.files[0]);
+            }
+        });
+
+        async function fetchAndParseData() {
+            Papa.parse(CSV_URL, {
+                download: true,
+                header: false,
+                complete: function(results) { processData(results.data); }
+            });
+        }
+
+        function extractNeighborhood(addr) {
+            if (!addr) return "";
+            let parts = addr.trim().split(/\s+/);
+            
+            // 1. '동', '읍', '면', '가' 로 끝나는 단어 우선 탐색
+            let dongPart = parts.find(p => p.match(/[동읍면]$/) || p.match(/동\d*가$/));
+            
+            // 2. 없으면 '로', '길' 로 끝나는 도로명 주소 탐색 (예: 서빙고로62길)
+            if (!dongPart) {
+                dongPart = parts.find(p => p.match(/[로길]$/));
+            }
+            
+            if (!dongPart) {
+                if (parts.length >= 3 && parts[1].endsWith('구')) dongPart = parts[2];
+                else dongPart = parts[0]; // 주소의 첫 번째 단어 (안전장치)
+            }
+            
+            // "서빙고동", "성수동2가", "서빙고로62길" 등에서 "서빙고", "성수"만 추출
+            let nameMatch = dongPart.match(/^([가-힣a-zA-Z0-9]+?)(?:[0-9]*동|[0-9]*가|동|읍|면|로[0-9]*길|로|길)+$/);
+            
+            let result = (nameMatch && nameMatch[1]) ? nameMatch[1] : dongPart;
+            
+            if (result.length < 2 && addr.length >= 2) return addr.substring(0, 2);
+            return result;
+        }
+        // (0.사전준비 1.구역지정 2.조합설립 3.사업시행 4.관리처분 5.이주/철거 6.착공/분양 7.준공/입주)
+        const methodData = {
+            '모아타운': { years: [0.5, 1.19, 2.01, 3.01, 4.01, 5.01, 6.76, 7.5], max: 8.13 },
+            '민간도심복합개발': { years: [0.75, 1.88, 2.63, 3.38, 4.38, 5.63, 7.88, 8.5], max: 9.5 },
+            '재건축': { years: [0.75, 2.13, 3.5, 4.88, 6.38, 7.88, 9.13, 11.38], max: 13.0 },
+            '재개발': { years: [0.75, 2.75, 4.75, 6.75, 8.75, 10.38, 12.63, 14.38], max: 14.75 },
+            '역세권시프트': { years: [0.75, 1.84, 2.8, 4.05, 5.55, 7.05, 8.3, 10.8], max: 12.67 },
+            'default': { years: [0.75, 2.75, 4.75, 6.75, 8.75, 10.38, 12.63, 14.38], max: 14.75 }
+        };
+
+        function processData(data) {
+            let headerRowIndex = data.findIndex(row => row[0] && row[0].includes('자산ID'));
+            if (headerRowIndex === -1) return;
+
+            const headers = data[headerRowIndex];
+            const getCol = (name) => headers.findIndex(h => h && h.replace(/\s+/g, '') === name.replace(/\s+/g, ''));
+            
+            const idxId = getCol('자산ID');
+            const idxManager = getCol('관리주체');
+            const idxOwner = getCol('소유주');
+            const idxType = getCol('유형'); 
+            const idxState = getCol('상태'); 
+            const idxDate = getCol('취득일'); 
+            const idxMethod = getCol('사업방식');
+            const idxProgress = getCol('개발진행단계');
+            const idxSpeech = headers.findIndex(h => h && (h.includes('말풍선') || h.includes('대사')));
+            const idxAddress = getCol('주소'); 
+
+            const dataRows = data.filter(row => row[idxId] && row[idxId].startsWith('Re_'));
+
+            runnersData = dataRows.map(row => {
+                const owner = row[idxOwner] || '';
+                const manager = row[idxManager] || '';
+                const typeStr = row[idxType] || '';
+                const stateStr = row[idxState] || '';
+                const acquireDateStr = row[idxDate] || '';
+                const method = row[idxMethod] ? row[idxMethod].replace(/\s+/g, '') : '';
+                const progressStr = row[idxProgress] || '';
+                const msg = row[idxSpeech] || '가즈아! 🏃';
+                const address = row[idxAddress] || '';
+
+                let dongName = extractNeighborhood(address);
+                let markerType = 'runner';
+                if (method.toLowerCase() === 'x' || method === '' || progressStr === '해당없음' || progressStr.includes('취소')) {
+                    if (typeStr.includes('토지')) markerType = 'land';
+                    else markerType = 'building'; 
+                }
+
+                let status = 'normal';
+                if (stateStr === '매각완료') status = 'finished';
+                else if (stateStr === '보유') {
+                    if (typeStr.includes('토지')) status = 'good';
+                    else if (typeStr.includes('뚜껑')) status = 'bad';
+                }
+
+                let speed = 1.0;
+                let actualYears = 0;
+                
+                if (acquireDateStr) {
+                    let cleanedStr = acquireDateStr.trim();
+                    let parts = cleanedStr.split('.');
+                    if (parts.length >= 2) {
+                        let y = parseInt(parts[0], 10);
+                        if (y < 100) y += 2000;
+                        let m = parseInt(parts[1], 10) - 1;
+                        let d = parts.length >= 3 ? parseInt(parts[2], 10) : 1;
+                        if (!isNaN(y) && !isNaN(m)) {
+                            const acquireDate = new Date(y, m, d);
+                            const today = new Date();
+                            const diffTime = today - acquireDate;
+                            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                            let rawYears = diffDays / 365;
+                            if (rawYears < 0.1) rawYears = 0.1;
+                            actualYears = rawYears;
+                        }
+                    }
+                }
+
+                // --- 아선 (성수) 예외 하드코딩 ---
+                if (owner === '아선' && address.includes('성수')) {
+                    actualYears = 6;
+                }
+
+                let mData = methodData[method];
+                if (!mData) mData = methodData['default'];
+                
+                let stageNum = -1;
+                const match = progressStr.match(/(\d+)\./);
+                if (match) stageNum = parseInt(match[1]);
+
+                let isPreparing = false;
+                if (stageNum === -1 || progressStr === '해당없음' || progressStr.includes('취소')) {
+                    isPreparing = true;
+                }
+
+                let progressYear = 0;
+                if (!isPreparing) {
+                    if (stageNum >= 0 && stageNum < mData.years.length) {
+                        progressYear = mData.years[stageNum];
+                    } else if (stageNum >= mData.years.length) {
+                        progressYear = mData.max;
+                    }
+                }
+
+                const maxYear = mData.max;
+                let remainYearsNum = Math.max(0, maxYear - progressYear);
+                
+                const GLOBAL_MAX_YEAR = 14.75;
+                let completionPercent = (GLOBAL_MAX_YEAR - remainYearsNum) / GLOBAL_MAX_YEAR;
+                if (completionPercent < 0) completionPercent = 0;
+                if (completionPercent > 1) completionPercent = 1;
+
+                let progressScore = status === 'finished' ? 90 : (completionPercent * 90);
+                
+                if (isPreparing) {
+                    speed = 0; // 주저앉음 (애니메이션 멈춤)
+                } else {
+                    if (remainYearsNum <= 5) speed = 0.2;       // 3~5년 이내 (가장 빠름)
+                    else if (remainYearsNum <= 7) speed = 0.5;  // 5~7년 이내
+                    else if (remainYearsNum <= 9) speed = 0.9;  // 7~9년 이내
+                    else if (remainYearsNum <= 11) speed = 1.4; // 9~11년 이내
+                    else speed = 2.0;                           // 11년 초과 (매우 느림)
+                }
+
+                let marathonKm = status === 'finished' ? 42.195 : (completionPercent * 42.195).toFixed(1);
+                
+                let remainYears = remainYearsNum.toFixed(1);
+
+                let stageNumStr = (stageNum >= 0) ? stageNum + "단계" : progressStr.split('/')[0].trim();
+                if (!stageNumStr || stageNumStr === "해당없음") stageNumStr = "준비중";
+                
+                let fullStageStr = dongName ? `${dongName}${stageNumStr}` : stageNumStr;
+
+                // 스크린샷 요구사항에 맞춘 정규화 라벨 텍스트 적용
+                let statsText = '';
+                if (markerType === 'runner' && status !== 'finished') {
+                    if (!method || method.toLowerCase() === 'x' || isPreparing) {
+                        statsText = `${fullStageStr}`;
+                    } else {
+                        statsText = `${fullStageStr} / 약 ${remainYears}년 후 입주`;
+                    }
+                } else if (status === 'finished') {
+                    statsText = `매각 완료 (🏆 42.195km 완주)`;
+                } else {
+                    statsText = `보유 ${actualYears.toFixed(1)}년차 [${typeStr}]`;
+                }
+
+                return { id: row[idxId], owner, manager, typeStr, markerType, status, speed, msg, statsText, progressScore, address, marathonKm, isPreparing, actualYears, remainYears };
+            });
+
+            renderMarathon();
+        }
+
+        function createCharacterDOM(data, isMapMode = false) {
+            const container = document.createElement('div');
+            container.className = 'runner-container';
+            container.dataset.owner = data.owner;
+
+            const runSpeedDuration = data.speed > 0 ? data.speed : 1.0;
+            container.style.setProperty('--run-speed', `${runSpeedDuration}s`);
+
+            const character = document.createElement('div');
+            character.className = 'character';
+            character.dataset.ownerName = data.owner;
+
+            let teamClass = 'team-consignment';
+            if (data.manager === '개인' || data.manager === '개인위탁' || data.manager === '법인') {
+                teamClass = 'team-self';
+            }
+            if (data.markerType !== 'runner') teamClass = 'team-static';
+            character.classList.add(teamClass);
+
+            if (!isMapMode && data.markerType === 'runner' && data.status !== 'finished') {
+                if (data.isPreparing || data.speed === 0) {
+                    character.classList.add('sitting');
+                } else {
+                    character.classList.add('running', 'running-bounce');
+                }
+            }
+
+            const head = document.createElement('div');
+            head.className = `head ${data.status === 'bad' ? 'sad' : ''}`;
+            
+            let faceText = '😎';
+            if (data.owner.includes('뉴푸드')) faceText = 'N';
+            else if (data.owner.includes('고미')) faceText = 'G';
+            else if (data.status === 'finished') faceText = '🏆';
+            else if (data.status === 'good') faceText = '😃';
+            else if (data.status === 'bad') faceText = '😭';
+
+            const emojiSpan = document.createElement('span');
+            emojiSpan.className = 'emoji'; 
+            emojiSpan.textContent = faceText;
+            
+            const uploadedImg = document.createElement('img');
+            uploadedImg.className = 'face-img';
+            
+            const savedPhoto = localStorage.getItem('photo_' + data.owner);
+            if (savedPhoto) {
+                uploadedImg.src = savedPhoto;
+                uploadedImg.style.display = 'block';
+                emojiSpan.style.display = 'none';
+                character.dataset.hasPhoto = 'true';
+            }
+
+            head.appendChild(emojiSpan); head.appendChild(uploadedImg);
+            character.appendChild(head);
+
+            if (data.markerType === 'runner') {
+                const picWrap = document.createElement('div');
+                picWrap.className = 'pictogram';
+
+                const legL = document.createElement('div');
+                legL.className = 'pic-leg pic-leg-left';
+                
+                const torso = document.createElement('div');
+                torso.className = 'pic-torso';
+                
+                const bib = document.createElement('div');
+                bib.className = 'bib'; 
+                let firstName = data.owner.length > 2 ? data.owner.substring(1) : data.owner;
+                bib.textContent = firstName; 
+                torso.appendChild(bib);
+
+                const legR = document.createElement('div');
+                legR.className = 'pic-leg pic-leg-right';
+
+                picWrap.appendChild(legL);
+                picWrap.appendChild(torso);
+                picWrap.appendChild(legR);
+                
+                character.appendChild(picWrap);
+                
+                if (!isMapMode && data.status !== 'finished') {
+                    const yearLabelDOM = document.createElement('div');
+                    yearLabelDOM.className = 'track-year-label';
+                    yearLabelDOM.textContent = `보유 ${data.actualYears.toFixed(1)}년차`;
+                    character.appendChild(yearLabelDOM);
+                }
+
+                picWrap.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    document.querySelectorAll('.head').forEach(h => h.classList.remove('zoomed'));
+                    document.querySelectorAll('.speech-bubble, .stats-bubble').forEach(b => b.classList.remove('active'));
+                    statsBubble.classList.add('active');
+                });
+            } else {
+                const staticWrap = document.createElement('div');
+                staticWrap.className = 'static-asset-wrap';
+                
+                const iconCircle = document.createElement('div');
+                iconCircle.className = 'static-icon-circle';
+                iconCircle.textContent = data.markerType === 'building' ? '🏢' : '🌱';
+                
+                const nameLabel = document.createElement('div');
+                nameLabel.className = 'name-label';
+                nameLabel.textContent = data.owner;
+
+                staticWrap.appendChild(iconCircle);
+                staticWrap.appendChild(nameLabel);
+                character.appendChild(staticWrap);
+                
+                staticWrap.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    document.querySelectorAll('.head').forEach(h => h.classList.remove('zoomed'));
+                    document.querySelectorAll('.speech-bubble, .stats-bubble').forEach(b => b.classList.remove('active'));
+                    statsBubble.classList.add('active');
+                });
+            }
+
+            const thoughtBubble = document.createElement('div');
+            thoughtBubble.className = 'speech-bubble';
+            thoughtBubble.textContent = data.msg;
+            container.appendChild(thoughtBubble);
+
+            const statsBubble = document.createElement('div');
+            statsBubble.className = 'stats-bubble';
+            statsBubble.textContent = data.statsText;
+            container.appendChild(statsBubble);
+
+            head.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (character.dataset.hasPhoto !== 'true') {
+                    currentUploadName = data.owner;
+                    photoInput.click();
+                } else {
+                    const isZoomed = head.classList.contains('zoomed');
+                    document.querySelectorAll('.head').forEach(h => h.classList.remove('zoomed'));
+                    document.querySelectorAll('.speech-bubble, .stats-bubble').forEach(b => b.classList.remove('active'));
+                    if (!isZoomed) {
+                        head.classList.add('zoomed');
+                        thoughtBubble.classList.add('active');
+                        statsBubble.classList.add('active');
+                    }
+                }
+            });
+
+            head.addEventListener('dblclick', (e) => {
+                e.stopPropagation();
+                currentUploadName = data.owner;
+                photoInput.click();
+            });
+
+            container.appendChild(character);
+            return container;
+        }
+
+        function renderMarathon() {
+            const trackArea = document.getElementById('runners-area');
+            trackArea.innerHTML = ''; 
+            const trackHeight = document.getElementById('view-marathon').clientHeight;
+            
+            const runners = runnersData.filter(d => d.markerType === 'runner' && d.status !== 'finished');
+            
+            // 1. X 좌표 정규화
+            runners.forEach(data => {
+                data.finalX = data.status === 'finished' ? 90 : data.progressScore;
+                
+                // 진행 전 단계인 러너들은 '준비중' 섹션(좌측 -12 지점)으로 배치
+                if (data.isPreparing) {
+                    data.finalX = -12; 
+                }
+            });
+
+            // 2. 비슷한 X 좌표를 가진 러너들끼리 병합 (가로 겹침 방지)
+            runners.sort((a, b) => a.finalX - b.finalX);
+            const groups = [];
+            let currentGroup = [];
+            
+            runners.forEach(data => {
+                if (currentGroup.length === 0) {
+                    currentGroup.push(data);
+                } else {
+                    const groupFirstX = currentGroup[0].finalX;
+                    // 그룹 첫 러너와의 거리가 화면의 3.5% 이하이면 강제 병합 (무한 확장 방지)
+                    if (data.finalX - groupFirstX <= 3.5) {
+                        currentGroup.push(data);
+                    } else {
+                        groups.push(currentGroup);
+                        currentGroup = [data];
+                    }
+                }
+            });
+            if (currentGroup.length > 0) groups.push(currentGroup);
+            
+            // 3. 그룹별로 세로 배치
+            groups.forEach(group => {
+                group.sort((a, b) => (a.id || a.owner).localeCompare(b.id || b.owner));
+                
+                const N = group.length;
+                let SPACING = 80; 
+                const maxAvailableHeight = trackHeight * 0.7;
+                
+                if ( (N - 1) * SPACING > maxAvailableHeight && N > 1 ) {
+                    SPACING = maxAvailableHeight / (N - 1);
+                }
+                
+                const stackHeight = (N - 1) * SPACING;
+                const centerY = trackHeight * 0.5; 
+                let startY = centerY - (stackHeight / 2); 
+                
+                group.forEach((data, index) => {
+                    const charDOM = createCharacterDOM(data, false);
+                    
+                    const topPos = startY + (index * SPACING);
+                    
+                    // 각 러너 본연의 finalX를 반영 (동일 그룹 내에서도 미세한 가로 차이 표현)
+                    const individualLeft = 15 + (data.finalX / 90) * 75;
+                    
+                    charDOM.style.top = `${topPos}px`;
+                    charDOM.style.zIndex = Math.floor(topPos);
+                    charDOM.style.left = `${individualLeft}%`;
+                    
+                    trackArea.appendChild(charDOM);
+                });
+            });
+        }
+
+        async function initKakaoMap() {
+            if (typeof kakao === 'undefined' || !kakao.maps) return;
+
+            const mapContainer = document.getElementById('view-map');
+            const mapOption = { center: new kakao.maps.LatLng(37.5255, 126.9954), level: 7 };
+            kakaoMap = new kakao.maps.Map(mapContainer, mapOption);
+            geocoder = new kakao.maps.services.Geocoder();
+
+            function cleanAddress(addr) {
+                let clean = addr.split(',')[0].split('.')[0].trim();
+                clean = clean.replace(/외\s*\d+필지/g, '').replace(/제상가동.*/g, '').replace(/번지.*/g, '');
+                return clean.trim();
+            }
+
+            let coordsMap = {};
+            const geocodePromises = runnersData.map(data => {
+                if (!data.address || data.address.includes('인천')) return Promise.resolve();
+                
+                const searchAddr = cleanAddress(data.address);
+                return new Promise(resolve => {
+                    geocoder.addressSearch(searchAddr, function(result, status) {
+                        if (status === kakao.maps.services.Status.OK) {
+                            const key = `${result[0].y}_${result[0].x}`;
+                            if (!coordsMap[key]) {
+                                coordsMap[key] = { coords: new kakao.maps.LatLng(result[0].y, result[0].x), items: [] };
+                            }
+                            coordsMap[key].items.push(data);
+                        }
+                        resolve();
+                    });
+                });
+            });
+
+            await Promise.all(geocodePromises);
+
+            Object.values(coordsMap).forEach(group => {
+                const count = group.items.length;
+                group.items.forEach((runnerData, index) => {
+                    const charDOM = createCharacterDOM(runnerData, true);
+                    
+                    const offsetX = (index - (count - 1) / 2) * 60;
+                    
+                    const overlayWrap = document.createElement('div');
+                    overlayWrap.style.transform = `translateX(${offsetX}px)`;
+                    overlayWrap.style.zIndex = Math.floor(1000 - index); 
+                    
+                    charDOM.style.position = 'relative';
+                    charDOM.style.left = '0'; 
+                    charDOM.style.top = '0';
+
+                    overlayWrap.appendChild(charDOM);
+
+                    new kakao.maps.CustomOverlay({
+                        map: kakaoMap,
+                        position: group.coords,
+                        content: overlayWrap,
+                        yAnchor: 1 
+                    });
+                });
+            });
+        }
+
+        document.body.addEventListener('click', (e) => {
+            if (!e.target.closest('.character')) {
+                document.querySelectorAll('.head').forEach(h => h.classList.remove('zoomed'));
+                document.querySelectorAll('.speech-bubble, .stats-bubble').forEach(b => b.classList.remove('active'));
+            }
+        });
+
+        window.addEventListener('DOMContentLoaded', fetchAndParseData);
+    </script>
+</body>
+</html>

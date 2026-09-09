@@ -191,6 +191,7 @@
         let currentUploadName = null;
 
         function switchTab(mode) {
+            localStorage.setItem('propertyRunnerTab', mode);
             document.getElementById('view-marathon').style.display = (mode === 'marathon') ? 'block' : 'none';
             document.getElementById('view-map').style.display = (mode === 'map') ? 'block' : 'none';
             
@@ -206,10 +207,15 @@
                 if (!mapInitialized) {
                     initKakaoMap();
                     mapInitialized = true;
-                } else if (kakaoMap) {
-                    kakaoMap.relayout();
                 }
+                setTimeout(() => {
+                    if (typeof kakaoMap !== 'undefined' && kakaoMap) {
+                        kakaoMap.relayout();
+                        kakaoMap.setCenter(new kakao.maps.LatLng(37.5255, 126.9954));
+                    }
+                }, 100);
             }
+        }
         }
 
         photoInput.addEventListener('change', (e) => {

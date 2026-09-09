@@ -295,7 +295,7 @@
             const idxMethod = getCol('사업방식');
             const idxProgress = getCol('개발진행단계');
             const idxSpeech = headers.findIndex(h => h && (h.includes('말풍선') || h.includes('대사')));
-            const idxAddress = getCol('주소'); 
+            const idxAddress = headers.findIndex(h => h && h.includes('주소')); 
 
             const dataRows = data.filter(row => row[idxId] && row[idxId].startsWith('Re_'));
 
@@ -420,6 +420,10 @@
             });
 
             renderMarathon();
+            const savedTab = localStorage.getItem('propertyRunnerTab') || 'marathon';
+            if (savedTab === 'map') {
+                switchTab('map');
+            }
         }
 
         function createCharacterDOM(data, isMapMode = false) {

@@ -641,14 +641,22 @@
                     clickArea.style.zIndex = 40;
                     torso.appendChild(clickArea);
                     
-                    const showBubble = (e) => {
+                    const toggleTooltip = (e) => {
+                        e.stopPropagation();
+                        const isActive = statusTag.classList.contains('active');
+                        document.querySelectorAll('.runner-head-wrapper').forEach(h => h.classList.remove('zoomed'));
+                        document.querySelectorAll('.speech-bubble, .stats-bubble, .runner-status-minimal').forEach(b => b.classList.remove('active'));
+                        if (!isActive) {
+                            statusTag.classList.add('active');
+                        }
+                    };
+                    const toggleZoomAndTooltip = (e) => {
                         e.stopPropagation();
                         const isZoomed = headWrapper.classList.contains('zoomed');
                         document.querySelectorAll('.runner-head-wrapper').forEach(h => h.classList.remove('zoomed'));
-                        document.querySelectorAll('.speech-bubble, .runner-status-minimal').forEach(b => b.classList.remove('active'));
+                        document.querySelectorAll('.speech-bubble, .stats-bubble, .runner-status-minimal').forEach(b => b.classList.remove('active'));
                         if (!isZoomed) {
                             headWrapper.classList.add('zoomed');
-                            
                             statusTag.classList.add('active');
                         }
                     };
@@ -657,8 +665,8 @@
                         currentUploadName = data.owner;
                         photoInput.click();
                     };
-                    clickArea.addEventListener('click', showBubble);
-                    headWrapper.addEventListener('click', showBubble);
+                    clickArea.addEventListener('click', toggleTooltip);
+                    headWrapper.addEventListener('click', toggleZoomAndTooltip);
                     clickArea.addEventListener('dblclick', triggerPhoto);
                     headWrapper.addEventListener('dblclick', triggerPhoto);
                     

@@ -678,6 +678,9 @@
                 if (data.owner && (data.owner.includes('하늬') || data.owner.includes('조영'))) {
                     data.finalProg = 67;
                 }
+                if (data.bizType && data.bizType.includes('민간도심')) {
+                    data.finalProg = 15;
+                }
                 
                 let baseTop;
                 if (data.finalProg >= 0) {

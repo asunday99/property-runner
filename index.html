@@ -400,6 +400,10 @@
                     else markerType = 'building'; 
                 }
 
+                if (address && address.includes('이태원') && (owner.includes('영애') || owner.includes('준학') || owner.includes('기정') || owner.includes('윤정'))) {
+                    markerType = 'runner';
+                }
+
                 let status = 'normal';
                 if (stateStr === '매각완료') status = 'finished';
                 else if (stateStr === '보유') {

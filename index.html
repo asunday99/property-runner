@@ -202,7 +202,7 @@
         
         <!-- Y-axis markers -->
         <div class="timeline-container-y" style="position:absolute; left:0; right:0; top:0; bottom:0; pointer-events:none; z-index:5;">
-            <div class="time-marker-y" style="position:absolute; top:5%; left:20px;"><div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#555;"></div><div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#9ca3af; white-space:nowrap;">입주</div></div>
+            <div class="time-marker-y" style="position:absolute; top:5%; left:20px; z-index:10; background:rgba(0,0,0,0.6); padding:2px 6px; border-radius:4px;"><div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#555;"></div><div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#9ca3af; white-space:nowrap;">입주</div></div>
             <div class="time-marker-y" style="position:absolute; top:18.33%; left:20px;"><div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#555;"></div><div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#9ca3af; white-space:nowrap;">철거 (75%)</div></div>
             <div class="time-marker-y" style="position:absolute; top:31.67%; left:20px;"><div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#555;"></div><div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#9ca3af; white-space:nowrap;">60%</div></div>
             <div class="time-marker-y" style="position:absolute; top:45%; left:20px;"><div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#555;"></div><div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#9ca3af; white-space:nowrap;">45%</div></div>
@@ -210,8 +210,11 @@
             <div class="time-marker-y" style="position:absolute; top:71.67%; left:20px;"><div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#555;"></div><div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#9ca3af; white-space:nowrap;">15%</div></div>
             <div class="time-marker-y" style="position:absolute; top:85%; left:20px;"><div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#555;"></div><div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#9ca3af; white-space:nowrap;">출발 (0%)</div></div>
             <div class="time-marker-y" style="position:absolute; top:91%; left:20px;"><div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#555;"></div><div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#9ca3af; white-space:nowrap;">준비중</div></div>
-            <div class="finish-line" style="top:5%; height:15px; background:repeating-linear-gradient(45deg, #111, #111 15px, #2563eb 15px, #2563eb 30px); border-bottom:1px solid #333;"></div>
-            <div class="demolition-line" style="top:18.33%; border-top: 2px dashed #ef4444; opacity: 0.5;"></div>
+            <div class="finish-line" style="top:5%; height:15px; background:repeating-linear-gradient(45deg, #111, #111 15px, #D4C19C 15px, #D4C19C 30px); border-bottom:1px solid #333;"></div>
+            
+            <div class="time-marker-y" style="position:absolute; top:9.44%; left:20px; z-index:10;"><div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#ef4444;"></div><div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#ef4444; white-space:nowrap;">철거 (85%)</div></div>
+            <div class="demolition-line" style="top:9.44%; border-top: 2px dashed #ef4444; opacity: 0.5;"></div>
+
         </div>
     </div>
 

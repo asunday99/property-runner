@@ -681,6 +681,9 @@
                 if (data.bizType && data.bizType.includes('민간도심')) {
                     data.finalProg = 15;
                 }
+                if (data.owner && (data.owner.includes('창희') || data.owner.includes('제근') || data.owner.includes('완성'))) {
+                    data.finalProg = 0;
+                }
                 
                 let baseTop;
                 if (data.finalProg >= 0) {

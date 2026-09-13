@@ -576,10 +576,10 @@
                 // 스크린샷 요구사항에 맞춘 정규화 라벨 텍스트 적용
                 let statsText = '';
                 if (markerType === 'runner' && status !== 'finished') {
-                    if (!method || method.toLowerCase() === 'x' || isPreparing) {
-                        statsText = `${fullStageStr}`;
-                    } else {
+                    if (data.owner && (data.owner.includes('하늬') || data.owner.includes('조영'))) {
                         statsText = `${fullStageStr} / 약 ${remainYears}년 후 입주`;
+                    } else {
+                        statsText = `${fullStageStr}`;
                     }
                 } else if (status === 'finished') {
                     statsText = `매각 완료 (🏆 42.195km 완주)`;

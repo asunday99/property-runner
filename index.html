@@ -461,6 +461,9 @@
                 if (owner && owner.includes('아선') && address && address.includes('성수')) {
                     remainYearsNum = 9.0;
                 }
+                if (address && address.includes('일원동')) {
+                    remainYearsNum = 10.0;
+                }
                 
                 const GLOBAL_MAX_YEAR = 14.75;
                 let completionPercent = (GLOBAL_MAX_YEAR - remainYearsNum) / GLOBAL_MAX_YEAR;

@@ -505,7 +505,7 @@
                     statsText = `보유 ${actualYears.toFixed(1)}년차 [${typeStr}]`;
                 }
 
-                return { id: row[idxId], owner, manager, typeStr, markerType, status, speed, msg, statsText, progressScore, address, marathonKm, isPreparing, actualYears, remainYears };
+                return { id: row[idxId], owner, manager, typeStr, markerType, status, speed, msg, statsText, progressScore, address, marathonKm, isPreparing, actualYears, remainYears, bizType: method };
             });
 
             renderMarathon();

@@ -454,6 +454,12 @@
                 if (owner && (owner.includes('성준') || owner.includes('준학') || owner.includes('경아') || owner.includes('덕일'))) {
                     remainYearsNum = 9.0;
                 }
+                if (owner && owner.includes('문정')) {
+                    remainYearsNum = 9.5;
+                }
+                if (owner && owner.includes('아선') && address && address.includes('성수')) {
+                    remainYearsNum = 9.0;
+                }
                 
                 const GLOBAL_MAX_YEAR = 14.75;
                 let completionPercent = (GLOBAL_MAX_YEAR - remainYearsNum) / GLOBAL_MAX_YEAR;
@@ -806,7 +812,7 @@
 
         document.body.addEventListener('click', (e) => {
             if (!e.target.closest('.character')) {
-                document.querySelectorAll('.head').forEach(h => h.classList.remove('zoomed'));
+                document.querySelectorAll('.runner-head-wrapper').forEach(h => h.classList.remove('zoomed'));
                 document.querySelectorAll('.speech-bubble, .stats-bubble, .runner-status-minimal').forEach(b => b.classList.remove('active'));
             }
         });

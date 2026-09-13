@@ -148,8 +148,53 @@
         <input type="file" id="photoInput" accept="image/*" style="display: none;">
 
         <div id="view-marathon">
-            <div class="x-axis-line"></div>
-            <div class="timeline-container">
+    <div id="runners-area" style="width:100%; max-width:800px; margin:0 auto; min-height:1500px; position:relative; padding-bottom:100px;">
+        <!-- Left vertical axis -->
+        <div class="y-axis-line" style="position:absolute; left:20px; top:0; bottom:0; border-left:2px solid #9ca3af; z-index:5; pointer-events:none;"></div>
+        
+        <!-- Y-axis markers -->
+        <div class="timeline-container-y" style="position:absolute; left:0; right:0; top:0; bottom:0; pointer-events:none; z-index:5;">
+            <!-- 입주 (90%) -> 5% -->
+            <div class="time-marker-y" style="position:absolute; top:5%; left:20px;">
+                <div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#9ca3af;"></div>
+                <div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#4b5563; white-space:nowrap;">입주</div>
+            </div>
+            <!-- 철거 (75%) -> 19.16% -->
+            <div class="time-marker-y" style="position:absolute; top:19.16%; left:20px;">
+                <div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#9ca3af;"></div>
+                <div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#4b5563; white-space:nowrap;">철거 (75%)</div>
+            </div>
+            <!-- 50% -> 42.77% -->
+            <div class="time-marker-y" style="position:absolute; top:42.77%; left:20px;">
+                <div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#9ca3af;"></div>
+                <div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#4b5563; white-space:nowrap;">50%</div>
+            </div>
+            <!-- 25% -> 66.38% -->
+            <div class="time-marker-y" style="position:absolute; top:66.38%; left:20px;">
+                <div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#9ca3af;"></div>
+                <div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#4b5563; white-space:nowrap;">25%</div>
+            </div>
+            <!-- 출발 (0%) -> 90% -->
+            <div class="time-marker-y" style="position:absolute; top:90%; left:20px;">
+                <div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#9ca3af;"></div>
+                <div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#4b5563; white-space:nowrap;">출발</div>
+            </div>
+            <!-- 준비중 (-12) -> 95% -->
+            <div class="time-marker-y" style="position:absolute; top:95%; left:20px;">
+                <div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#9ca3af;"></div>
+                <div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#4b5563; white-space:nowrap;">준비중</div>
+            </div>
+            
+            <!-- Finish & Demolition Line Banners -->
+            <div class="finish-line" style="position:absolute; top:5%; left:0; width:100%; border-top:4px dashed #10b981; z-index:0;"></div>
+            <div class="finish-banner" style="position:absolute; top:calc(5% - 25px); left:20px; background:#2563eb; color:white; padding:6px 12px; border-radius:6px; font-weight:900; z-index:5;">입주</div>
+            <div class="demolition-line" style="position:absolute; top:19.16%; left:0; width:100%; border-top:2px dashed #ef4444; z-index:0;"></div>
+            <div class="demolition-banner" style="position:absolute; top:calc(19.16% - 25px); left:20px; background:#ef4444; color:white; padding:4px 8px; border-radius:4px; font-weight:700; font-size:12px; z-index:5;">철거</div>
+        </div>
+    </div>
+
+            
+            <div class="timeline-container" style="display:none;">
                 <div class="time-marker" style="left: 5%;">
                     <div class="year-label">준비중</div>
                 </div>
@@ -168,11 +213,11 @@
             </div>
             <div class="track-lines"></div>
             
-            <div class="demolition-line"></div>
-            <div class="demolition-banner">철거</div>
+            
+            
 
-            <div class="finish-line"></div>
-            <div class="finish-banner">입주</div>
+            
+            
             <div id="runners-area"></div>
         </div>
 
@@ -586,74 +631,84 @@
         }
 
         function renderMarathon() {
+            const viewArea = document.getElementById('view-marathon');
             const trackArea = document.getElementById('runners-area');
-            trackArea.innerHTML = ''; 
-            const trackHeight = document.getElementById('view-marathon').clientHeight;
+            if(!trackArea) return;
+            trackArea.querySelectorAll('.runner-container').forEach(el => el.remove()); 
             
             const runners = runnersData.filter(d => d.markerType === 'runner' && d.status !== 'finished');
             
-            // 1. X 좌표 정규화
             runners.forEach(data => {
-                data.finalX = data.status === 'finished' ? 90 : data.progressScore;
+                data.finalProg = data.status === 'finished' ? 90 : data.progressScore;
+                if (data.isPreparing) data.finalProg = -12; 
                 
-                // 진행 전 단계인 러너들은 '준비중' 섹션(좌측 -12 지점)으로 배치
-                if (data.isPreparing) {
-                    data.finalX = -12; 
+                let baseTop = 90 - (data.finalProg * (85/90));
+                if (data.finalProg < 0) {
+                    baseTop = 90 + (data.finalProg / -12) * 5; // -12 maps to 95%
                 }
+                
+                let dongName = '';
+                if (data.address) {
+                    let clean = data.address.split(',')[0].split('.')[0].trim();
+                    clean = clean.replace(/\s*\d+/g, '').replace(/상가동.*/g, '').replace(/동.*/g, '동');
+                    dongName = clean.trim();
+                }
+                data._dongName = dongName;
+                data._baseTop = baseTop;
             });
 
-            // 2. 비슷한 X 좌표를 가진 러너들끼리 병합 (가로 겹침 방지)
-            runners.sort((a, b) => a.finalX - b.finalX);
-            const groups = [];
-            let currentGroup = [];
+            // Group neighborhoods to assign X-axis lanes
+            const dongs = [...new Set(runners.map(r => r._dongName))].filter(Boolean);
+            const lanes = {};
+            dongs.forEach((dong, idx) => {
+                lanes[dong] = dongs.length > 1 ? 25 + (50 * (idx / (dongs.length - 1))) : 50;
+            });
+
+            const placed = [];
             
+            // Sort by progress so we place from bottom to top
+            runners.sort((a, b) => a.finalProg - b.finalProg);
+
             runners.forEach(data => {
-                if (currentGroup.length === 0) {
-                    currentGroup.push(data);
-                } else {
-                    const groupFirstX = currentGroup[0].finalX;
-                    // 그룹 첫 러너와의 거리가 화면의 3.5% 이하이면 강제 병합 (무한 확장 방지)
-                    if (data.finalX - groupFirstX <= 3.5) {
-                        currentGroup.push(data);
-                    } else {
-                        groups.push(currentGroup);
-                        currentGroup = [data];
-                    }
+                let top = data._baseTop;
+                let left = lanes[data._dongName] || 50;
+                
+                left += (Math.random() * 4 - 2); // slight natural noise
+
+                // Collision detection (shift X only to preserve exact Y date differences)
+                let attempts = 0;
+                let shiftStep = 12; 
+                let direction = 1;
+                while (attempts < 10) {
+                    // Check if any placed runner is too close (Y within 3%, X within 12%)
+                    let collision = placed.find(p => Math.abs(p.top - top) < 3.0 && Math.abs(p.left - left) < 12.0);
+                    if (!collision) break;
+                    
+                    left += (shiftStep * direction);
+                    direction *= -1; 
+                    if (direction === 1) shiftStep += 12; 
+                    
+                    // keep inside bounds
+                    if (left < 10) left = 10 + Math.random() * 5;
+                    if (left > 90) left = 85 + Math.random() * 5;
+                    
+                    attempts++;
                 }
+                
+                placed.push({top: top, left: left});
+                
+                const charDOM = createCharacterDOM(data, false);
+                charDOM.style.left = `${left}%`;
+                charDOM.style.top = `${top}%`;
+                charDOM.style.zIndex = Math.floor(top * 100);
+                
+                trackArea.appendChild(charDOM);
             });
-            if (currentGroup.length > 0) groups.push(currentGroup);
             
-            // 3. 그룹별로 세로 배치
-            groups.forEach(group => {
-                group.sort((a, b) => (a.id || a.owner).localeCompare(b.id || b.owner));
-                
-                const N = group.length;
-                let SPACING = 80; 
-                const maxAvailableHeight = trackHeight * 0.7;
-                
-                if ( (N - 1) * SPACING > maxAvailableHeight && N > 1 ) {
-                    SPACING = maxAvailableHeight / (N - 1);
-                }
-                
-                const stackHeight = (N - 1) * SPACING;
-                const centerY = trackHeight * 0.5; 
-                let startY = centerY - (stackHeight / 2); 
-                
-                group.forEach((data, index) => {
-                    const charDOM = createCharacterDOM(data, false);
-                    
-                    const topPos = startY + (index * SPACING);
-                    
-                    // 각 러너 본연의 finalX를 반영 (동일 그룹 내에서도 미세한 가로 차이 표현)
-                    const individualLeft = 15 + (data.finalX / 90) * 75;
-                    
-                    charDOM.style.top = `${topPos}px`;
-                    charDOM.style.zIndex = Math.floor(topPos);
-                    charDOM.style.left = `${individualLeft}%`;
-                    
-                    trackArea.appendChild(charDOM);
-                });
-            });
+            // Auto-scroll to bottom on load
+            setTimeout(() => {
+                viewArea.scrollTop = viewArea.scrollHeight;
+            }, 100);
         }
 
         async function initKakaoMap() {

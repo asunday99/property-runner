@@ -12,29 +12,36 @@
         body { margin: 0; overflow: hidden; font-family: 'Pretendard', sans-serif; user-select: none; background-color: #000000; }
         #app-container { position: relative; width: 100vw; height: 100vh; display: flex; flex-direction: column; }
         
-        /* Header & Tabs Layout (Reduced height & horizontal layout) */
-        #header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #1f2937; background-color: #111827; z-index: 50; position: relative; }
-        .title-area { display: flex; flex-direction: column; }
-        .main-title { 
-            font-family: 'Arial Black', 'Pretendard', sans-serif; 
-            font-size: 26px; 
-            font-weight: 900; 
-            letter-spacing: -1px; 
-            margin: 0; 
-            line-height: 1; 
-            text-transform: uppercase; 
-            background: linear-gradient(to bottom, #c5a059 0%, #fdf5a9 40%, #fdf5a9 60%, #99732b 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.6));
-        }
-        .subtitle { font-size: 11px; color: #b5a892; margin-top: 4px; font-weight: 500; text-align: left; line-height: 1.3; margin-bottom: 0; }
+        /* New Header Styles */
+        #header { display: flex; flex-direction: column; width: 100%; background-color: #000000; z-index: 30; position: relative; }
+        .header-top { display: flex; align-items: center; justify-content: space-between; padding: 0 16px; height: 56px; }
+        .header-top-left { font-size: 20px; font-weight: bold; color: #9ca3af; cursor: pointer; padding: 8px; margin-left: -8px; }
+        .header-top-center { display: flex; align-items: center; color: #6b7280; font-size: 13px; font-weight: 500; }
+        .header-top-right { display: flex; align-items: center; gap: 16px; color: #9ca3af; font-size: 14px; font-weight: 500; }
+        .tabs-container { display: flex; width: 100%; padding: 0 16px; margin-top: 8px; border-bottom: 1px solid #1f2937; }
+        .tab-btn { flex: 1; padding-bottom: 12px; text-align: center; font-weight: 700; font-size: 15px; cursor: pointer; transition: all 0.2s; border: none; background: transparent; border-bottom: 2px solid transparent; }
+        .tab-active { color: #ffffff; border-bottom-color: #60a5fa; }
+        .tab-inactive { color: #6b7280; border-bottom-color: transparent; }
+        .tab-inactive:hover { color: #9ca3af; }
 
-        .tabs-container { display: flex; gap: 15px; width: auto; margin: 0; }
-        .tab-btn { padding: 8px 12px; border-radius: 4px; font-weight: 700; font-size: 14px; cursor: pointer; transition: all 0.2s; border: none; background: transparent; }
-        .tab-active { color: white; background: rgba(255,255,255,0.1); border-bottom: none; }
-        .tab-inactive { color: #6b7280; border-bottom: none; }
-        .tab-inactive:hover { color: #9ca3af; background: rgba(255,255,255,0.05); }
+        .drawer-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 100; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+        .drawer-overlay.open { opacity: 1; pointer-events: auto; }
+
+        .drawer-sidebar { position: fixed; top: 0; left: 0; bottom: 0; width: 85%; max-width: 360px; background-color: #111111; z-index: 101; transform: translateX(-100%); transition: transform 0.3s ease-in-out; overflow-y: auto; display: flex; flex-direction: column; }
+        .drawer-sidebar.open { transform: translateX(0); }
+
+        .drawer-close { align-self: flex-end; padding: 20px; font-size: 20px; color: #9ca3af; cursor: pointer; }
+        .drawer-content { padding: 0 24px 30px 24px; }
+        .drawer-title { font-family: 'Arial Black', sans-serif; font-size: 28px; color: #D4C19C; text-align: center; margin-bottom: 24px; font-weight: 900; letter-spacing: -1px; }
+        .drawer-subtitle { font-size: 13px; color: #9ca3af; text-align: center; line-height: 1.5; margin-bottom: 40px; }
+
+        .drawer-section { margin-bottom: 30px; }
+        .drawer-section-title { font-size: 16px; color: #60a5fa; font-weight: 700; margin-bottom: 8px; }
+        .drawer-section-sub { font-size: 14px; color: #ffffff; font-weight: 700; margin-bottom: 12px; }
+        .drawer-list { list-style: disc; padding-left: 20px; color: #9ca3af; font-size: 13px; line-height: 1.6; margin: 0; }
+        .drawer-list li { margin-bottom: 8px; }
+
+        .drawer-divider { width: 100%; height: 1px; background-color: #374151; margin-bottom: 30px; }
 
         #view-map { flex-grow: 1; position: relative; width: 100%; height: 100%; }
         #view-marathon { flex-grow: 1; position: relative; width: 100%; height: 100%; overflow-y: auto; overflow-x: hidden; scroll-behavior: smooth; }
@@ -200,16 +207,52 @@
 </head>
 <body>
     <div id="app-container">
-        <div id="header">
-            <div class="title-area">
-                <h1 class="main-title">PROPERTY_RUNNER</h1>
-                <p class="subtitle">이 앱은 "아파트 분양 및 개발 시세차익"을 목적으로 한 러너들의 현위치를 한눈에 시각화하기 위해 제작되었습니다.</p>
-            </div>
-            <div class="tabs-container">
-                <button id="btn-marathon" class="tab-btn tab-active" onclick="switchTab('marathon')">러너 뷰</button>
-                <button id="btn-map" class="tab-btn tab-inactive" onclick="switchTab('map')">지도 뷰</button>
-            </div>
+        <!-- Drawer Component -->
+<div id="drawer-overlay" class="drawer-overlay" onclick="toggleDrawer()"></div>
+<div id="drawer-sidebar" class="drawer-sidebar">
+    <div class="drawer-close" onclick="toggleDrawer()">&#10094;&#10094;</div>
+    <div class="drawer-content">
+        <h2 class="drawer-title">PROPERTY RUNNER</h2>
+        <p class="drawer-subtitle">이 앱은 구글시트에 기록된 방대한 부동산 투자 데이터를 한눈에 시각화하고 관리할 목적으로 제작되었습니다.</p>
+        
+        <div class="drawer-section">
+            <h3 class="drawer-section-title">러너 뷰 <span style="font-size:13px; font-weight:normal; color:#9ca3af;">(마라톤 트랙)</span></h3>
+            <p class="drawer-section-sub">= 진행 상태 및 보유 기간 시각화</p>
+            <ul class="drawer-list">
+                <li>캐릭터: 각 물건의 소유자 및 투자 형태 표시</li>
+                <li>트랙: 매각까지 남은 기간과 현재 진행 단계 표시</li>
+            </ul>
         </div>
+        
+        <div class="drawer-divider"></div>
+        
+        <div class="drawer-section">
+            <h3 class="drawer-section-title">지도 뷰 <span style="font-size:13px; font-weight:normal; color:#9ca3af;">(위치 기반)</span></h3>
+            <p class="drawer-section-sub">= 실제 부동산 위치 확인</p>
+            <ul class="drawer-list">
+                <li>지도를 누르면 해당 물건들의 지리적 분포를 볼 수 있어요</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div id="header">
+    <div class="header-top">
+        <div class="header-top-left" onclick="toggleDrawer()">&#10095;&#10095;</div>
+        <div class="header-top-center">
+            <span style="letter-spacing: 2px; margin-right: 6px;">•••</span> CONNECTING
+        </div>
+        <div class="header-top-right">
+            <span>Fork</span>
+            <svg style="width:18px; height:18px; fill:currentColor;" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+            <span style="font-size:18px;">⋮</span>
+        </div>
+    </div>
+    <div class="tabs-container">
+        <button id="btn-marathon" class="tab-btn tab-active" onclick="switchTab('marathon')">러너 뷰</button>
+        <button id="btn-map" class="tab-btn tab-inactive" onclick="switchTab('map')">지도 뷰</button>
+    </div>
+</div>
         
         <input type="file" id="photoInput" accept="image/*" style="display: none;">
 
@@ -284,6 +327,12 @@
 
         const photoInput = document.getElementById('photoInput');
         let currentUploadName = null;
+
+        
+        function toggleDrawer() {
+            document.getElementById('drawer-sidebar').classList.toggle('open');
+            document.getElementById('drawer-overlay').classList.toggle('open');
+        }
 
         function switchTab(mode) {
             localStorage.setItem('propertyRunnerTab', mode);

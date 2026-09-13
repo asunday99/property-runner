@@ -137,11 +137,11 @@
         .runner-head-wrapper .emoji { font-size: 20px; position: absolute; z-index: 21; }
         .runner-photo { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; position: absolute; z-index: 22; display: none; }
         
-        .runner-torso { width: 40px; height: 46px; border-radius: 12px; position: relative; z-index: 10; margin-top: -3px; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: transform 0.2s;}
+        .runner-torso { width: 40px; height: 41px; border-radius: 12px; position: relative; z-index: 10; margin-top: -3px; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: transform 0.2s;}
         .runner-torso:hover { transform: scale(1.1); }
         .runner-nametag-glow { font-weight: 500; font-size: 11px; z-index: 25; white-space: nowrap; letter-spacing: 1px; pointer-events: none; }
         
-        .runner-leg-solid { position: absolute; width: 2px; height: 20px; border-radius: 1px; top: 40px; z-index: 5; pointer-events: none; }
+        .runner-leg-solid { position: absolute; width: 2px; height: 20px; border-radius: 1px; top: 35px; z-index: 5; pointer-events: none; }
         .leg-left { left: 10px; transform: rotate(10deg); }
         .leg-right { right: 10px; transform: rotate(-10deg); }
         
@@ -168,8 +168,14 @@
         .running-bounce .runner-torso { animation: bob var(--run-speed) infinite alternate ease-in-out; }
         .running-bounce .runner-head-wrapper { animation: bob-head var(--run-speed) infinite alternate ease-in-out; }
 
+        
+        /* Dark Mode Speech Bubble */
+        .speech-bubble { background-color: #1f2937; color: #f3f4f6; border: 1px solid #374151; box-shadow: 0 4px 15px rgba(0,0,0,0.8); z-index: 50; }
+        .speech-bubble::after { border-color: #1f2937 transparent transparent transparent; }
+        .runner-head-wrapper.zoomed { transform: scale(1.8); z-index: 50; box-shadow: 0 0 20px rgba(255,255,255,0.2); }
+
         /* Disable old character styles */
-        .head, .pic-torso, .pic-leg, .bib, .stats-bubble, .speech-bubble { display: none !important; }
+        .head, .pic-torso, .pic-leg, .bib, .stats-bubble { display: none !important; }
     
     </style>
 </head>
@@ -195,42 +201,16 @@
         
         <!-- Y-axis markers -->
         <div class="timeline-container-y" style="position:absolute; left:0; right:0; top:0; bottom:0; pointer-events:none; z-index:5;">
-            <!-- 입주 (90%) -> 5% -->
-            <div class="time-marker-y" style="position:absolute; top:5%; left:20px;">
-                <div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#333;"></div>
-                <div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#9ca3af; white-space:nowrap;">입주</div>
-            </div>
-            <!-- 철거 (75%) -> 19.16% -->
-            <div class="time-marker-y" style="position:absolute; top:9.72%; left:20px;">
-                <div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#333;"></div>
-                <div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#9ca3af; white-space:nowrap;">철거 (75%)</div>
-            </div>
-            <!-- 50% -> 42.77% -->
-            <div class="time-marker-y" style="position:absolute; top:34.82%; left:20px;">
-                <div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#333;"></div>
-                <div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#9ca3af; white-space:nowrap;">50%</div>
-            </div>
-            <!-- 25% -> 66.38% -->
-            <div class="time-marker-y" style="position:absolute; top:59.91%; left:20px;">
-                <div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#333;"></div>
-                <div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#9ca3af; white-space:nowrap;">25%</div>
-            </div>
-            <!-- 출발 (0%) -> 90% -->
-            <div class="time-marker-y" style="position:absolute; top:85%; left:20px;">
-                <div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#333;"></div>
-                <div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#9ca3af; white-space:nowrap;">출발</div>
-            </div>
-            <!-- 준비중 (-12) -> 95% -->
-            <div class="time-marker-y" style="position:absolute; top:91%; left:20px;">
-                <div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#333;"></div>
-                <div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#9ca3af; white-space:nowrap;">준비중</div>
-            </div>
-            
-            <!-- Finish & Demolition Line Banners -->
-            <div class="finish-line"></div>
-            <div class="finish-banner">입주</div>
-            <div class="demolition-line"></div>
-            <div class="demolition-banner">철거 (75%)</div>
+            <div class="time-marker-y" style="position:absolute; top:5%; left:20px;"><div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#555;"></div><div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#9ca3af; white-space:nowrap;">입주 (90%)</div></div>
+            <div class="time-marker-y" style="position:absolute; top:18.33%; left:20px;"><div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#555;"></div><div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#9ca3af; white-space:nowrap;">75%</div></div>
+            <div class="time-marker-y" style="position:absolute; top:31.67%; left:20px;"><div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#555;"></div><div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#9ca3af; white-space:nowrap;">60%</div></div>
+            <div class="time-marker-y" style="position:absolute; top:45%; left:20px;"><div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#555;"></div><div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#9ca3af; white-space:nowrap;">45%</div></div>
+            <div class="time-marker-y" style="position:absolute; top:58.33%; left:20px;"><div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#555;"></div><div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#9ca3af; white-space:nowrap;">30%</div></div>
+            <div class="time-marker-y" style="position:absolute; top:71.67%; left:20px;"><div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#555;"></div><div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#9ca3af; white-space:nowrap;">15%</div></div>
+            <div class="time-marker-y" style="position:absolute; top:85%; left:20px;"><div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#555;"></div><div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#9ca3af; white-space:nowrap;">출발 (0%)</div></div>
+            <div class="time-marker-y" style="position:absolute; top:91%; left:20px;"><div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#555;"></div><div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#9ca3af; white-space:nowrap;">준비중</div></div>
+            <div class="finish-line" style="top:5%; height:15px; background:repeating-linear-gradient(45deg, #111, #111 15px, #2563eb 15px, #2563eb 30px); border-bottom:1px solid #333;"></div>
+            <div class="demolition-line" style="top:18.33%; border-top: 2px dashed #ef4444; opacity: 0.5;"></div>
         </div>
     </div>
 
@@ -574,9 +554,15 @@
                 headWrapper.appendChild(uploadedImg);
                 character.appendChild(headWrapper);
 
+                const thoughtBubble = document.createElement('div');
+                thoughtBubble.className = 'speech-bubble';
+                thoughtBubble.textContent = data.msg;
+                container.appendChild(thoughtBubble);
+
                 if (data.markerType === 'runner') {
                     const torso = document.createElement('div');
                     torso.className = 'runner-torso';
+
                     
                     const nametag = document.createElement('div');
                     nametag.className = 'runner-nametag-glow';
@@ -606,17 +592,39 @@
                     clickArea.style.zIndex = 40;
                     torso.appendChild(clickArea);
                     
-                    clickArea.addEventListener('click', (e) => {
+                    const showBubble = (e) => {
                         e.stopPropagation();
-                        currentUploadName = data.owner;
-                        photoInput.click();
-                    });
+                        if (character.dataset.hasPhoto !== 'true') {
+                            currentUploadName = data.owner;
+                            photoInput.click();
+                        } else {
+                            const isZoomed = headWrapper.classList.contains('zoomed');
+                            document.querySelectorAll('.runner-head-wrapper').forEach(h => h.classList.remove('zoomed'));
+                            document.querySelectorAll('.speech-bubble').forEach(b => b.classList.remove('active'));
+                            if (!isZoomed) {
+                                headWrapper.classList.add('zoomed');
+                                thoughtBubble.classList.add('active');
+                            }
+                        }
+                    };
+                    clickArea.addEventListener('click', showBubble);
+                    headWrapper.addEventListener('click', showBubble);
                     
-                    headWrapper.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        currentUploadName = data.owner;
-                        photoInput.click();
-                    });
+                    if (!isMapMode && data.status !== 'finished') {
+                        const yearLabelDOM = document.createElement('div');
+                        yearLabelDOM.className = 'track-year-label';
+                        yearLabelDOM.style.marginTop = '4px';
+                        yearLabelDOM.style.fontSize = '10px';
+                        yearLabelDOM.style.color = '#9ca3af';
+                        yearLabelDOM.style.background = 'transparent';
+                        yearLabelDOM.style.boxShadow = 'none';
+                        yearLabelDOM.style.position = 'relative';
+                        yearLabelDOM.style.bottom = 'auto';
+                        yearLabelDOM.style.transform = 'none';
+                        yearLabelDOM.style.left = 'auto';
+                        yearLabelDOM.textContent = `보유 ${data.actualYears.toFixed(1)}년차`;
+                        character.appendChild(yearLabelDOM);
+                    }
 
                 } else {
                     // Static assets on map mode (fallback)
@@ -650,15 +658,12 @@
                 if (data.isPreparing) data.finalProg = -12; 
                 
                 let baseTop;
-                if (data.finalProg >= 75) {
-                    let ratio = (data.finalProg - 75) / 15;
-                    baseTop = 9.72 - (ratio * 4.72); // 90 maps to 5%, 75 maps to 9.72%
-                } else if (data.finalProg >= 0) {
-                    let ratio = data.finalProg / 75;
-                    baseTop = 85 - (ratio * 75.28); // 0 maps to 85%, 75 maps to 9.72%
+                if (data.finalProg >= 0) {
+                    let ratio = data.finalProg / 90;
+                    baseTop = 85 - (ratio * 80); // 0 -> 85%, 90 -> 5%
                 } else {
                     let ratio = data.finalProg / -12;
-                    baseTop = 85 + (ratio * 6); // -12 maps to 91%
+                    baseTop = 85 + (ratio * 6); // -12 -> 91%
                 }
                 
                 let dongName = '';

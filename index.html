@@ -9,7 +9,7 @@
     <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=10d2911cc3c5bedf397ff5b602bd52dd&libraries=services"></script>
     
     <style>
-        body { margin: 0; overflow: hidden; font-family: 'Pretendard', sans-serif; user-select: none; background-color: #f3f4f6; }
+        body { margin: 0; overflow: hidden; font-family: 'Pretendard', sans-serif; user-select: none; background-color: #000000; }
         #app-container { position: relative; width: 100vw; height: 100vh; display: flex; flex-direction: column; }
         
         /* Header & Tabs Layout (Reduced height & horizontal layout) */
@@ -40,17 +40,17 @@
         #view-marathon { flex-grow: 1; position: relative; width: 100%; height: 100%; overflow-y: auto; overflow-x: hidden; scroll-behavior: smooth; }
         #view-map { display: none; }
         
-        #view-marathon { background: linear-gradient(to bottom, #d1d5db 0%, #9ca3af 100%); }
+        #view-marathon { background-color: #000000; background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px); background-size: 50px 50px; }
         .track-lines { position: absolute; left: 0; right: 0; top: 0; bottom: 0; 
             background-image: linear-gradient(to right, 
                 transparent 0%, transparent calc(15% - 1px), 
-                rgba(255,255,255,0.3) 15%, 
+                rgba(255,255,255,0.05) 15%, 
                 transparent calc(15% + 1px), transparent calc(33.75% - 1px), 
-                rgba(255,255,255,0.3) 33.75%, 
+                rgba(255,255,255,0.05) 33.75%, 
                 transparent calc(33.75% + 1px), transparent calc(52.5% - 1px), 
-                rgba(255,255,255,0.3) 52.5%, 
+                rgba(255,255,255,0.05) 52.5%, 
                 transparent calc(52.5% + 1px), transparent calc(71.25% - 1px), 
-                rgba(255,255,255,0.3) 71.25%, 
+                rgba(255,255,255,0.05) 71.25%, 
                 transparent calc(71.25% + 1px), transparent 100%);
             z-index: 1; pointer-events: none; }
         
@@ -131,6 +131,46 @@
         .track-km-label { position: absolute; bottom: -20px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.75); color: #fbbf24; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: 900; white-space: nowrap; z-index: 20; letter-spacing: -0.5px; box-shadow: 0 2px 4px rgba(0,0,0,0.3); pointer-events: none; }
 
         @keyframes pop { 0% { transform: translateX(-50%) scale(0.5); opacity: 0; } 100% { transform: translateX(-50%) scale(1); opacity: 1; } }
+    
+        /* Asset333 Dark Mode Runner Styles */
+        .runner-head-wrapper { position: relative; width: 44px; height: 44px; z-index: 20; display: flex; justify-content: center; align-items: center; border-radius: 50%; }
+        .runner-head-wrapper .emoji { font-size: 20px; position: absolute; z-index: 21; }
+        .runner-photo { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; position: absolute; z-index: 22; display: none; }
+        
+        .runner-torso { width: 40px; height: 46px; border-radius: 12px; position: relative; z-index: 10; margin-top: -3px; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: transform 0.2s;}
+        .runner-torso:hover { transform: scale(1.1); }
+        .runner-nametag-glow { font-weight: 500; font-size: 11px; z-index: 25; white-space: nowrap; letter-spacing: 1px; pointer-events: none; }
+        
+        .runner-leg-solid { position: absolute; width: 2px; height: 20px; border-radius: 1px; top: 40px; z-index: 5; pointer-events: none; }
+        .leg-left { left: 10px; transform: rotate(10deg); }
+        .leg-right { right: 10px; transform: rotate(-10deg); }
+        
+        .runner-status-minimal { margin-top: 25px; background: #050505; padding: 4px 10px; border-radius: 6px; font-size: 10px; font-weight: 500; white-space: nowrap; z-index: 30; position: relative; letter-spacing: 0.5px; opacity: 0.9;}
+
+        /* Champagne Gold (위탁) */
+        .team-consignment .runner-head-wrapper { background: #030303; border: 1.5px solid #D4C19C; box-shadow: 0 0 15px rgba(212, 193, 156, 0.4), inset 0 0 10px rgba(212, 193, 156, 0.2); }
+        .team-consignment .runner-torso { background: #030303; border: 1.5px solid #D4C19C; box-shadow: 0 0 15px rgba(212, 193, 156, 0.4), inset 0 0 10px rgba(212, 193, 156, 0.2); }
+        .team-consignment .runner-nametag-glow { color: #D4C19C; text-shadow: 0 0 6px rgba(212, 193, 156, 0.5); }
+        .team-consignment .runner-leg-solid { background: #D4C19C; box-shadow: 0 0 6px rgba(212, 193, 156, 0.5); }
+        .team-consignment .runner-status-minimal { color: #D4C19C; border: 1px solid rgba(212, 193, 156, 0.3); box-shadow: 0 0 8px rgba(212, 193, 156, 0.1); }
+
+        /* Metal Blue (직영/개인/법인) */
+        .team-self .runner-head-wrapper { background: #030303; border: 1.5px solid #82B1FF; box-shadow: 0 0 15px rgba(130, 177, 255, 0.4), inset 0 0 10px rgba(130, 177, 255, 0.2); }
+        .team-self .runner-torso { background: #030303; border: 1.5px solid #82B1FF; box-shadow: 0 0 15px rgba(130, 177, 255, 0.4), inset 0 0 10px rgba(130, 177, 255, 0.2); }
+        /* White text for Metal Blue */
+        .team-self .runner-nametag-glow { color: #FFFFFF; text-shadow: 0 0 6px rgba(255, 255, 255, 0.4); }
+        .team-self .runner-leg-solid { background: #82B1FF; box-shadow: 0 0 6px rgba(130, 177, 255, 0.5); }
+        .team-self .runner-status-minimal { color: #FFFFFF; border: 1px solid rgba(130, 177, 255, 0.3); box-shadow: 0 0 8px rgba(130, 177, 255, 0.1); }
+
+        /* Animation fixes */
+        .running .leg-left { animation: swing-opp var(--run-speed) infinite alternate ease-in-out; }
+        .running .leg-right { animation: swing var(--run-speed) infinite alternate ease-in-out; }
+        .running-bounce .runner-torso { animation: bob var(--run-speed) infinite alternate ease-in-out; }
+        .running-bounce .runner-head-wrapper { animation: bob-head var(--run-speed) infinite alternate ease-in-out; }
+
+        /* Disable old character styles */
+        .head, .pic-torso, .pic-leg, .bib, .stats-bubble, .speech-bubble { display: none !important; }
+    
     </style>
 </head>
 <body>
@@ -157,33 +197,33 @@
         <div class="timeline-container-y" style="position:absolute; left:0; right:0; top:0; bottom:0; pointer-events:none; z-index:5;">
             <!-- 입주 (90%) -> 5% -->
             <div class="time-marker-y" style="position:absolute; top:5%; left:20px;">
-                <div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#9ca3af;"></div>
-                <div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#4b5563; white-space:nowrap;">입주</div>
+                <div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#333;"></div>
+                <div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#9ca3af; white-space:nowrap;">입주</div>
             </div>
             <!-- 철거 (75%) -> 19.16% -->
             <div class="time-marker-y" style="position:absolute; top:9.72%; left:20px;">
-                <div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#9ca3af;"></div>
-                <div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#4b5563; white-space:nowrap;">철거 (75%)</div>
+                <div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#333;"></div>
+                <div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#9ca3af; white-space:nowrap;">철거 (75%)</div>
             </div>
             <!-- 50% -> 42.77% -->
             <div class="time-marker-y" style="position:absolute; top:34.82%; left:20px;">
-                <div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#9ca3af;"></div>
-                <div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#4b5563; white-space:nowrap;">50%</div>
+                <div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#333;"></div>
+                <div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#9ca3af; white-space:nowrap;">50%</div>
             </div>
             <!-- 25% -> 66.38% -->
             <div class="time-marker-y" style="position:absolute; top:59.91%; left:20px;">
-                <div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#9ca3af;"></div>
-                <div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#4b5563; white-space:nowrap;">25%</div>
+                <div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#333;"></div>
+                <div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#9ca3af; white-space:nowrap;">25%</div>
             </div>
             <!-- 출발 (0%) -> 90% -->
             <div class="time-marker-y" style="position:absolute; top:85%; left:20px;">
-                <div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#9ca3af;"></div>
-                <div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#4b5563; white-space:nowrap;">출발</div>
+                <div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#333;"></div>
+                <div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#9ca3af; white-space:nowrap;">출발</div>
             </div>
             <!-- 준비중 (-12) -> 95% -->
             <div class="time-marker-y" style="position:absolute; top:91%; left:20px;">
-                <div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#9ca3af;"></div>
-                <div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#4b5563; white-space:nowrap;">준비중</div>
+                <div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#333;"></div>
+                <div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#9ca3af; white-space:nowrap;">준비중</div>
             </div>
             
             <!-- Finish & Demolition Line Banners -->
@@ -478,158 +518,124 @@
         }
 
         function createCharacterDOM(data, isMapMode = false) {
-            const container = document.createElement('div');
-            container.className = 'runner-container';
-            container.dataset.owner = data.owner;
+                const container = document.createElement('div');
+                container.className = 'runner-container';
+                container.dataset.owner = data.owner;
 
-            const runSpeedDuration = data.speed > 0 ? data.speed : 1.0;
-            container.style.setProperty('--run-speed', `${runSpeedDuration}s`);
+                const runSpeedDuration = data.speed > 0 ? data.speed : 1.0;
+                container.style.setProperty('--run-speed', `${runSpeedDuration}s`);
 
-            const character = document.createElement('div');
-            character.className = 'character';
-            character.dataset.ownerName = data.owner;
+                const character = document.createElement('div');
+                character.className = 'character';
+                character.dataset.ownerName = data.owner;
 
-            let teamClass = 'team-consignment';
-            if (data.manager === '개인' || data.manager === '개인위탁' || data.manager === '법인') {
-                teamClass = 'team-self';
-            }
-            if (data.markerType !== 'runner') teamClass = 'team-static';
-            character.classList.add(teamClass);
-
-            if (!isMapMode && data.markerType === 'runner' && data.status !== 'finished') {
-                if (data.isPreparing || data.speed === 0) {
-                    character.classList.add('sitting');
-                } else {
-                    character.classList.add('running', 'running-bounce');
+                let teamClass = 'team-consignment';
+                if (data.manager === '개인' || data.manager === '개인위탁' || data.manager === '법인') {
+                    teamClass = 'team-self';
                 }
-            }
+                if (data.markerType !== 'runner') teamClass = 'team-static';
+                character.classList.add(teamClass);
 
-            const head = document.createElement('div');
-            head.className = `head ${data.status === 'bad' ? 'sad' : ''}`;
-            
-            let faceText = '😎';
-            if (data.owner.includes('뉴푸드')) faceText = 'N';
-            else if (data.owner.includes('고미')) faceText = 'G';
-            else if (data.status === 'finished') faceText = '🏆';
-            else if (data.status === 'good') faceText = '😃';
-            else if (data.status === 'bad') faceText = '😭';
-
-            const emojiSpan = document.createElement('span');
-            emojiSpan.className = 'emoji'; 
-            emojiSpan.textContent = faceText;
-            
-            const uploadedImg = document.createElement('img');
-            uploadedImg.className = 'face-img';
-            
-            const savedPhoto = localStorage.getItem('photo_' + data.owner);
-            if (savedPhoto) {
-                uploadedImg.src = savedPhoto;
-                uploadedImg.style.display = 'block';
-                emojiSpan.style.display = 'none';
-                character.dataset.hasPhoto = 'true';
-            }
-
-            head.appendChild(emojiSpan); head.appendChild(uploadedImg);
-            character.appendChild(head);
-
-            if (data.markerType === 'runner') {
-                const picWrap = document.createElement('div');
-                picWrap.className = 'pictogram';
-
-                const legL = document.createElement('div');
-                legL.className = 'pic-leg pic-leg-left';
-                
-                const torso = document.createElement('div');
-                torso.className = 'pic-torso';
-                
-                const bib = document.createElement('div');
-                bib.className = 'bib'; 
-                let firstName = data.owner.length > 2 ? data.owner.substring(1) : data.owner;
-                bib.textContent = firstName; 
-                torso.appendChild(bib);
-
-                const legR = document.createElement('div');
-                legR.className = 'pic-leg pic-leg-right';
-
-                picWrap.appendChild(legL);
-                picWrap.appendChild(torso);
-                picWrap.appendChild(legR);
-                
-                character.appendChild(picWrap);
-                
-                if (!isMapMode && data.status !== 'finished') {
-                    const yearLabelDOM = document.createElement('div');
-                    yearLabelDOM.className = 'track-year-label';
-                    yearLabelDOM.textContent = `보유 ${data.actualYears.toFixed(1)}년차`;
-                    character.appendChild(yearLabelDOM);
-                }
-
-                picWrap.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    document.querySelectorAll('.head').forEach(h => h.classList.remove('zoomed'));
-                    document.querySelectorAll('.speech-bubble, .stats-bubble').forEach(b => b.classList.remove('active'));
-                    statsBubble.classList.add('active');
-                });
-            } else {
-                const staticWrap = document.createElement('div');
-                staticWrap.className = 'static-asset-wrap';
-                
-                const iconCircle = document.createElement('div');
-                iconCircle.className = 'static-icon-circle';
-                iconCircle.textContent = data.markerType === 'building' ? '🏢' : '🌱';
-                
-                const nameLabel = document.createElement('div');
-                nameLabel.className = 'name-label';
-                nameLabel.textContent = data.owner;
-
-                staticWrap.appendChild(iconCircle);
-                staticWrap.appendChild(nameLabel);
-                character.appendChild(staticWrap);
-                
-                staticWrap.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    document.querySelectorAll('.head').forEach(h => h.classList.remove('zoomed'));
-                    document.querySelectorAll('.speech-bubble, .stats-bubble').forEach(b => b.classList.remove('active'));
-                    statsBubble.classList.add('active');
-                });
-            }
-
-            const thoughtBubble = document.createElement('div');
-            thoughtBubble.className = 'speech-bubble';
-            thoughtBubble.textContent = data.msg;
-            container.appendChild(thoughtBubble);
-
-            const statsBubble = document.createElement('div');
-            statsBubble.className = 'stats-bubble';
-            statsBubble.textContent = data.statsText;
-            container.appendChild(statsBubble);
-
-            head.addEventListener('click', (e) => {
-                e.stopPropagation();
-                if (character.dataset.hasPhoto !== 'true') {
-                    currentUploadName = data.owner;
-                    photoInput.click();
-                } else {
-                    const isZoomed = head.classList.contains('zoomed');
-                    document.querySelectorAll('.head').forEach(h => h.classList.remove('zoomed'));
-                    document.querySelectorAll('.speech-bubble, .stats-bubble').forEach(b => b.classList.remove('active'));
-                    if (!isZoomed) {
-                        head.classList.add('zoomed');
-                        thoughtBubble.classList.add('active');
-                        statsBubble.classList.add('active');
+                if (!isMapMode && data.markerType === 'runner' && data.status !== 'finished') {
+                    if (data.isPreparing || data.speed === 0) {
+                        character.classList.add('sitting');
+                    } else {
+                        character.classList.add('running', 'running-bounce');
                     }
                 }
-            });
 
-            head.addEventListener('dblclick', (e) => {
-                e.stopPropagation();
-                currentUploadName = data.owner;
-                photoInput.click();
-            });
+                // Create Head Wrapper
+                const headWrapper = document.createElement('div');
+                headWrapper.className = 'runner-head-wrapper';
+                
+                let faceText = '😎';
+                if (data.owner.includes('뉴푸드')) faceText = 'N';
+                else if (data.owner.includes('고미')) faceText = 'G';
+                else if (data.status === 'finished') faceText = '🏆';
+                else if (data.status === 'good') faceText = '😃';
+                else if (data.status === 'bad') faceText = '😭';
 
-            container.appendChild(character);
-            return container;
-        }
+                const emojiSpan = document.createElement('span');
+                emojiSpan.className = 'emoji'; 
+                emojiSpan.textContent = faceText;
+                
+                const uploadedImg = document.createElement('img');
+                uploadedImg.className = 'runner-photo face-img';
+                
+                const savedPhoto = localStorage.getItem('photo_' + data.owner);
+                if (savedPhoto) {
+                    uploadedImg.src = savedPhoto;
+                    uploadedImg.style.display = 'block';
+                    emojiSpan.style.display = 'none';
+                    character.dataset.hasPhoto = 'true';
+                }
+
+                headWrapper.appendChild(emojiSpan);
+                headWrapper.appendChild(uploadedImg);
+                character.appendChild(headWrapper);
+
+                if (data.markerType === 'runner') {
+                    const torso = document.createElement('div');
+                    torso.className = 'runner-torso';
+                    
+                    const nametag = document.createElement('div');
+                    nametag.className = 'runner-nametag-glow';
+                    let firstName = data.owner.length > 2 ? data.owner.substring(1) : data.owner;
+                    nametag.textContent = firstName;
+                    
+                    const legL = document.createElement('div');
+                    legL.className = 'runner-leg-solid leg-left';
+                    
+                    const legR = document.createElement('div');
+                    legR.className = 'runner-leg-solid leg-right';
+                    
+                    torso.appendChild(nametag);
+                    torso.appendChild(legL);
+                    torso.appendChild(legR);
+                    character.appendChild(torso);
+
+                    const statusTag = document.createElement('div');
+                    statusTag.className = 'runner-status-minimal';
+                    statusTag.textContent = data.statsText;
+                    character.appendChild(statusTag);
+
+                    // Add photo upload click event
+                    const clickArea = document.createElement('div');
+                    clickArea.style.position = 'absolute';
+                    clickArea.style.top = 0; clickArea.style.left = 0; clickArea.style.width = '100%'; clickArea.style.height = '100%';
+                    clickArea.style.zIndex = 40;
+                    torso.appendChild(clickArea);
+                    
+                    clickArea.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        currentUploadName = data.owner;
+                        photoInput.click();
+                    });
+                    
+                    headWrapper.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        currentUploadName = data.owner;
+                        photoInput.click();
+                    });
+
+                } else {
+                    // Static assets on map mode (fallback)
+                    const staticWrap = document.createElement('div');
+                    staticWrap.className = 'static-asset-wrap';
+                    const iconCircle = document.createElement('div');
+                    iconCircle.className = 'static-icon-circle';
+                    iconCircle.textContent = data.markerType === 'building' ? '🏢' : '🌱';
+                    const nameLabel = document.createElement('div');
+                    nameLabel.className = 'name-label';
+                    nameLabel.textContent = data.owner;
+                    staticWrap.appendChild(iconCircle);
+                    staticWrap.appendChild(nameLabel);
+                    character.appendChild(staticWrap);
+                }
+
+                container.appendChild(character);
+                return container;
+            }
 
         function renderMarathon() {
             const viewArea = document.getElementById('view-marathon');

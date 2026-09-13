@@ -61,11 +61,11 @@
         .year-label { position: absolute; bottom: 12px; left: 6px; font-size: 11px; font-weight: 700; color: #374151; white-space: nowrap; letter-spacing: -0.5px; }
 
         /* Finish Line & Demolition Line */
-        .finish-line { position: absolute; right: 10%; top: 0; bottom: 0; width: 25px; background: repeating-linear-gradient(45deg, white, white 15px, #2563eb 15px, #2563eb 30px); box-shadow: -5px 0 10px rgba(0,0,0,0.1); z-index: 10; }
-        .finish-banner { position: absolute; right: calc(10% - 25px); top: 20px; background: #2563eb; color: white; padding: 6px 12px; border-radius: 6px; font-weight: 900; font-size: 16px; z-index: 11; letter-spacing: 1px; box-shadow: 0 4px 6px rgba(0,0,0,0.2); transform: translateX(50%); white-space: nowrap; }
-
-        .demolition-line { position: absolute; right: 24%; top: 0; bottom: 0; border-left: 3px dashed #ef4444; z-index: 8; }
-        .demolition-banner { position: absolute; right: calc(24% - 25px); top: 60px; background: #ef4444; color: white; padding: 4px 10px; border-radius: 6px; font-weight: 800; font-size: 14px; z-index: 9; transform: translateX(50%); white-space: nowrap; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+        /* Vertical line CSS updated */
+        .finish-line { position: absolute; top: 5%; left: 0; right: 0; height: 15px; width: 100%; background: repeating-linear-gradient(45deg, white, white 15px, #2563eb 15px, #2563eb 30px); box-shadow: 0 5px 10px rgba(0,0,0,0.1); z-index: 0; }
+        .finish-banner { position: absolute; top: calc(5% - 30px); left: 20px; background: #2563eb; color: white; padding: 6px 12px; border-radius: 6px; font-weight: 900; font-size: 14px; z-index: 5; letter-spacing: 1px; box-shadow: 0 4px 6px rgba(0,0,0,0.2); }
+        .demolition-line { position: absolute; top: 19.16%; left: 0; right: 0; border-top: 2px dashed #ef4444; z-index: 0; }
+        .demolition-banner { position: absolute; top: calc(19.16% - 28px); left: 20px; background: #ef4444; color: white; padding: 4px 10px; border-radius: 6px; font-weight: 800; font-size: 12px; z-index: 5; box-shadow: 0 4px 6px rgba(0,0,0,0.2); }
 
         .runner-container { position: absolute; display: flex; justify-content: center; align-items: flex-end; transition: z-index 0.2s; }
         .runner-container:hover { z-index: 9999 !important; }
@@ -186,10 +186,10 @@
             </div>
             
             <!-- Finish & Demolition Line Banners -->
-            <div class="finish-line" style="position:absolute; top:5%; left:0; width:100%; border-top:4px dashed #10b981; z-index:0;"></div>
-            <div class="finish-banner" style="position:absolute; top:calc(5% - 25px); left:20px; background:#2563eb; color:white; padding:6px 12px; border-radius:6px; font-weight:900; z-index:5;">입주</div>
-            <div class="demolition-line" style="position:absolute; top:19.16%; left:0; width:100%; border-top:2px dashed #ef4444; z-index:0;"></div>
-            <div class="demolition-banner" style="position:absolute; top:calc(19.16% - 25px); left:20px; background:#ef4444; color:white; padding:4px 8px; border-radius:4px; font-weight:700; font-size:12px; z-index:5;">철거</div>
+            <div class="finish-line"></div>
+            <div class="finish-banner">입주 (Finish)</div>
+            <div class="demolition-line"></div>
+            <div class="demolition-banner">철거 (75%)</div>
         </div>
     </div>
 

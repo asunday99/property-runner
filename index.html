@@ -133,15 +133,15 @@
         @keyframes pop { 0% { transform: translateX(-50%) scale(0.5); opacity: 0; } 100% { transform: translateX(-50%) scale(1); opacity: 1; } }
     
         /* Asset333 Dark Mode Runner Styles */
-        .runner-head-wrapper { position: relative; width: 44px; height: 44px; z-index: 20; display: flex; justify-content: center; align-items: center; border-radius: 50%; }
+        .runner-head-wrapper { position: relative; width: 40px; height: 40px; z-index: 20; display: flex; justify-content: center; align-items: center; border-radius: 50%; }
         .runner-head-wrapper .emoji { font-size: 20px; position: absolute; z-index: 21; }
         .runner-photo { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; position: absolute; z-index: 22; display: none; }
         
-        .runner-torso { width: 40px; height: 41px; border-radius: 12px; position: relative; z-index: 10; margin-top: -3px; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: transform 0.2s;}
+        .runner-torso { width: 36px; height: 37px; border-radius: 12px; position: relative; z-index: 10; margin-top: -3px; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: transform 0.2s;}
         .runner-torso:hover { transform: scale(1.1); }
         .runner-nametag-glow { font-weight: 500; font-size: 11px; z-index: 25; white-space: nowrap; letter-spacing: 1px; pointer-events: none; }
         
-        .runner-leg-solid { position: absolute; width: 2px; height: 20px; border-radius: 1px; top: 35px; z-index: 5; pointer-events: none; }
+        .runner-leg-solid { position: absolute; width: 2px; height: 18px; border-radius: 1px; top: 31px; z-index: 5; pointer-events: none; }
         .leg-left { left: 10px; transform: rotate(10deg); }
         .leg-right { right: 10px; transform: rotate(-10deg); }
         
@@ -710,7 +710,7 @@
                 let attempts = 0;
                 let originalLeft = left;
                 while (attempts < 30) {
-                    let inBounds = (left >= 2 && left <= 88);
+                    let inBounds = (left >= 6.5 && left <= 87);
                     let collision = placed.find(p => Math.abs(p.top - top) < 3.0 && Math.abs(p.left - left) < 14.0);
                     
                     if (inBounds && !collision) break;
@@ -722,8 +722,8 @@
                 }
                 
                 // Fallback to avoid runners disappearing off-screen
-                if (left < 2 || left > 88) {
-                    left = 5 + Math.random() * 80;
+                if (left < 6.5 || left > 87) {
+                    left = 7 + Math.random() * 80;
                 }
                 
                 placed.push({top: top, left: left});

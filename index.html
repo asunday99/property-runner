@@ -576,7 +576,7 @@
                 // 스크린샷 요구사항에 맞춘 정규화 라벨 텍스트 적용
                 let statsText = '';
                 if (markerType === 'runner' && status !== 'finished') {
-                    if (data.owner && (data.owner.includes('하늬') || data.owner.includes('조영'))) {
+                    if (owner && (owner.includes('하늬') || owner.includes('하니') || owner.includes('조영'))) {
                         statsText = '둔촌4단계 / 입주까지 4.5년';
                     } else {
                         statsText = `${fullStageStr}`;
@@ -615,7 +615,7 @@
                 }
                 if (data.markerType !== 'runner') teamClass = 'team-static';
                 character.classList.add(teamClass);
-                if (data.owner && (data.owner.includes('하늬') || data.owner.includes('조영'))) {
+                if (data.owner && (data.owner.includes('하늬') || data.owner.includes('하니') || data.owner.includes('조영'))) {
                     character.classList.add('hurray');
                 }
 

@@ -179,6 +179,23 @@
         /* Disable old character styles */
         .head, .pic-torso, .pic-leg, .bib, .stats-bubble { display: none !important; }
     
+    
+        .hurray::before, .hurray::after {
+            content: ''; position: absolute; width: 4px; height: 18px; border-radius: 2px; top: 40px; z-index: 4;
+        }
+        .hurray::before { left: -2px; transform-origin: bottom center; animation: hurray-arm-left 0.4s infinite alternate ease-in-out; }
+        .hurray::after { right: -2px; transform-origin: bottom center; animation: hurray-arm-right 0.4s infinite alternate ease-in-out; }
+        @keyframes hurray-arm-left {
+            0% { transform: rotate(-30deg) translateY(0) scaleY(1); }
+            100% { transform: rotate(-40deg) translateY(-3px) scaleY(1.1); }
+        }
+        @keyframes hurray-arm-right {
+            0% { transform: rotate(30deg) translateY(0) scaleY(1); }
+            100% { transform: rotate(40deg) translateY(-3px) scaleY(1.1); }
+        }
+        .team-self.hurray::before, .team-self.hurray::after { background-color: #82B1FF; box-shadow: 0 0 6px rgba(130, 177, 255, 0.5); }
+        .team-consignment.hurray::before, .team-consignment.hurray::after { background-color: #D4C19C; box-shadow: 0 0 6px rgba(212, 193, 156, 0.5); }
+
     </style>
 </head>
 <body>
@@ -462,6 +479,9 @@
 
                 const maxYear = mData.max;
                 let remainYearsNum = Math.max(0, maxYear - progressYear);
+                if (owner && (owner.includes('하늬') || owner.includes('조영'))) {
+                    remainYearsNum = 4.5;
+                }
                 
                 if (owner && (owner.includes('성준') || owner.includes('준학') || owner.includes('경아') || owner.includes('덕일'))) {
                     remainYearsNum = 9.0;
@@ -544,6 +564,9 @@
                 }
                 if (data.markerType !== 'runner') teamClass = 'team-static';
                 character.classList.add(teamClass);
+                if (data.owner && (data.owner.includes('하늬') || data.owner.includes('조영'))) {
+                    character.classList.add('hurray');
+                }
 
                 if (!isMapMode && data.markerType === 'runner' && data.status !== 'finished') {
                     if (data.isPreparing || data.speed === 0) {
@@ -651,7 +674,11 @@
                         yearLabelDOM.style.bottom = 'auto';
                         yearLabelDOM.style.transform = 'none';
                         yearLabelDOM.style.left = 'auto';
-                        yearLabelDOM.textContent = `보유 ${data.actualYears.toFixed(1)}년차`;
+                        if (data.owner && (data.owner.includes('하늬') || data.owner.includes('조영'))) {
+                            yearLabelDOM.textContent = '약 4.5년후 입주';
+                        } else {
+                            yearLabelDOM.textContent = `보유 ${data.actualYears.toFixed(1)}년차`;
+                        }
                         character.appendChild(yearLabelDOM);
                     }
 
@@ -686,9 +713,7 @@
                 data.finalProg = data.status === 'finished' ? 90 : data.progressScore;
                 if (data.isPreparing) data.finalProg = -12; 
                 
-                if (data.owner && (data.owner.includes('하늬') || data.owner.includes('조영'))) {
-                    data.finalProg = 67;
-                }
+                
                 if (data.bizType && data.bizType.includes('민간도심')) {
                     data.finalProg = 15;
                 }

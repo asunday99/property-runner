@@ -36,7 +36,8 @@
         .tab-inactive { color: #6b7280; border-bottom: none; }
         .tab-inactive:hover { color: #9ca3af; background: rgba(255,255,255,0.05); }
 
-        #view-marathon, #view-map { flex-grow: 1; position: relative; width: 100%; height: 100%; }
+        #view-map { flex-grow: 1; position: relative; width: 100%; height: 100%; }
+        #view-marathon { flex-grow: 1; position: relative; width: 100%; height: 100%; overflow-y: auto; overflow-x: hidden; scroll-behavior: smooth; }
         #view-map { display: none; }
         
         #view-marathon { background: linear-gradient(to bottom, #d1d5db 0%, #9ca3af 100%); overflow: hidden; }

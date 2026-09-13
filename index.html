@@ -702,40 +702,47 @@
                 lanes[dong] = dongs.length > 1 ? 25 + (50 * (idx / (dongs.length - 1))) : 50;
             });
 
-            const placed = [];
-            
             // Sort by progress so we place from bottom to top
             runners.sort((a, b) => a.finalProg - b.finalProg);
 
+            // Group into clusters based on Y proximity to perfectly center them
+            const clusters = [];
             runners.forEach(data => {
-                let top = data._baseTop;
-                let left = lanes[data._dongName] || 50;
-                
-                left += (Math.random() * 4 - 2); // slight natural noise
+                let added = false;
+                for (let c of clusters) {
+                    if (Math.abs(c.top - data._baseTop) < 3.0) {
+                        c.runners.push(data);
+                        added = true;
+                        break;
+                    }
+                }
+                if (!added) {
+                    clusters.push({ top: data._baseTop, runners: [data] });
+                }
+            });
 
-                // Collision detection (shift X only to preserve exact Y date differences)
-                let attempts = 0;
-                let originalLeft = left;
-                while (attempts < 30) {
-                    let inBounds = (left >= 6.5 && left <= 87);
-                    let collision = placed.find(p => Math.abs(p.top - top) < 3.0 && Math.abs(p.left - left) < 14.0);
+            const placed = [];
+            
+            clusters.forEach(cluster => {
+                let n = cluster.runners.length;
+                let GAP = 12.0; // 12% gap
+                
+                if (n > 7) GAP = 10.0;
+                if (n > 9) GAP = 8.5;
+
+                // Exactly 48.75% aligns the center of the 40px character to the 410px point on a 800px track
+                let startLeft = 48.75 - ((n - 1) * GAP / 2);
+                
+                cluster.runners.forEach((data, i) => {
+                    let top = data._baseTop;
+                    let left = startLeft + (i * GAP);
                     
-                    if (inBounds && !collision) break;
+                    if (left < 6.5) left = 6.5 + (Math.random() * 2);
+                    if (left > 87) left = 87 - (Math.random() * 2);
                     
-                    attempts++;
-                    let offset = Math.ceil(attempts / 2) * 14;
-                    let sign = (attempts % 2 === 1) ? 1 : -1;
-                    left = originalLeft + (offset * sign);
-                }
-                
-                // Fallback to avoid runners disappearing off-screen
-                if (left < 6.5 || left > 87) {
-                    left = 7 + Math.random() * 80;
-                }
-                
-                placed.push({top: top, left: left});
-                
-                const charDOM = createCharacterDOM(data, false);
+                    placed.push({top: top, left: left});
+                    
+                    const charDOM = createCharacterDOM(data, false);
                 charDOM.style.left = `${left}%`;
                 charDOM.style.top = `${top}%`;
                 charDOM.style.zIndex = Math.floor(top * 100);

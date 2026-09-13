@@ -451,6 +451,10 @@
                 const maxYear = mData.max;
                 let remainYearsNum = Math.max(0, maxYear - progressYear);
                 
+                if (owner && (owner.includes('성준') || owner.includes('준학') || owner.includes('경아') || owner.includes('덕일'))) {
+                    remainYearsNum = 9.0;
+                }
+                
                 const GLOBAL_MAX_YEAR = 14.75;
                 let completionPercent = (GLOBAL_MAX_YEAR - remainYearsNum) / GLOBAL_MAX_YEAR;
                 if (completionPercent < 0) completionPercent = 0;

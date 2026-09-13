@@ -65,8 +65,8 @@
         /* Vertical line CSS updated */
         .finish-line { position: absolute; top: 5%; left: 0; right: 0; height: 15px; width: 100%; background: repeating-linear-gradient(45deg, white, white 15px, #2563eb 15px, #2563eb 30px); box-shadow: 0 5px 10px rgba(0,0,0,0.1); z-index: 0; }
         .finish-banner { position: absolute; top: calc(5% - 30px); left: 20px; background: #2563eb; color: white; padding: 6px 12px; border-radius: 6px; font-weight: 900; font-size: 14px; z-index: 5; letter-spacing: 1px; box-shadow: 0 4px 6px rgba(0,0,0,0.2); }
-        .demolition-line { position: absolute; top: 19.16%; left: 0; right: 0; border-top: 2px dashed #ef4444; z-index: 0; }
-        .demolition-banner { position: absolute; top: calc(19.16% - 28px); left: 20px; background: #ef4444; color: white; padding: 4px 10px; border-radius: 6px; font-weight: 800; font-size: 12px; z-index: 5; box-shadow: 0 4px 6px rgba(0,0,0,0.2); }
+        .demolition-line { position: absolute; top: 9.72%; left: 0; right: 0; border-top: 2px dashed #ef4444; z-index: 0; }
+        .demolition-banner { position: absolute; top: calc(9.72% - 28px); left: 20px; background: #ef4444; color: white; padding: 4px 10px; border-radius: 6px; font-weight: 800; font-size: 12px; z-index: 5; box-shadow: 0 4px 6px rgba(0,0,0,0.2); }
 
         .runner-container { position: absolute; display: flex; justify-content: center; align-items: flex-end; transition: z-index 0.2s; }
         .runner-container:hover { z-index: 9999 !important; }
@@ -149,7 +149,7 @@
         <input type="file" id="photoInput" accept="image/*" style="display: none;">
 
         <div id="view-marathon">
-    <div id="runners-area" style="width:100%; max-width:800px; margin:0 auto; min-height:1500px; position:relative; padding-bottom:100px;">
+    <div id="runners-area" style="width:100%; max-width:800px; margin:0 auto; min-height:1500px; position:relative; padding-bottom:250px;">
         <!-- Left vertical axis -->
         <div class="y-axis-line" style="position:absolute; left:20px; top:0; bottom:0; border-left:2px solid #9ca3af; z-index:5; pointer-events:none;"></div>
         
@@ -161,34 +161,34 @@
                 <div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#4b5563; white-space:nowrap;">입주</div>
             </div>
             <!-- 철거 (75%) -> 19.16% -->
-            <div class="time-marker-y" style="position:absolute; top:19.16%; left:20px;">
+            <div class="time-marker-y" style="position:absolute; top:9.72%; left:20px;">
                 <div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#9ca3af;"></div>
                 <div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#4b5563; white-space:nowrap;">철거 (75%)</div>
             </div>
             <!-- 50% -> 42.77% -->
-            <div class="time-marker-y" style="position:absolute; top:42.77%; left:20px;">
+            <div class="time-marker-y" style="position:absolute; top:34.82%; left:20px;">
                 <div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#9ca3af;"></div>
                 <div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#4b5563; white-space:nowrap;">50%</div>
             </div>
             <!-- 25% -> 66.38% -->
-            <div class="time-marker-y" style="position:absolute; top:66.38%; left:20px;">
+            <div class="time-marker-y" style="position:absolute; top:59.91%; left:20px;">
                 <div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#9ca3af;"></div>
                 <div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#4b5563; white-space:nowrap;">25%</div>
             </div>
             <!-- 출발 (0%) -> 90% -->
-            <div class="time-marker-y" style="position:absolute; top:90%; left:20px;">
+            <div class="time-marker-y" style="position:absolute; top:85%; left:20px;">
                 <div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#9ca3af;"></div>
                 <div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#4b5563; white-space:nowrap;">출발</div>
             </div>
             <!-- 준비중 (-12) -> 95% -->
-            <div class="time-marker-y" style="position:absolute; top:95%; left:20px;">
+            <div class="time-marker-y" style="position:absolute; top:91%; left:20px;">
                 <div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#9ca3af;"></div>
                 <div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#4b5563; white-space:nowrap;">준비중</div>
             </div>
             
             <!-- Finish & Demolition Line Banners -->
             <div class="finish-line"></div>
-            <div class="finish-banner">입주 (Finish)</div>
+            <div class="finish-banner">입주</div>
             <div class="demolition-line"></div>
             <div class="demolition-banner">철거 (75%)</div>
         </div>
@@ -643,9 +643,16 @@
                 data.finalProg = data.status === 'finished' ? 90 : data.progressScore;
                 if (data.isPreparing) data.finalProg = -12; 
                 
-                let baseTop = 90 - (data.finalProg * (85/90));
-                if (data.finalProg < 0) {
-                    baseTop = 90 + (data.finalProg / -12) * 5; // -12 maps to 95%
+                let baseTop;
+                if (data.finalProg >= 75) {
+                    let ratio = (data.finalProg - 75) / 15;
+                    baseTop = 9.72 - (ratio * 4.72); // 90 maps to 5%, 75 maps to 9.72%
+                } else if (data.finalProg >= 0) {
+                    let ratio = data.finalProg / 75;
+                    baseTop = 85 - (ratio * 75.28); // 0 maps to 85%, 75 maps to 9.72%
+                } else {
+                    let ratio = data.finalProg / -12;
+                    baseTop = 85 + (ratio * 6); // -12 maps to 91%
                 }
                 
                 let dongName = '';

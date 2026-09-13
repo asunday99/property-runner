@@ -558,10 +558,7 @@
                 headWrapper.appendChild(uploadedImg);
                 character.appendChild(headWrapper);
 
-                const thoughtBubble = document.createElement('div');
-                thoughtBubble.className = 'speech-bubble';
-                thoughtBubble.textContent = data.msg;
-                container.appendChild(thoughtBubble);
+                
 
                 if (data.markerType === 'runner') {
                     const torso = document.createElement('div');
@@ -603,7 +600,7 @@
                         document.querySelectorAll('.speech-bubble, .runner-status-minimal').forEach(b => b.classList.remove('active'));
                         if (!isZoomed) {
                             headWrapper.classList.add('zoomed');
-                            thoughtBubble.classList.add('active');
+                            
                             statusTag.classList.add('active');
                         }
                     };

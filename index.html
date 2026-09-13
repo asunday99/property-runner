@@ -32,11 +32,11 @@
 
         .drawer-close { align-self: flex-end; padding: 20px; font-size: 20px; color: #9ca3af; cursor: pointer; }
         .drawer-content { padding: 0 24px 30px 24px; }
-        .drawer-title { font-family: 'Arial Black', sans-serif; font-size: 28px; color: #D4C19C; text-align: center; margin-bottom: 24px; font-weight: 900; letter-spacing: -1px; }
-        .drawer-subtitle { font-size: 13px; color: #9ca3af; text-align: center; line-height: 1.5; margin-bottom: 40px; }
+        .drawer-title { font-family: 'Pretendard', sans-serif; font-size: 26px; color: #D4C19C; text-align: center; margin-bottom: 24px; font-weight: 800; letter-spacing: 0px; }
+        .drawer-subtitle { font-size: 13px; color: #b5a892; text-align: center; line-height: 1.5; margin-bottom: 20px; font-weight: 500; }
 
         .drawer-section { margin-bottom: 30px; }
-        .drawer-section-title { font-size: 16px; color: #60a5fa; font-weight: 700; margin-bottom: 8px; }
+        .drawer-section-title { font-size: 15px; color: #60a5fa; font-weight: 700; margin-bottom: 8px; }
         .drawer-section-sub { font-size: 14px; color: #ffffff; font-weight: 700; margin-bottom: 12px; }
         .drawer-list { list-style: disc; padding-left: 20px; color: #9ca3af; font-size: 13px; line-height: 1.6; margin: 0; }
         .drawer-list li { margin-bottom: 8px; }
@@ -210,27 +210,29 @@
         <!-- Drawer Component -->
 <div id="drawer-overlay" class="drawer-overlay" onclick="toggleDrawer()"></div>
 <div id="drawer-sidebar" class="drawer-sidebar">
-    <div class="drawer-close" onclick="toggleDrawer()">&#10094;&#10094;</div>
+    <div class="drawer-close" onclick="toggleDrawer()">&lt;&lt;</div>
     <div class="drawer-content">
         <h2 class="drawer-title">PROPERTY RUNNER</h2>
-        <p class="drawer-subtitle">이 앱은 구글시트에 기록된 방대한 부동산 투자 데이터를 한눈에 시각화하고 관리할 목적으로 제작되었습니다.</p>
+        <p class="drawer-subtitle">이 앱은 구글시트에 기록된 방대한 부동산 투자 데이터를<br>한눈에 시각화하고 관리할 목적으로 제작되었습<br>니다</p>
         
+        <div class="drawer-divider"></div>
+
         <div class="drawer-section">
-            <h3 class="drawer-section-title">러너 뷰 <span style="font-size:13px; font-weight:normal; color:#9ca3af;">(마라톤 트랙)</span></h3>
-            <p class="drawer-section-sub">= 진행 상태 및 보유 기간 시각화</p>
+            <h3 class="drawer-section-title">러너 뷰 <span style="font-weight:normal;">(마라톤 트랙)</span></h3>
+            <p class="drawer-section-sub" style="color:#ffffff; text-shadow: -1px 0 rgba(255,0,0,0.7), 1px 0 rgba(0,255,255,0.7);">= 진행 상태 및 보유 기간 시각화</p>
             <ul class="drawer-list">
-                <li>캐릭터: 각 물건의 소유자 및 투자 형태 표시</li>
-                <li>트랙: 매각까지 남은 기간과 현재 진행 단계 표시</li>
+                <li><i style="color:#9ca3af;">캐릭터:</i> 각 물건의 소유자 및 투자 형태 표시</li>
+                <li><i style="color:#9ca3af;">트랙:</i> 매각까지 남은 기간과 현재 진행 단계 표시</li>
             </ul>
         </div>
         
         <div class="drawer-divider"></div>
         
         <div class="drawer-section">
-            <h3 class="drawer-section-title">지도 뷰 <span style="font-size:13px; font-weight:normal; color:#9ca3af;">(위치 기반)</span></h3>
-            <p class="drawer-section-sub">= 실제 부동산 위치 확인</p>
+            <h3 class="drawer-section-title">지도 뷰 <span style="font-weight:normal;">(위치 기반)</span></h3>
+            <p class="drawer-section-sub" style="color:#ffffff; text-shadow: -1px 0 rgba(255,0,0,0.7), 1px 0 rgba(0,255,255,0.7);">= 실제 부동산 위치 확인</p>
             <ul class="drawer-list">
-                <li>지도를 누르면 해당 물건들의 지리적 분포를 볼 수 있어요</li>
+                <li>지도를 누르면 해당 물건들의 지리적 분포를 볼 수<br>있어요</li>
             </ul>
         </div>
     </div>

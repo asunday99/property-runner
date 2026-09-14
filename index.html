@@ -902,7 +902,10 @@
             const geocodePromises = runnersData.map(data => {
                 if (!data.address || data.address.includes('인천') || data.status === 'finished') return Promise.resolve();
                 
-                const searchAddr = cleanAddress(data.address);
+                let searchAddr = cleanAddress(data.address);
+                if (data.owner.includes('고미') && data.address.includes('성수')) {
+                    searchAddr = '서울 성동구 성수일로 111';
+                }
                 return new Promise(resolve => {
                     geocoder.addressSearch(searchAddr, function(result, status) {
                         if (status === kakao.maps.services.Status.OK) {

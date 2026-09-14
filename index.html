@@ -701,11 +701,9 @@
 
                 headWrapper.appendChild(emojiSpan);
                 headWrapper.appendChild(uploadedImg);
-                character.appendChild(headWrapper);
-
-                
 
                 if (data.markerType === 'runner') {
+                    character.appendChild(headWrapper);
                     const torso = document.createElement('div');
                     torso.className = 'runner-torso';
 

@@ -792,16 +792,28 @@
                     if (!isMapMode && data.status !== 'finished') {
                         const yearLabelDOM = document.createElement('div');
                         yearLabelDOM.className = 'track-year-label';
-                        yearLabelDOM.style.marginTop = '4px';
-                        yearLabelDOM.style.fontSize = '10px';
-                        yearLabelDOM.style.color = '#9ca3af';
-                        yearLabelDOM.style.background = 'transparent';
-                        yearLabelDOM.style.boxShadow = 'none';
+                        yearLabelDOM.style.marginTop = '6px';
+                        yearLabelDOM.style.fontSize = '11px';
+                        yearLabelDOM.style.color = '#b5924a';
+                        yearLabelDOM.style.backgroundColor = 'rgba(15, 20, 25, 0.85)';
+                        yearLabelDOM.style.border = '1px solid #4b5563';
+                        yearLabelDOM.style.borderRadius = '6px';
+                        yearLabelDOM.style.padding = '4px 8px';
+                        yearLabelDOM.style.boxShadow = '0 2px 4px rgba(0,0,0,0.5)';
                         yearLabelDOM.style.position = 'relative';
                         yearLabelDOM.style.bottom = 'auto';
                         yearLabelDOM.style.transform = 'none';
                         yearLabelDOM.style.left = 'auto';
-                        yearLabelDOM.textContent = data.statsText;
+                        yearLabelDOM.style.display = 'inline-block';
+                        yearLabelDOM.style.textAlign = 'center';
+                        yearLabelDOM.style.lineHeight = '1.3';
+                        yearLabelDOM.style.whiteSpace = 'nowrap';
+                        
+                        let displayText = data.statsText;
+                        if (data.progressScore >= 60 && displayText.includes('/')) {
+                            displayText = displayText.replace(/\s*\/\s*/, '<br>');
+                        }
+                        yearLabelDOM.innerHTML = displayText;
                         character.appendChild(yearLabelDOM);
                     }
 

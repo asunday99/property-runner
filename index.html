@@ -975,16 +975,16 @@
                     
                     
                     // Horizontal Spreading Overrides
-                    if (data.owner.includes('아선') && data.address && data.address.includes('서빙고')) left = 40;
-                    if (data.owner.includes('원일')) left = 60;
+                    if (data.owner.includes('아선') && data.address && data.address.includes('서빙고')) left = 35;
+                    if (data.owner.includes('원일')) left = 65;
                     
-                    if (data.owner.includes('성준')) left = 22;
-                    if (data.owner.includes('덕일')) left = 78;
+                    if (data.owner.includes('성준')) left = 20;
+                    if (data.owner.includes('덕일')) left = 80;
                     
-                    if (data.owner.includes('준학')) left = 22;
-                    if (data.owner.includes('경아')) left = 78;
-                    if (data.owner.includes('의대')) left = 40;
-                    if (data.owner.includes('지원')) left = 60;
+                    if (data.owner.includes('준학')) left = 35;
+                    if (data.owner.includes('경아')) left = 65;
+                    if (data.owner.includes('의대')) left = 20;
+                    if (data.owner.includes('지원')) left = 80;
                     
                     let minLeft = window.innerWidth <= 768 ? 17 : 6.5;
                     if (left < minLeft) left = minLeft + (Math.random() * 2);

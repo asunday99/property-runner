@@ -243,9 +243,7 @@
 <div id="header">
     <div class="header-top">
         <div class="header-top-left" onclick="toggleDrawer()">&#10095;&#10095;</div>
-        <div class="header-top-center">
-            <span style="letter-spacing: 2px; margin-right: 6px;">•••</span> CONNECTING
-        </div>
+        <div class="header-top-center"></div>
         <div class="header-top-right">
             <span>Fork</span>
             <svg style="width:18px; height:18px; fill:currentColor;" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
@@ -267,7 +265,7 @@
         
         <!-- Y-axis markers -->
         <div class="timeline-container-y" style="position:absolute; left:0; right:0; top:0; bottom:0; pointer-events:none; z-index:5;">
-            <div class="time-marker-y" style="position:absolute; top:5%; left:20px; z-index:10; background:rgba(0,0,0,0.6); padding:2px 6px; border-radius:4px;"><div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#555;"></div><div style="position:absolute; left:12px; top:-14px; font-size:22px; font-weight:900; color:#9ca3af; white-space:nowrap;">입주</div></div>
+            <div class="time-marker-y" style="position:absolute; top:5%; left:20px; z-index:10; background:rgba(0,0,0,0.6); padding:2px 6px; border-radius:4px;"><div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#555;"></div><div style="position:absolute; left:12px; top:-14px; font-size:22px; font-weight:900; color:#ffffff; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 0 2px 4px rgba(0,0,0,0.8); white-space:nowrap;">입주</div></div>
             <div class="time-marker-y" style="position:absolute; top:18.33%; left:20px;"><div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#555;"></div><div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#9ca3af; white-space:nowrap;">75%</div></div>
             <div class="time-marker-y" style="position:absolute; top:31.67%; left:20px;"><div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#555;"></div><div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#9ca3af; white-space:nowrap;">60%</div></div>
             <div class="time-marker-y" style="position:absolute; top:45%; left:20px;"><div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#555;"></div><div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#9ca3af; white-space:nowrap;">45%</div></div>
@@ -276,7 +274,7 @@
             <div class="time-marker-y" style="position:absolute; top:85%; left:20px;"><div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#555;"></div><div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#9ca3af; white-space:nowrap;">출발</div></div>
             <div class="demolition-line" style="top:85%; border-top: 2px dashed #ef4444; opacity: 0.5;"></div>
             <!-- Watermark -->
-            <div style="position: absolute; top: 14%; left: calc(50% + 10px); transform: translateX(-50%); text-align: center; color: rgba(255, 255, 255, 0.15); font-size: 16px; font-weight: 700; white-space: nowrap; z-index: 0; pointer-events: none; letter-spacing: -0.5px;">
+            <div style="position: absolute; top: 14%; left: calc(50% + 10px); transform: translateX(-50%); text-align: center; color: rgba(255, 255, 255, 0.3); font-size: 16px; font-weight: 700; white-space: nowrap; z-index: 0; pointer-events: none; letter-spacing: -0.5px;">
                 러너의 컨디션에 따라 순위는 변경될 수 있습니다
             </div>
 
@@ -284,7 +282,7 @@
             <div class="time-marker-y" style="position:absolute; top:97%; left:20px;"><div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#555;"></div><div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#9ca3af; white-space:nowrap;">매각예정</div></div>
             <div class="finish-line" style="top:5%; height:15px; background:repeating-linear-gradient(45deg, #111, #111 15px, #D4C19C 15px, #D4C19C 30px); border-bottom:1px solid #333;"></div>
             
-            <div class="time-marker-y" style="position:absolute; top:9.44%; left:20px; z-index:10;"><div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#ef4444;"></div><div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#ef4444; white-space:nowrap;">철거 (85%)</div></div>
+            <div class="time-marker-y" style="position:absolute; top:9.44%; left:20px; z-index:10;"><div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#ef4444;"></div><div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#ef4444; white-space:nowrap;">철거</div></div>
             <div class="demolition-line" style="top:9.44%; border-top: 2px dashed #ef4444; opacity: 0.5;"></div>
 
         </div>

@@ -695,12 +695,29 @@
                 const uploadedImg = document.createElement('img');
                 uploadedImg.className = 'runner-photo face-img';
                 
+                const cleanOwnerName = data.owner.trim();
                 const savedPhoto = localStorage.getItem('photo_' + data.owner);
+                const assetPhotoPath = `./assets/${cleanOwnerName}.png`;
+
                 if (savedPhoto) {
                     uploadedImg.src = savedPhoto;
                     uploadedImg.style.display = 'block';
                     emojiSpan.style.display = 'none';
                     character.dataset.hasPhoto = 'true';
+                } else {
+                    // Preload asset photo
+                    uploadedImg.src = assetPhotoPath;
+                    uploadedImg.style.display = 'none';
+                    
+                    uploadedImg.onload = function() {
+                        uploadedImg.style.display = 'block';
+                        emojiSpan.style.display = 'none';
+                        character.dataset.hasPhoto = 'true';
+                    };
+                    uploadedImg.onerror = function() {
+                        uploadedImg.style.display = 'none';
+                        emojiSpan.style.display = 'inline-block';
+                    };
                 }
 
                 headWrapper.appendChild(emojiSpan);

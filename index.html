@@ -750,7 +750,7 @@
 
                     const statusTag = document.createElement('div');
                     statusTag.className = 'runner-status-minimal';
-                    statusTag.textContent = data.statsText;
+                    statusTag.textContent = `보유 ${data.actualYears.toFixed(1)}년차`;
                     character.appendChild(statusTag);
 
                     // Add photo upload click event
@@ -801,7 +801,7 @@
                         yearLabelDOM.style.bottom = 'auto';
                         yearLabelDOM.style.transform = 'none';
                         yearLabelDOM.style.left = 'auto';
-                        yearLabelDOM.textContent = `보유 ${data.actualYears.toFixed(1)}년차`;
+                        yearLabelDOM.textContent = data.statsText;
                         character.appendChild(yearLabelDOM);
                     }
 

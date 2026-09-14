@@ -44,7 +44,8 @@
 
         .drawer-divider { width: 100%; height: 1px; background-color: #292929; margin-bottom: 30px; }
 
-        #view-map { flex-grow: 1; position: relative; width: 100%; height: 100%; }
+        #view-map { flex-grow: 1; position: relative; width: 100%; height: 100%; filter: invert(100%) hue-rotate(180deg) brightness(90%) contrast(90%); background-color: #111; }
+        #view-map .runner-container { filter: contrast(111%) brightness(111%) hue-rotate(-180deg) invert(100%); }
         #view-marathon { flex-grow: 1; position: relative; width: 100%; height: 100%; overflow-y: auto; overflow-x: hidden; scroll-behavior: smooth; }
         #view-map { display: none; }
         

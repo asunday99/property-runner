@@ -158,19 +158,19 @@
         .runner-status-minimal.active { display: block; }
 
         /* Champagne Gold (위탁) */
-        .team-consignment .runner-head-wrapper { background: #030303; border: 3.6px solid #FFCC00; box-shadow: 0 0 15px rgba(212, 193, 156, 0.4), inset 0 0 15px rgba(212, 193, 156, 0.8), inset 0 0 30px rgba(212, 193, 156, 0.4); }
-        .team-consignment .runner-torso { background: #030303; border: 3.6px solid #FFCC00; box-shadow: 0 0 15px rgba(212, 193, 156, 0.4), inset 0 10px 10px -5px rgba(212, 193, 156, 0.9), inset 0 -10px 10px -5px rgba(212, 193, 156, 0.9), inset 0 2px 4px rgba(255, 255, 255, 0.7), inset 0 -2px 4px rgba(255, 255, 255, 0.7); }
+        .team-consignment .runner-head-wrapper { background: #030303; border: 1.8px solid #D4C19C; box-shadow: 0 0 15px rgba(212, 193, 156, 0.4), inset 0 0 15px rgba(212, 193, 156, 0.8), inset 0 0 30px rgba(212, 193, 156, 0.4); }
+        .team-consignment .runner-torso { background: #030303; border: 1.8px solid #D4C19C; box-shadow: 0 0 15px rgba(212, 193, 156, 0.4), inset 0 10px 10px -5px rgba(212, 193, 156, 0.9), inset 0 -10px 10px -5px rgba(212, 193, 156, 0.9), inset 0 2px 4px rgba(255, 255, 255, 0.7), inset 0 -2px 4px rgba(255, 255, 255, 0.7); }
         .team-consignment .runner-nametag-glow { color: #FFFFFF; text-shadow: 0 0 6px rgba(255, 255, 255, 0.5); }
         .team-consignment .runner-leg-solid { background: #D4C19C; box-shadow: 0 0 6px rgba(212, 193, 156, 0.5); }
         .team-consignment .runner-status-minimal { color: #D4C19C; border: 1px solid rgba(212, 193, 156, 0.3); box-shadow: 0 0 8px rgba(212, 193, 156, 0.1); }
 
         /* Metal Blue (직영/개인/법인) */
-        .team-self .runner-head-wrapper { background: #030303; border: 1.8px solid #C665D9; box-shadow: 0 0 15px rgba(198, 101, 217, 0.4), inset 0 0 15px rgba(198, 101, 217, 0.8), inset 0 0 30px rgba(198, 101, 217, 0.4); }
-        .team-self .runner-torso { background: #030303; border: 1.8px solid #C665D9; box-shadow: 0 0 15px rgba(198, 101, 217, 0.4), inset 0 10px 10px -5px rgba(198, 101, 217, 0.9), inset 0 -10px 10px -5px rgba(198, 101, 217, 0.9), inset 0 2px 4px rgba(255, 255, 255, 0.7), inset 0 -2px 4px rgba(255, 255, 255, 0.7); }
+        .team-self .runner-head-wrapper { background: #030303; border: 1.8px solid #D946EF; box-shadow: 0 0 15px rgba(217, 70, 239, 0.4), inset 0 0 15px rgba(217, 70, 239, 0.8), inset 0 0 30px rgba(217, 70, 239, 0.4); }
+        .team-self .runner-torso { background: #030303; border: 1.8px solid #D946EF; box-shadow: 0 0 15px rgba(217, 70, 239, 0.4), inset 0 10px 10px -5px rgba(217, 70, 239, 0.9), inset 0 -10px 10px -5px rgba(217, 70, 239, 0.9), inset 0 2px 4px rgba(255, 255, 255, 0.7), inset 0 -2px 4px rgba(255, 255, 255, 0.7); }
         /* White text for Metal Blue */
         .team-self .runner-nametag-glow { color: #FFFFFF; text-shadow: 0 0 6px rgba(255, 255, 255, 0.5); }
-        .team-self .runner-leg-solid { background: #C665D9; box-shadow: 0 0 6px rgba(198, 101, 217, 0.5); }
-        .team-self .runner-status-minimal { color: #FFFFFF; border: 1px solid rgba(198, 101, 217, 0.3); box-shadow: 0 0 8px rgba(198, 101, 217, 0.1); }
+        .team-self .runner-leg-solid { background: #D946EF; box-shadow: 0 0 6px rgba(217, 70, 239, 0.5); }
+        .team-self .runner-status-minimal { color: #FFFFFF; border: 1px solid rgba(217, 70, 239, 0.3); box-shadow: 0 0 8px rgba(217, 70, 239, 0.1); }
 
         /* Animation fixes */
         .running .leg-left { animation: swing-opp var(--run-speed) infinite alternate ease-in-out; }
@@ -201,7 +201,7 @@
             0% { transform: rotate(35deg) translateY(0); }
             100% { transform: rotate(45deg) translateY(-2px); }
         }
-        .team-self.hurray::before, .team-self.hurray::after { background-color: #C665D9; box-shadow: 0 0 6px rgba(198, 101, 217, 0.5); }
+        .team-self.hurray::before, .team-self.hurray::after { background-color: #D946EF; box-shadow: 0 0 6px rgba(217, 70, 239, 0.5); }
         .team-consignment.hurray::before, .team-consignment.hurray::after { background-color: #D4C19C; box-shadow: 0 0 6px rgba(212, 193, 156, 0.5); }
 
     
@@ -691,9 +691,6 @@
                     const nametag = document.createElement('div');
                     nametag.className = 'runner-nametag-glow';
                     let firstName = data.owner.length > 2 ? data.owner.substring(1) : data.owner;
-                    if (isMapMode && (data.owner.includes('고미') || data.owner.includes('뉴푸드'))) {
-                        firstName = '법인';
-                    }
                     nametag.textContent = firstName;
                     
                     const legL = document.createElement('div');

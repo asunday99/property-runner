@@ -850,9 +850,9 @@
                 
                 trackArea.appendChild(charDOM); }); });
             
-            // Auto-scroll to bottom on load
+            // Auto-scroll to top on load
             setTimeout(() => {
-                viewArea.scrollTop = viewArea.scrollHeight;
+                viewArea.scrollTop = 0;
             }, 100);
         }
 

@@ -737,7 +737,7 @@
                 
                 const cleanOwnerName = data.owner.trim();
                 const savedPhoto = localStorage.getItem('photo_' + data.owner);
-                const assetPhotoPath = `./assets/${cleanOwnerName}.png`;
+                const assetPhotoPath = `./assets/${cleanOwnerName}.png?v=20260914_2`;
 
                 if (savedPhoto) {
                     uploadedImg.src = savedPhoto;

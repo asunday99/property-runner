@@ -598,11 +598,13 @@
             });
 
             
-            const totalRunners = runnersData.filter(d => d.markerType === 'runner').length;
+            const activeRunners = runnersData.filter(d => d.markerType === 'runner' && d.status !== 'finished' && !(d.address && d.address.includes('이태원') && (d.owner.includes('영애') || d.owner.includes('준학') || d.owner.includes('기정') || d.owner.includes('윤정'))));
+            
+            const totalRunners = activeRunners.length;
             const totalProps = runnersData.length;
             
-            const delegatedRunners = runnersData.filter(d => d.markerType === 'runner' && !(d.manager === '개인' || d.manager === '개인위탁' || d.manager === '법인')).length;
-            const directRunners = runnersData.filter(d => d.markerType === 'runner' && (d.manager === '개인' || d.manager === '개인위탁' || d.manager === '법인')).length;
+            const delegatedRunners = activeRunners.filter(d => !(d.manager === '개인' || d.manager === '개인위탁' || d.manager === '법인')).length;
+            const directRunners = activeRunners.filter(d => (d.manager === '개인' || d.manager === '개인위탁' || d.manager === '법인')).length;
             
             const goldEl = document.getElementById('drawer-gold-count');
             if(goldEl) goldEl.innerHTML = '<i style="color:#9aa0a6; font-style: italic;">금색 러너:</i> 위탁 투자 (총 ' + delegatedRunners + '건)';

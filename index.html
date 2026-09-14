@@ -612,8 +612,8 @@
                 return addr && data.status !== 'finished';
             }).length;
             
-            const delegatedRunners = activeRunners.filter(d => !(d.manager === '개인' || d.manager === '개인위탁' || d.manager === '법인')).length;
-            const directRunners = activeRunners.filter(d => (d.manager === '개인' || d.manager === '개인위탁' || d.manager === '법인')).length;
+            const delegatedRunners = activeRunners.filter(d => !(d.manager.includes('개인') || d.manager.includes('법인'))).length;
+            const directRunners = activeRunners.filter(d => (d.manager.includes('개인') || d.manager.includes('법인'))).length;
 
             const runnerGoldEl = document.getElementById('drawer-gold-count');
             if(runnerGoldEl) runnerGoldEl.innerHTML = '<i style="color:#b5924a; font-style: normal; font-weight: bold;">금색 러너:</i> 위탁 투자 (총 ' + delegatedRunners + '건)';
@@ -626,8 +626,8 @@
                 if ((data.owner.includes('고미') || data.owner.includes('뉴푸드')) && data.typeStr && (data.typeStr.includes('토지') || data.typeStr.includes('대지') || data.typeStr.includes('전답'))) addr = '인천광역시 중구 운서동';
                 return addr && data.status !== 'finished';
             });
-            const mapDelegated = mapItems.filter(d => !(d.manager === '개인' || d.manager === '개인위탁' || d.manager === '법인')).length;
-            const mapDirect = mapItems.filter(d => (d.manager === '개인' || d.manager === '개인위탁' || d.manager === '법인')).length;
+            const mapDelegated = mapItems.filter(d => !(d.manager.includes('개인') || d.manager.includes('법인'))).length;
+            const mapDirect = mapItems.filter(d => (d.manager.includes('개인') || d.manager.includes('법인'))).length;
             
             const goldEl = document.getElementById('drawer-map-gold-count');
             if(goldEl) goldEl.innerText = '금색 투자자: 위탁 투자 (총 ' + mapDelegated + '건)';
@@ -660,7 +660,7 @@
                 character.dataset.ownerName = data.owner;
 
                 let teamClass = 'team-consignment';
-                if (data.manager === '개인' || data.manager === '개인위탁' || data.manager === '법인') {
+                if (data.manager.includes('개인') || data.manager.includes('법인')) {
                     teamClass = 'team-self';
                 }
                 if (data.markerType !== 'runner') teamClass = 'team-static';

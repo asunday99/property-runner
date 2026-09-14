@@ -692,6 +692,9 @@
                     const nametag = document.createElement('div');
                     nametag.className = 'runner-nametag-glow';
                     let firstName = data.owner.length > 2 ? data.owner.substring(1) : data.owner;
+                    if (isMapMode && (data.owner.includes('고미') || data.owner.includes('뉴푸드'))) {
+                        firstName = '법인';
+                    }
                     nametag.textContent = firstName;
                     
                     const legL = document.createElement('div');
@@ -771,7 +774,11 @@
                     iconCircle.textContent = data.markerType === 'building' ? '🏢' : '🌱';
                     const nameLabel = document.createElement('div');
                     nameLabel.className = 'name-label';
-                    nameLabel.textContent = data.owner;
+                    let nameText = data.owner;
+                    if (isMapMode && (data.owner.includes('고미') || data.owner.includes('뉴푸드'))) {
+                        nameText = '법인';
+                    }
+                    nameLabel.textContent = nameText;
                     staticWrap.appendChild(iconCircle);
                     staticWrap.appendChild(nameLabel);
                     character.appendChild(staticWrap);

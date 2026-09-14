@@ -620,22 +620,22 @@
                                 // Custom override for Seongsu A-seon
                 if (owner.includes('아선') && address.includes('성수')) {
                     progressScore = 60;
-                    speed = 0.5; // One level faster than 0.9 (which is for 8.5 years)
+                    speed = 0.4; // One level faster than 0.9 (which is for 8.5 years)
                     statsText = '성수3단계<br>8.5년후 준공';
                 }
                 
-                if (owner.includes('아선') && address.includes('서빙고')) { progressScore = 40; isPreparing = false; speed = 0.5; }
-                if (owner.includes('원일')) { progressScore = 40; isPreparing = false; speed = 0.5; }
+                if (owner.includes('아선') && address.includes('서빙고')) { progressScore = 40; isPreparing = false; }
+                if (owner.includes('원일')) { progressScore = 40; isPreparing = false; }
                 
-                if (owner.includes('성준') || owner.includes('덕일')) { progressScore = 35; isPreparing = false; speed = 0.5; }
+                if (owner.includes('성준') || owner.includes('덕일')) { progressScore = 35; isPreparing = false; }
                 
-                if (owner.includes('준학') || owner.includes('경아')) { progressScore = 30; isPreparing = false; speed = 0.5; }
+                if (owner.includes('준학') || owner.includes('경아')) { progressScore = 30; isPreparing = false; }
                 
-                if (owner.includes('문정') || (owner.includes('희영') && !address.includes('옥수')) || owner.includes('의대') || owner.includes('지원') || address.includes('삼전')) { progressScore = 25; isPreparing = false; speed = 0.5; }
+                if (owner.includes('문정') || (owner.includes('희영') && !address.includes('옥수')) || owner.includes('의대') || owner.includes('지원') || address.includes('삼전')) { progressScore = 25; isPreparing = false; }
                 
-                if (address.includes('일원')) { progressScore = 15; isPreparing = false; speed = 0.5; }
+                if (address.includes('일원')) { progressScore = 15; isPreparing = false; }
                 
-                if (owner.includes('하늬') || owner.includes('조영') || owner.includes('하니')) { progressScore = 75; isPreparing = false; speed = 0.5; }
+                if (owner.includes('하늬') || owner.includes('조영') || owner.includes('하니')) { progressScore = 75; isPreparing = false; }
                 
                 return { id: row[idxId], owner, manager, typeStr, markerType, status, speed, msg, statsText, progressScore, address, marathonKm, isPreparing, actualYears, remainYears, bizType: method };
             });
@@ -982,6 +982,8 @@
                     
                     if (data.owner.includes('준학')) left = 35;
                     if (data.owner.includes('경아')) left = 65;
+                    if (data.owner.includes('문정')) left = 40;
+                    if (data.owner.includes('희영') && data.address && data.address.includes('삼성')) left = 60;
                     if (data.owner.includes('의대')) left = 20;
                     if (data.owner.includes('지원')) left = 80;
                     

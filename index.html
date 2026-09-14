@@ -600,6 +600,12 @@
                 
                 if (owner.includes('아선') && typeStr.includes('호텔')) markerType = 'building';
                 if ((owner.includes('고미') || owner.includes('뉴푸드')) && (typeStr.includes('토지') || typeStr.includes('대지') || typeStr.includes('전답'))) markerType = 'land';
+                                // Custom override for Seongsu A-seon
+                if (owner.includes('아선') && address.includes('성수')) {
+                    progressScore = 44;
+                    statsText = '성수3단계<br>입주까지 8.5년';
+                }
+                
                 return { id: row[idxId], owner, manager, typeStr, markerType, status, speed, msg, statsText, progressScore, address, marathonKm, isPreparing, actualYears, remainYears, bizType: method };
             });
 

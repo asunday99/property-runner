@@ -1,0 +1,5 @@
+Total Delegated: 4
+Re_C1_01 (manager: 법인1)
+Re_C1_02 (manager: 법인1)
+Re_C2_01 (manager: 법인2)
+Re_C1_03 (manager: 법인1)

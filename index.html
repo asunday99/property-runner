@@ -591,6 +591,9 @@
                     statsText = `보유 ${actualYears.toFixed(1)}년차 [${typeStr}]`;
                 }
 
+                
+                if (owner.includes('아선') && typeStr.includes('호텔')) markerType = 'building';
+                if ((owner.includes('고미') || owner.includes('뉴푸드')) && (typeStr.includes('토지') || typeStr.includes('대지') || typeStr.includes('전답'))) markerType = 'land';
                 return { id: row[idxId], owner, manager, typeStr, markerType, status, speed, msg, statsText, progressScore, address, marathonKm, isPreparing, actualYears, remainYears, bizType: method };
             });
 
@@ -798,11 +801,13 @@
                     } else if (data.typeStr && data.typeStr.includes('호텔')) {
                         iconCircle.innerHTML = '<img src="./assets/red_building.jpg" style="width:120%; height:120%; object-fit:contain;">';
                         iconCircle.style.background = 'transparent'; iconCircle.style.border = 'none'; iconCircle.style.boxShadow = 'none';
-                    } else if (data.typeStr && data.typeStr.includes('대지')) {
-                        iconCircle.innerHTML = '<img src="./assets/daeji.jpg" style="width:120%; height:120%; object-fit:contain;">';
-                        iconCircle.style.background = 'transparent'; iconCircle.style.border = 'none'; iconCircle.style.boxShadow = 'none';
-                    } else if (data.typeStr && data.typeStr.includes('전답')) {
-                        iconCircle.innerHTML = '<img src="./assets/jeondap.jpg" style="width:120%; height:120%; object-fit:contain;">';
+                    } else if (data.typeStr && (data.typeStr.includes('토지') || data.typeStr.includes('대지') || data.typeStr.includes('전답'))) {
+                        if (!window.gomiLandFlag) {
+                            iconCircle.innerHTML = '<img src="./assets/daeji.jpg" style="width:120%; height:120%; object-fit:contain;">';
+                            window.gomiLandFlag = true;
+                        } else {
+                            iconCircle.innerHTML = '<img src="./assets/jeondap.jpg" style="width:120%; height:120%; object-fit:contain;">';
+                        }
                         iconCircle.style.background = 'transparent'; iconCircle.style.border = 'none'; iconCircle.style.boxShadow = 'none';
                     } else {
                         iconCircle.textContent = data.markerType === 'building' ? '🏢' : '🌱';

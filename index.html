@@ -208,11 +208,11 @@
         .head, .pic-torso, .pic-leg, .bib, .stats-bubble { display: none !important; }
     
     
-        .hurray::before, .hurray::after {
-            content: ''; position: absolute; width: 2.5px; height: 16px; border-radius: 1px; top: 24px; z-index: 4;
+        .hurray .runner-torso::before, .hurray .runner-torso::after {
+            content: ''; position: absolute; width: 2.5px; height: 16px; border-radius: 1px; top: -2px; z-index: 4;
         }
-        .hurray::before { left: 12px; transform-origin: bottom center; animation: hurray-arm-left 0.4s infinite alternate ease-in-out; }
-        .hurray::after { right: 12px; transform-origin: bottom center; animation: hurray-arm-right 0.4s infinite alternate ease-in-out; }
+        .hurray .runner-torso::before { left: 5px; transform-origin: bottom center; animation: hurray-arm-left 0.4s infinite alternate ease-in-out; }
+        .hurray .runner-torso::after { right: 5px; transform-origin: bottom center; animation: hurray-arm-right 0.4s infinite alternate ease-in-out; }
         @keyframes hurray-arm-left {
             0% { transform: rotate(-35deg) translateY(0); }
             100% { transform: rotate(-45deg) translateY(-2px); }
@@ -221,8 +221,8 @@
             0% { transform: rotate(35deg) translateY(0); }
             100% { transform: rotate(45deg) translateY(-2px); }
         }
-        .team-self.hurray::before, .team-self.hurray::after { background-color: #D946EF; box-shadow: 0 0 6px rgba(217, 70, 239, 0.5); }
-        .team-consignment.hurray::before, .team-consignment.hurray::after { background-color: #D4C19C; box-shadow: 0 0 6px rgba(212, 193, 156, 0.5); }
+        .team-self.hurray .runner-torso::before, .team-self.hurray .runner-torso::after { background-color: #D946EF; box-shadow: 0 0 6px rgba(217, 70, 239, 0.5); }
+        .team-consignment.hurray .runner-torso::before, .team-consignment.hurray .runner-torso::after { background-color: #D4C19C; box-shadow: 0 0 6px rgba(212, 193, 156, 0.5); }
 
     
         @media (max-width: 768px) {
@@ -626,6 +626,7 @@
                 if (owner.includes('아선') && address.includes('서빙고')) progressScore = 30;
                 if (owner.includes('원일')) progressScore = 30;
                 if (owner.includes('의대') || owner.includes('지원') || owner.includes('희영')) progressScore = 20;
+                if (owner.includes('하늬') || owner.includes('조영') || owner.includes('하니')) progressScore = 75;
                 
                 return { id: row[idxId], owner, manager, typeStr, markerType, status, speed, msg, statsText, progressScore, address, marathonKm, isPreparing, actualYears, remainYears, bizType: method };
             });

@@ -246,7 +246,7 @@
         <div class="drawer-section">
             <h3 class="drawer-section-title">러너 뷰</h3>
             <p class="drawer-section-sub" id="drawer-runner-sub1" style="color:#ffffff;">= 아파트 분양및 개발 차익 목적 (총 00건)</p>
-            <p class="drawer-section-sub" style="color:#ffffff;">= 개발단계 및 입주까지의 예상기간</p>
+            <p class="drawer-section-sub" style="color:#ffffff;">= 개발단계 및 준공까지의 예상기간</p>
             <ul class="drawer-list">
                 <li id="drawer-gold-count"><span style="color:#b5924a;">금색 러너:</span> 위탁 투자</li>
                 <li id="drawer-purple-count"><span style="color:#c665d9;">보라색 러너:</span> 직접 투자</li>
@@ -291,7 +291,7 @@
         
         <!-- Y-axis markers -->
         <div class="timeline-container-y" style="position:absolute; left:0; right:0; top:0; bottom:0; pointer-events:none; z-index:5;">
-            <div class="time-marker-y" style="position:absolute; top:5%; left:20px; z-index:10; background:rgba(0,0,0,0.6); padding:2px 6px; border-radius:4px;"><div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#555;"></div><div style="position:absolute; left:12px; top:-14px; font-size:22px; font-weight:900; color:#ffffff; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 0 2px 4px rgba(0,0,0,0.8); white-space:nowrap;">입주</div></div>
+            <div class="time-marker-y" style="position:absolute; top:5%; left:20px; z-index:10; background:rgba(0,0,0,0.6); padding:2px 6px; border-radius:4px;"><div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#555;"></div><div style="position:absolute; left:12px; top:-14px; font-size:22px; font-weight:900; color:#ffffff; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 0 2px 4px rgba(0,0,0,0.8); white-space:nowrap;">준공</div></div>
             <div class="time-marker-y" style="position:absolute; top:18.33%; left:20px;"><div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#555;"></div><div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#9ca3af; white-space:nowrap;">75%</div></div>
             <div class="time-marker-y" style="position:absolute; top:31.67%; left:20px;"><div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#555;"></div><div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#9ca3af; white-space:nowrap;">60%</div></div>
             <div class="time-marker-y" style="position:absolute; top:45%; left:20px;"><div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#555;"></div><div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#9ca3af; white-space:nowrap;">45%</div></div>
@@ -603,7 +603,7 @@
                 let statsText = '';
                 if (markerType === 'runner' && status !== 'finished') {
                     if (owner && (owner.includes('하늬') || owner.includes('하니') || owner.includes('조영'))) {
-                        statsText = '둔촌4단계 / 입주까지 4.5년';
+                        statsText = '둔촌4단계 / 4.5년후 준공';
                     } else {
                         statsText = `${fullStageStr}`;
                     }
@@ -619,7 +619,7 @@
                                 // Custom override for Seongsu A-seon
                 if (owner.includes('아선') && address.includes('성수')) {
                     progressScore = 44;
-                    statsText = '성수3단계<br>입주까지 8.5년';
+                    statsText = '성수3단계<br>8.5년후 준공';
                 }
                 
                 return { id: row[idxId], owner, manager, typeStr, markerType, status, speed, msg, statsText, progressScore, address, marathonKm, isPreparing, actualYears, remainYears, bizType: method };

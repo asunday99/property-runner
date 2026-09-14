@@ -209,10 +209,10 @@
     
     
         .hurray .runner-torso::before, .hurray .runner-torso::after {
-            content: ''; position: absolute; width: 2.5px; height: 16px; border-radius: 1px; top: -2px; z-index: 4;
+            content: ''; position: absolute; width: 2.5px; height: 22px; border-radius: 1px; top: -16px; z-index: 4;
         }
-        .hurray .runner-torso::before { left: 5px; transform-origin: bottom center; animation: hurray-arm-left 0.4s infinite alternate ease-in-out; }
-        .hurray .runner-torso::after { right: 5px; transform-origin: bottom center; animation: hurray-arm-right 0.4s infinite alternate ease-in-out; }
+        .hurray .runner-torso::before { left: 0px; transform-origin: bottom center; animation: hurray-arm-left 0.4s infinite alternate ease-in-out; }
+        .hurray .runner-torso::after { right: 0px; transform-origin: bottom center; animation: hurray-arm-right 0.4s infinite alternate ease-in-out; }
         @keyframes hurray-arm-left {
             0% { transform: rotate(-35deg) translateY(0); }
             100% { transform: rotate(-45deg) translateY(-2px); }

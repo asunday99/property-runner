@@ -600,8 +600,8 @@
             const totalRunners = activeRunners.length;
             const totalProps = runnersData.filter(data => {
                 let addr = data.address || '';
-                if (data.owner.includes('아선') && data.typeStr && data.typeStr.includes('호텔')) addr = '인천광역시';
-                if ((data.owner.includes('고미') || data.owner.includes('뉴푸드')) && data.typeStr && (data.typeStr.includes('토지') || data.typeStr.includes('대지') || data.typeStr.includes('전답'))) addr = '인천광역시';
+                if (data.owner.includes('아선') && data.typeStr && data.typeStr.includes('호텔')) addr = '인천광역시 중구 운서동';
+                if ((data.owner.includes('고미') || data.owner.includes('뉴푸드')) && data.typeStr && (data.typeStr.includes('토지') || data.typeStr.includes('대지') || data.typeStr.includes('전답'))) addr = '인천광역시 중구 운서동';
                 return addr && data.status !== 'finished';
             }).length;
             
@@ -615,8 +615,8 @@
 
             const mapItems = runnersData.filter(data => {
                 let addr = data.address || '';
-                if (data.owner.includes('아선') && data.typeStr && data.typeStr.includes('호텔')) addr = '인천광역시';
-                if ((data.owner.includes('고미') || data.owner.includes('뉴푸드')) && data.typeStr && (data.typeStr.includes('토지') || data.typeStr.includes('대지') || data.typeStr.includes('전답'))) addr = '인천광역시';
+                if (data.owner.includes('아선') && data.typeStr && data.typeStr.includes('호텔')) addr = '인천광역시 중구 운서동';
+                if ((data.owner.includes('고미') || data.owner.includes('뉴푸드')) && data.typeStr && (data.typeStr.includes('토지') || data.typeStr.includes('대지') || data.typeStr.includes('전답'))) addr = '인천광역시 중구 운서동';
                 return addr && data.status !== 'finished';
             });
             const mapDelegated = mapItems.filter(d => !(d.manager === '개인' || d.manager === '개인위탁' || d.manager === '법인')).length;
@@ -795,6 +795,9 @@
                     } else if (data.owner.includes('뉴푸드') && data.address && data.address.includes('서빙고')) {
                         iconCircle.innerHTML = '<img src="./assets/red_house.jpg" style="width:120%; height:120%; object-fit:contain;">';
                         iconCircle.style.background = 'transparent'; iconCircle.style.border = 'none'; iconCircle.style.boxShadow = 'none';
+                    } else if (data.typeStr && data.typeStr.includes('호텔')) {
+                        iconCircle.innerHTML = '<img src="./assets/red_building.jpg" style="width:120%; height:120%; object-fit:contain;">';
+                        iconCircle.style.background = 'transparent'; iconCircle.style.border = 'none'; iconCircle.style.boxShadow = 'none';
                     } else if (data.typeStr && data.typeStr.includes('대지')) {
                         iconCircle.innerHTML = '<img src="./assets/daeji.jpg" style="width:120%; height:120%; object-fit:contain;">';
                         iconCircle.style.background = 'transparent'; iconCircle.style.border = 'none'; iconCircle.style.boxShadow = 'none';
@@ -939,8 +942,8 @@
             let coordsMap = {};
             const geocodePromises = runnersData.map(data => {
                 let rawAddr = data.address || '';
-                if (data.owner.includes('아선') && data.typeStr && data.typeStr.includes('호텔')) rawAddr = '인천광역시 연수구';
-                if ((data.owner.includes('고미') || data.owner.includes('뉴푸드')) && data.typeStr && (data.typeStr.includes('토지') || data.typeStr.includes('대지') || data.typeStr.includes('전답'))) rawAddr = '인천광역시 서구';
+                if (data.owner.includes('아선') && data.typeStr && data.typeStr.includes('호텔')) rawAddr = '인천광역시 중구 운서동';
+                if ((data.owner.includes('고미') || data.owner.includes('뉴푸드')) && data.typeStr && (data.typeStr.includes('토지') || data.typeStr.includes('대지') || data.typeStr.includes('전답'))) rawAddr = '인천광역시 중구 운서동';
                 
                 if (!rawAddr || data.status === 'finished') return Promise.resolve();
                 

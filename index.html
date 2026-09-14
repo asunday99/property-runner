@@ -626,7 +626,16 @@
                 
                 if (owner.includes('아선') && address.includes('서빙고')) progressScore = 40;
                 if (owner.includes('원일')) progressScore = 40;
-                if (owner.includes('의대') || owner.includes('지원') || (owner.includes('희영') && address.includes('삼성')) || owner.includes('희영')) progressScore = 30;
+                
+                if (owner.includes('성준') || owner.includes('덕일')) progressScore = 35;
+                
+                if (owner.includes('준학') || owner.includes('경아')) progressScore = 30;
+                if (owner.includes('의대') || owner.includes('지원') || owner.includes('희영')) progressScore = 30;
+                
+                if (owner.includes('문정')) progressScore = 25;
+                
+                if (address.includes('일원')) progressScore = 15;
+                
                 if (owner.includes('하늬') || owner.includes('조영') || owner.includes('하니')) progressScore = 75;
                 
                 return { id: row[idxId], owner, manager, typeStr, markerType, status, speed, msg, statsText, progressScore, address, marathonKm, isPreparing, actualYears, remainYears, bizType: method };

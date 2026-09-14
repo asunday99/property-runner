@@ -629,9 +629,9 @@
                 
                 if (owner.includes('의대') || owner.includes('지원')) { progressScore = 35; isPreparing = false; }
                 
-                if (owner.includes('준학') || owner.includes('경아')) { progressScore = 30; isPreparing = false; }
+                if (owner.includes('성준') || owner.includes('덕일')) { progressScore = 30; isPreparing = false; }
                 
-                if (owner.includes('문정') || (owner.includes('희영') && !address.includes('옥수')) || owner.includes('성준') || owner.includes('덕일')) { progressScore = 25; isPreparing = false; }
+                if (owner.includes('문정') || (owner.includes('희영') && !address.includes('옥수')) || owner.includes('준학') || owner.includes('경아')) { progressScore = 25; isPreparing = false; }
                 
                 if (address.includes('일원')) { progressScore = 15; isPreparing = false; }
                 
@@ -975,11 +975,11 @@
                     if (data.owner.includes('아선') && data.address && data.address.includes('서빙고')) left = 35;
                     if (data.owner.includes('원일')) left = 65;
                     
-                    if (data.owner.includes('성준')) left = 20;
-                    if (data.owner.includes('덕일')) left = 80;
+                    if (data.owner.includes('준학')) left = 20;
+                    if (data.owner.includes('경아')) left = 80;
                     
-                    if (data.owner.includes('준학')) left = 35;
-                    if (data.owner.includes('경아')) left = 65;
+                    if (data.owner.includes('성준')) left = 35;
+                    if (data.owner.includes('덕일')) left = 65;
                     if (data.owner.includes('문정')) left = 40;
                     if (data.owner.includes('희영') && data.address && data.address.includes('삼성')) left = 60;
                     if (data.owner.includes('의대')) left = 20;

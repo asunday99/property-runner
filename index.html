@@ -960,8 +960,20 @@
                 let n = cluster.runners.length;
                 let GAP = 12.0; // 12% gap
                 
-                if (n > 7) GAP = 10.0;
-                if (n > 9) GAP = 8.5;
+                if (window.innerWidth <= 768) {
+                    let hasTarget = cluster.runners.some(r => 
+                        r.owner.includes('하늬') || r.owner.includes('조영') || 
+                        r.address.includes('일원') || 
+                        r.owner.includes('창희') || r.owner.includes('제근') || r.owner.includes('완성') ||
+                        (r.owner.includes('아선') && r.address.includes('옥수')) || (r.owner.includes('희영') && r.address.includes('옥수'))
+                    );
+                    if (hasTarget) {
+                        GAP = 26.0; // 모바일에서 라벨 텍스트 박스가 겹치지 않도록 넓힘
+                    }
+                } else {
+                    if (n > 7) GAP = 10.0;
+                    if (n > 9) GAP = 8.5;
+                }
 
                 // Exactly 48.75% aligns the center of the 40px character to the 410px point on a 800px track
                 let startLeft = 48.75 - ((n - 1) * GAP / 2);

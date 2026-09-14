@@ -633,7 +633,7 @@
                 
                 if (owner.includes('문정') || (owner.includes('희영') && !address.includes('옥수')) || owner.includes('의대') || owner.includes('지원') || address.includes('삼전')) { progressScore = 25; isPreparing = false; }
                 
-                if (address.includes('일원')) { progressScore = 15; isPreparing = false; }
+                if (address.includes('일원') || (owner.includes('아선') && address.includes('옥수'))) { progressScore = 15; isPreparing = false; }
                 
                 if (owner.includes('하늬') || owner.includes('조영') || owner.includes('하니')) { progressScore = 75; isPreparing = false; }
                 
@@ -897,9 +897,7 @@
                 if (data.isPreparing) data.finalProg = -12; 
                 
                 
-                if (data.bizType && data.bizType.includes('민간도심')) {
-                    data.finalProg = 15;
-                }
+                
                 if (data.owner && (data.owner.includes('창희') || data.owner.includes('제근') || data.owner.includes('완성'))) {
                     data.finalProg = 0;
                 }

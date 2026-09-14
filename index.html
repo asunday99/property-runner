@@ -771,7 +771,13 @@
                     staticWrap.className = 'static-asset-wrap';
                     const iconCircle = document.createElement('div');
                     iconCircle.className = 'static-icon-circle';
-                    iconCircle.textContent = data.markerType === 'building' ? '🏢' : '🌱';
+                    if (data.owner.includes('고미') && data.address && data.address.includes('성수')) {
+                        iconCircle.innerHTML = '<img src="./assets/red_building.jpg" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">';
+                    } else if (data.owner.includes('뉴푸드') && data.address && data.address.includes('서빙고')) {
+                        iconCircle.innerHTML = '<img src="./assets/red_house.jpg" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">';
+                    } else {
+                        iconCircle.textContent = data.markerType === 'building' ? '🏢' : '🌱';
+                    }
                     const nameLabel = document.createElement('div');
                     nameLabel.className = 'name-label';
                     let nameText = data.owner;
@@ -794,7 +800,7 @@
             if(!trackArea) return;
             trackArea.querySelectorAll('.runner-container').forEach(el => el.remove()); 
             
-            const runners = runnersData.filter(d => d.markerType === 'runner' && d.status !== 'finished');
+            const runners = runnersData.filter(d => d.markerType === 'runner' && d.status !== 'finished' && !(d.address && d.address.includes('이태원') && (d.owner.includes('영애') || d.owner.includes('준학') || d.owner.includes('기정') || d.owner.includes('윤정'))));
             
             runners.forEach(data => {
                 data.finalProg = data.status === 'finished' ? 90 : data.progressScore;
@@ -807,10 +813,7 @@
                 if (data.owner && (data.owner.includes('창희') || data.owner.includes('제근') || data.owner.includes('완성'))) {
                     data.finalProg = 0;
                 }
-                if (data.address && data.address.includes('이태원') && (data.owner.includes('영애') || data.owner.includes('준학') || data.owner.includes('기정') || data.owner.includes('윤정'))) {
-                    data.finalProg = -24;
-                    data.statsText = '매각예정';
-                }
+                
                 
                 let baseTop;
                 if (data.finalProg >= 0) {

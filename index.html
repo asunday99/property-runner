@@ -64,6 +64,22 @@
         
         /* X-Axis and Timeline */
         .x-axis-line { position: absolute; bottom: 35px; left: 0; right: 0; border-bottom: 2px solid #374151; z-index: 5; pointer-events: none; }
+                /* Mobile Axis Labels */
+        @media (max-width: 768px) {
+            .timeline-container-y .time-marker-y {
+                left: 55px !important;
+            }
+            .timeline-container-y .time-marker-y > div:nth-child(2) {
+                left: auto !important;
+                right: 12px !important;
+                text-align: right;
+            }
+            .timeline-container-y .time-marker-y[style*="padding"] {
+                background: transparent !important;
+                padding: 0 !important;
+            }
+        }
+        
         .timeline-container { position: absolute; left: 0; right: 10%; top: 0; bottom: 0; pointer-events: none; z-index: 5; }
         .time-marker { position: absolute; top: 0; bottom: 0; display: flex; flex-direction: column; justify-content: flex-end; align-items: flex-start; }
         .time-marker::after { content: ''; position: absolute; bottom: 35px; left: 0; width: 2px; height: 6px; background: #374151; }
@@ -935,7 +951,8 @@
                     let top = data._baseTop;
                     let left = startLeft + (i * GAP);
                     
-                    if (left < 6.5) left = 6.5 + (Math.random() * 2);
+                    let minLeft = window.innerWidth <= 768 ? 17 : 6.5;
+                    if (left < minLeft) left = minLeft + (Math.random() * 2);
                     if (left > 87) left = 87 - (Math.random() * 2);
                     
                     placed.push({top: top, left: left});

@@ -226,20 +226,20 @@
         <div class="drawer-divider"></div>
 
         <div class="drawer-section">
-            <h3 class="drawer-section-title" id="drawer-runner-title">러너 뷰 (총 0건)</h3>
-            <p class="drawer-section-sub" style="color:#ffffff;">= 아파트 분양 및 개발 차익 목적</p>
+            <h3 class="drawer-section-title">러너 뷰</h3>
+            <p class="drawer-section-sub" id="drawer-runner-sub1" style="color:#ffffff;">= 아파트 분양및 개발 차익 목적 (총 00건)</p>
             <p class="drawer-section-sub" style="color:#ffffff;">= 개발단계 및 입주까지의 예상기간</p>
             <ul class="drawer-list">
-                <li id="drawer-gold-count"><i style="color:#b5924a; font-style: normal; font-weight: bold;">금색 러너:</i> 위탁 투자</li>
-                <li id="drawer-purple-count"><i style="color:#c665d9; font-style: normal; font-weight: bold;">보라색 러너:</i> 직접 투자</li>
+                <li id="drawer-gold-count"><span style="color:#b5924a;">금색 러너:</span> 위탁 투자</li>
+                <li id="drawer-purple-count"><span style="color:#c665d9;">보라색 러너:</span> 직접 투자</li>
             </ul>
             </div>
         
         <div class="drawer-divider"></div>
         
         <div class="drawer-section">
-            <h3 class="drawer-section-title" id="drawer-map-title">지도 뷰 (총 0건)</h3>
-            <p class="drawer-section-sub" style="color:#ffffff;">= 총 보유 부동산</p>
+            <h3 class="drawer-section-title">지도 뷰</h3>
+            <p class="drawer-section-sub" id="drawer-map-sub1" style="color:#ffffff;">= 총 보유 부동산 (총 00건)</p>
             <ul class="drawer-list">
                 <li id="drawer-map-gold-count">금색 투자자: 위탁 투자</li>
                 <li id="drawer-map-purple-count">보라색 투자자: 직접 투자</li>
@@ -616,9 +616,9 @@
             const directRunners = activeRunners.filter(d => (d.manager.includes('개인') || d.manager.includes('법인'))).length;
 
             const runnerGoldEl = document.getElementById('drawer-gold-count');
-            if(runnerGoldEl) runnerGoldEl.innerHTML = '<i style="color:#b5924a; font-style: normal; font-weight: bold;">금색 러너:</i> 위탁 투자 (총 ' + delegatedRunners + '건)';
+            if(runnerGoldEl) runnerGoldEl.innerHTML = '<span style="color:#b5924a;">금색 러너:</span> 위탁 투자 (총 ' + delegatedRunners + '건)';
             const runnerPurpleEl = document.getElementById('drawer-purple-count');
-            if(runnerPurpleEl) runnerPurpleEl.innerHTML = '<i style="color:#c665d9; font-style: normal; font-weight: bold;">보라색 러너:</i> 직접 투자 (총 ' + directRunners + '건)';
+            if(runnerPurpleEl) runnerPurpleEl.innerHTML = '<span style="color:#c665d9;">보라색 러너:</span> 직접 투자 (총 ' + directRunners + '건)';
 
             const mapItems = runnersData.filter(data => {
                 let addr = data.address || '';
@@ -634,10 +634,10 @@
             const purpleEl = document.getElementById('drawer-map-purple-count');
             if(purpleEl) purpleEl.innerText = '보라색 투자자: 직접 투자 (총 ' + mapDirect + '건)';
             
-            const rt = document.getElementById('drawer-runner-title');
-            if(rt) rt.innerText = `러너 뷰 (총 ${totalRunners}건)`;
-            const mt = document.getElementById('drawer-map-title');
-            if(mt) mt.innerText = `지도 뷰 (총 ${totalProps}건)`;
+            const rs = document.getElementById('drawer-runner-sub1');
+            if(rs) rs.innerText = `= 아파트 분양및 개발 차익 목적 (총 ${totalRunners}건)`;
+            const ms = document.getElementById('drawer-map-sub1');
+            if(ms) ms.innerText = `= 총 보유 부동산 (총 ${totalProps}건)`;
             
             renderMarathon();
 

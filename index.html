@@ -619,7 +619,7 @@
                 if ((owner.includes('고미') || owner.includes('뉴푸드')) && (typeStr.includes('토지') || typeStr.includes('대지') || typeStr.includes('전답'))) markerType = 'land';
                                 // Custom override for Seongsu A-seon
                 if (owner.includes('아선') && address.includes('성수')) {
-                    progressScore = 44;
+                    progressScore = 60;
                     statsText = '성수3단계<br>8.5년후 준공';
                 }
                 
@@ -695,7 +695,7 @@
                 }
                 if (data.markerType !== 'runner') teamClass = 'team-static';
                 character.classList.add(teamClass);
-                if (data.owner && (data.owner.includes('하늬') || data.owner.includes('하니') || data.owner.includes('조영'))) {
+                if (data.owner && (data.owner.includes('하늬') || data.owner.includes('하니') || data.owner.includes('조영') || (data.owner.includes('아선') && data.address && data.address.includes('성수')))) {
                     character.classList.add('hurray');
                 }
 

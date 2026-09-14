@@ -900,7 +900,7 @@
 
             let coordsMap = {};
             const geocodePromises = runnersData.map(data => {
-                if (!data.address || data.address.includes('인천')) return Promise.resolve();
+                if (!data.address || data.address.includes('인천') || data.status === 'finished') return Promise.resolve();
                 
                 const searchAddr = cleanAddress(data.address);
                 return new Promise(resolve => {

@@ -967,6 +967,20 @@
                     let top = data._baseTop;
                     let left = startLeft + (i * GAP);
                     
+                    
+                    // Horizontal Spreading Overrides
+                    if (data.owner.includes('아선') && data.address && data.address.includes('서빙고')) left = 40;
+                    if (data.owner.includes('원일')) left = 60;
+                    
+                    if (data.owner.includes('성준')) left = 22;
+                    if (data.owner.includes('덕일')) left = 78;
+                    
+                    if (data.owner.includes('준학')) left = 22;
+                    if (data.owner.includes('경아')) left = 78;
+                    if (data.owner.includes('의대')) left = 38;
+                    if (data.owner.includes('지원')) left = 50;
+                    if (data.owner.includes('희영')) left = 62;
+                    
                     let minLeft = window.innerWidth <= 768 ? 17 : 6.5;
                     if (left < minLeft) left = minLeft + (Math.random() * 2);
                     if (left > 87) left = 87 - (Math.random() * 2);

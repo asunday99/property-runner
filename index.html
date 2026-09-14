@@ -15,7 +15,7 @@
         /* New Header Styles */
         #header { display: flex; flex-direction: column; width: 100%; background-color: #000000; z-index: 30; position: relative; }
         .header-top { display: flex; align-items: center; justify-content: space-between; padding: 0 16px; height: 56px; }
-        .header-top-left { font-size: 20px; font-weight: bold; color: #9ca3af; cursor: pointer; padding: 8px; margin-left: -8px; }
+        .header-top-left { font-size: 22px; font-weight: 300; color: #8ab4f8; cursor: pointer; padding: 8px; margin-left: -8px; }
         .header-top-center { display: flex; align-items: center; color: #6b7280; font-size: 13px; font-weight: 500; }
         .header-top-right { display: flex; align-items: center; gap: 16px; color: #9ca3af; font-size: 14px; font-weight: 500; }
         .tabs-container { display: flex; width: 100%; padding: 0 16px; margin-top: 8px; border-bottom: 1px solid #1f2937; }
@@ -30,7 +30,7 @@
         .drawer-sidebar { position: fixed; top: 0; left: 0; bottom: 0; width: 85%; max-width: 360px; background-color: #111111; z-index: 99999; transform: translateX(-100%); transition: transform 0.3s ease-in-out; overflow-y: auto; display: flex; flex-direction: column; }
         .drawer-sidebar.open { transform: translateX(0); }
 
-        .drawer-close { align-self: flex-end; padding: 20px; font-size: 20px; color: #8ab4f8; font-weight: 300; cursor: pointer; }
+        .drawer-close { align-self: flex-end; padding: 20px; font-size: 22px; color: #8ab4f8; font-weight: 300; cursor: pointer; }
         .drawer-content { padding: 0 24px 30px 24px; }
         .drawer-title { font-family: 'Pretendard', sans-serif; font-size: 24px; text-align: center; margin-bottom: 24px; font-weight: 900; letter-spacing: 0px; background: linear-gradient(to right, #b5924a 0%, #d9bf80 30%, #fdf5d3 50%, #d9bf80 70%, #b5924a 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 6px rgba(223, 185, 99, 0.15)); }
         .drawer-subtitle { font-size: 13px; text-align: center; line-height: 1.5; margin-bottom: 20px; font-weight: 500; letter-spacing: -0.5px; word-break: keep-all; background: linear-gradient(to right, #b5924a 0%, #d9bf80 30%, #fdf5d3 50%, #d9bf80 70%, #b5924a 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 0 6px rgba(223, 185, 99, 0.15)); }
@@ -242,7 +242,7 @@
 
 <div id="header">
     <div class="header-top">
-        <div class="header-top-left" onclick="toggleDrawer()">&#10095;&#10095;</div>
+        <div class="header-top-left" onclick="toggleDrawer()">&gt;&gt;</div>
         <div class="header-top-center"></div>
         <div class="header-top-right">
             <span>Fork</span>

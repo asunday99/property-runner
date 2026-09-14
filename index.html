@@ -489,6 +489,7 @@
                 const address = row[idxAddress] || '';
 
                 let dongName = extractNeighborhood(address);
+                if (owner.includes('창희')) dongName = '황학';
                 let markerType = 'runner';
                 if (method.toLowerCase() === 'x' || method === '' || progressStr === '해당없음' || progressStr.includes('취소')) {
                     if (typeStr.includes('토지')) markerType = 'land';

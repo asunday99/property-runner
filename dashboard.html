@@ -5,55 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>부동산의 신 - 리얼 데이터 대시보드</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-window.dashboardData = {
-  "metrics": {
-    "total_value": 50836000000.0,
-    "total_invest": 21494512200.0,
-    "total_future": 145576000000.0
-  },
-  "asset_allocation": {
-    "遺꾩뼇?명뀛": 0.38948776457628453,
-    "鍮뚮씪": 13.553387363285859,
-    "?곴?": 14.163191439137618,
-    "?좎텞鍮뚮씪": 17.271225116059487,
-    "二쇳깮": 1.1802659532614683,
-    "吏??: 1.8687544259973248,
-    "?좎?": 1.5736879376819577
-  },
-  "warnings": [
-    {
-      "name": "源議곗쁺吏?303??,
-      "dday": 73
-    },
-    {
-      "name": "?좎썝?쇱쭛 101??,
-      "dday": 76
-    },
-    {
-      "name": "怨좊?鍮뚮뵫 203??,
-      "dday": 79
-    },
-    {
-      "name": "?숇궓鍮뚮씪 101??,
-      "dday": 127
-    },
-    {
-      "name": "?쒖젣洹쇱쭛 805??,
-      "dday": 147
-    },
-    {
-      "name": "源誘명븳?곴? 吏??-1-2??,
-      "dday": 165
-    },
-    {
-      "name": "臾몃씪?곗긽媛 吏??-1-3??,
-      "dday": 176
-    }
-  ]
-};
-
-</script>
     <style>
         @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
         body { background-color: #0b1120; color: #f8fafc; font-family: 'Pretendard', sans-serif; }
@@ -63,11 +14,27 @@ window.dashboardData = {
         .ticker-item span { color: #4ade80; font-weight: 800; margin-left: 8px; }
         @keyframes ticker { 0% { transform: translate3d(0, 0, 0); } 100% { transform: translate3d(-50%, 0, 0); } }
         
-        .card { background: #1e293b; border: 1px solid #334155; border-radius: 16px; padding: 24px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5); }
+        .card { background: #1e293b; border: 1px solid #334155; border-radius: 16px; padding: 24px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5); transition: all 0.3s; }
+        .filter-btn { padding: 6px 16px; border-radius: 9999px; font-weight: 600; font-size: 14px; cursor: pointer; transition: all 0.2s; border: 1px solid #334155; background: #1e293b; color: #94a3b8; }
+        .filter-btn.active { background: #3b82f6; color: white; border-color: #3b82f6; box-shadow: 0 0 10px rgba(59,130,246,0.5); }
+        .filter-btn:hover:not(.active) { background: #334155; color: white; }
+        
+        .warning-item { cursor: pointer; transition: all 0.2s; }
+        .warning-item:hover { transform: translateX(5px); background: rgba(51, 65, 85, 0.9); }
+        
+        /* Modal */
+        #modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 50; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s; }
+        #modal.show { display: flex; opacity: 1; }
+        .modal-content { background: #1e293b; border: 1px solid #334155; border-radius: 16px; padding: 24px; width: 90%; max-width: 400px; transform: scale(0.95); transition: transform 0.3s; }
+        #modal.show .modal-content { transform: scale(1); }
     </style>
 </head>
-<body class="min-h-screen">
+<body class="min-h-screen pb-10">
     
+    <script>
+        const rawData = {"properties": [{"id": "Re_C1_01", "owner": "怨좊?", "type": "?좎?", "value": 400000000.0, "invest": 412461590.0, "future": 400000000.0, "name": "?몄쿇 ?댁꽌??3047-19"}, {"id": "Re_C1_02", "owner": "怨좊?", "type": "?좎?", "value": 400000000.0, "invest": 385749540.0, "future": 400000000.0, "name": "?몄쿇 ?대턿??789-285 "}, {"id": "Re_P1_01", "owner": "?묒븘??, "type": "遺꾩뼇?명뀛", "value": 99000000.0, "invest": 170096940.0, "future": 99000000.0, "name": "?몄쿇 怨⑤뱺?ㅻ┰?명뀛 407??}, {"id": "Re_P1_02", "owner": "?묒븘??, "type": "遺꾩뼇?명뀛", "value": 99000000.0, "invest": 170096940.0, "future": 99000000.0, "name": "?몄쿇 怨⑤뱺?ㅻ┰?명뀛 408??}, {"id": "Re_P1_03", "owner": "?묒븘??, "type": "?좎텞鍮뚮씪", "value": 900000000.0, "invest": 357931190.0, "future": 3000000000.0, "name": "?쒕튃怨좊줈62湲?29-4  501??}, {"id": "Re_C2_01", "owner": "?댄뫖??, "type": "鍮뚮씪", "value": 790000000.0, "invest": 149902350.0, "future": 2000000000.0, "name": "?쒕튃怨좊룞 198-6  101??}, {"id": "Re_P2_01", "owner": "?좎썝??, "type": "二쇳깮", "value": 600000000.0, "invest": 354555000.0, "future": 1500000000.0, "name": "?쒕튃怨좊룞 271-57??1?꾩?"}, {"id": "nan", "owner": "?뺥씗??, "type": "鍮뚮씪", "value": 1150000000.0, "invest": 275037800.0, "future": 1150000000.0, "name": "?댄깭?먮룞 63-33, 304??}, {"id": "nan", "owner": "怨좊?", "type": "?곴?", "value": 1600000000.0, "invest": 206010291.0, "future": 7000000000.0, "name": "?깅룞援??깆닔??媛 331-243"}, {"id": "nan", "owner": "怨좊?", "type": "鍮뚮씪", "value": 1450000000.0, "invest": 437185800.0, "future": 1450000000.0, "name": "?댄깭??74-27,201??}, {"id": "Re_P2_02", "owner": "理쒖갹??, "type": "?곴?", "value": 180000000.0, "invest": 168000000.0, "future": 180000000.0, "name": "以묎뎄 ?⑺븰??59"}, {"id": "Re_P2_03", "owner": "源?곸븷", "type": "?좎텞鍮뚮씪", "value": 650000000.0, "invest": 159706040.0, "future": 650000000.0, "name": "?댄깭?먮룞 181-40, 104??}, {"id": "Re_O_01", "owner": "?ъ쑄??, "type": "?좎텞鍮뚮씪", "value": 700000000.0, "invest": 176848000.0, "future": 700000000.0, "name": "?댄깭?먮룞 181-40, 101??}, {"id": "Re_P2_04", "owner": "?ㅼ???, "type": "?좎텞鍮뚮씪", "value": 650000000.0, "invest": 172878600.0, "future": 650000000.0, "name": "?댄깭?먮룞 181-40, 305??}, {"id": "Re_O_02", "owner": "二쇨린??, "type": "?좎텞鍮뚮씪", "value": 650000000.0, "invest": 176334040.0, "future": 650000000.0, "name": "?댄깭?먮룞 181-40, 202??}, {"id": "Re_O_03", "owner": "?쒖젣洹?, "type": "鍮뚮씪", "value": 450000000.0, "invest": 106392670.0, "future": 450000000.0, "name": "以묎뎄 ?⑺븰??1200, 805??}, {"id": "Re_C1_03", "owner": "怨좊?", "type": "吏??, "value": 950000000.0, "invest": 774719566.0, "future": 1150000000.0, "name": "?깅룞援??깆닔?쇰줈 111, B206??}, {"id": "Re_P2_05", "owner": "?쒖셿??, "type": "?곴?", "value": 150000000.0, "invest": 136952120.0, "future": 160000000.0, "name": "以묎뎄 ?⑺븰??521-1"}, {"id": "Re_P1_04", "owner": "?묒븘??, "type": "?곴?", "value": 300000000.0, "invest": 283203890.0, "future": 3000000000.0, "name": "?μ닔??100 ?쒖긽媛??404??}, {"id": "Re_O_04", "owner": "?뺥씗??, "type": "?곴?", "value": 300000000.0, "invest": 283203110.0, "future": 3000000000.0, "name": "?μ닔??100 ?쒖긽媛??403-1??}, {"id": "Re_O_05", "owner": "二쇳븯??, "type": "鍮뚮씪", "value": 900000000.0, "invest": 464600810.0, "future": 2000000000.0, "name": "?붿큿??69-11踰덉? A??503??}, {"id": "Re_P1_05", "owner": "?묒븘??, "type": "?곴?", "value": 450000000.0, "invest": 397200000.0, "future": 3500000000.0, "name": "?쇱썝??716  B7-1-1"}, {"id": "Re_O_06", "owner": "源誘명븳", "type": "?곴?", "value": 550000000.0, "invest": 476501770.0, "future": 3500000000.0, "name": "?쇱썝??716 B7-1-2"}, {"id": "Re_O_07", "owner": "臾몃씪??, "type": "?곴?", "value": 470000000.0, "invest": 412059330.0, "future": 3600000000.0, "name": "?쇱썝??716 B7-1-3"}, {"id": "Re_O_08", "owner": "?⑹쓽?", "type": "?좎텞鍮뚮씪", "value": 800000000.0, "invest": 155683446.0, "future": 1500000000.0, "name": "?≫뙆援??쇱쟾??71-27 501??}, {"id": "Re_O_09", "owner": "?댁???, "type": "?좎텞鍮뚮씪", "value": 830000000.0, "invest": 156164334.0, "future": 1500000000.0, "name": "?≫뙆援??쇱쟾??71-27 404??}, {"id": "Re_O_10", "owner": "源議곗쁺", "type": "鍮뚮씪", "value": 900000000.0, "invest": 494381946.0, "future": 2000000000.0, "name": "?붿큿??69-11踰덉? A??303??}, {"id": "Re_P2_06", "owner": "?뺥씗??, "type": "鍮뚮씪", "value": 1250000000.0, "invest": 818310910.0, "future": 4000000000.0, "name": "?쇱꽦??47-26. 102??}, {"id": "Re_O_11", "owner": "臾몄꽦以", "type": "?좎텞鍮뚮씪", "value": 800000000.0, "invest": 261458397.0, "future": 4000000000.0, "name": "?쒖큹??1514-2. H??504??}, {"id": "Re_P1_06", "owner": "?묒븘??, "type": "?곴?", "value": 3200000000.0, "invest": 560000000.0, "future": 6000000000.0, "name": "?깅룞援??깆닔??媛 331-243"}, {"id": "Re_O_12", "owner": "?좊뜒??, "type": "?좎텞鍮뚮씪", "value": 900000000.0, "invest": 400670000.0, "future": 4000000000.0, "name": "諛⑸같??871-1. 401??}, {"id": "Re_O_13", "owner": "理쒕Ц??, "type": "?좎텞鍮뚮씪", "value": 500000000.0, "invest": 248499680.0, "future": 2500000000.0, "name": "援ъ쓽??643-4,5  402??}, {"id": "Re_O_14", "owner": "?ㅼ???, "type": "?좎텞鍮뚮씪", "value": 700000000.0, "invest": 266950000.0, "future": 3500000000.0, "name": "?쒖큹??1481-10. 303??(2R)"}, {"id": "Re_O_15", "owner": "源寃쎌븘", "type": "?좎텞鍮뚮씪", "value": 700000000.0, "invest": 277510000.0, "future": 3500000000.0, "name": "?쒖큹??1481-10. 502??(2R)"}], "warnings": [{"id": "Re_O_10", "bldg": "源議곗쁺吏?, "room": "303", "tenant": "?⑹텣寃?, "deposit": 140000000.0, "rent": 0.0, "dday": 73, "owner": "源議곗쁺"}, {"id": "Re_P2_01", "bldg": "?좎썝?쇱쭛", "room": "101", "tenant": "諛뺣퀝洹?, "deposit": 5000000.0, "rent": 350000.0, "dday": 76, "owner": "?좎썝??}, {"id": "Re_P1_06", "bldg": "怨좊?鍮뚮뵫", "room": "203", "tenant": "?좉뎅?댁뿰援?, "deposit": 20000000.0, "rent": 1850000.0, "dday": 79, "owner": "?묒븘??}, {"id": "Re_C2_01", "bldg": "?숇궓鍮뚮씪", "room": "101", "tenant": "理쒖?", "deposit": 200000000.0, "rent": 0.0, "dday": 127, "owner": "?댄뫖??}, {"id": "Re_O_03", "bldg": "?쒖젣洹쇱쭛", "room": "805", "tenant": "諛뺤긽??, "deposit": 250000000.0, "rent": 0.0, "dday": 147, "owner": "?쒖젣洹?}, {"id": "Re_O_06", "bldg": "源誘명븳?곴?", "room": "吏??-1-2", "tenant": "??댁뿉?ㅻ퉬", "deposit": 3700000.0, "rent": 370000.0, "dday": 165, "owner": "源誘명븳"}, {"id": "Re_O_07", "bldg": "臾몃씪?곗긽媛", "room": "吏??-1-3", "tenant": "??댁뿉?ㅻ퉬", "deposit": 2000000.0, "rent": 200000.0, "dday": 176, "owner": "臾몃씪??}], "owners": ["怨좊?", "源寃쎌븘", "源誘명븳", "源?곸븷", "源議곗쁺", "?댄뫖??, "臾몃씪??, "臾몄꽦以", "?좊뜒??, "?좎썝??, "?ъ쑄??, "?묒븘??, "?ㅼ???, "?댁???, "?뺥씗??, "二쇨린??, "二쇳븯??, "理쒕Ц??, "理쒖갹??, "?쒖셿??, "?쒖젣洹?, "?⑹쓽?"]};
+    </script>
+
     <!-- 1. 거시경제 지표 티커 -->
     <div class="ticker-wrap">
         <div class="ticker">
@@ -76,7 +43,6 @@ window.dashboardData = {
             <span class="ticker-item">[미국 10년 국채금리] <span>4.98%</span></span>
             <span class="ticker-item">[한국 기준금리] <span>3.50%</span></span>
             <span class="ticker-item text-slate-500 text-xs">※ 본 대시보드의 데이터는 구글 시트와 연동되어 자동 업데이트 됩니다</span>
-            <!-- 무한 롤링을 위한 복제본 -->
             <span class="ticker-item">[USD/KRW 환율] <span>1,345.86</span></span>
             <span class="ticker-item">[VIX 지수] <span>17.56</span></span>
             <span class="ticker-item">[미국 10년 국채금리] <span>4.98%</span></span>
@@ -84,16 +50,24 @@ window.dashboardData = {
         </div>
     </div>
 
-    <div class="max-w-5xl mx-auto p-4 md:p-8 mt-4">
-        <header class="mb-8">
-            <h1 class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">부동산의 신</h1>
-            <p class="text-slate-400 text-sm mt-2">Data-Driven Executive Dashboard (Real 59-Sheet Integration)</p>
+    <div class="max-w-6xl mx-auto p-4 md:p-8 mt-4">
+        <header class="mb-6 flex flex-col md:flex-row md:justify-between md:items-end gap-4">
+            <div>
+                <h1 class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">부동산의 신</h1>
+                <p class="text-slate-400 text-sm mt-2">Executive Dashboard - Interactive Demo</p>
+            </div>
+            
+            <!-- 필터 버튼 영역 -->
+            <div id="filter-container" class="flex flex-wrap gap-2">
+                <button class="filter-btn active" onclick="setFilter('전체')">전체</button>
+                <!-- JS 인젝션 -->
+            </div>
         </header>
 
         <!-- 2. 500억 목표 달성 위젯 -->
         <div class="card mb-6 bg-gradient-to-br from-slate-800 to-slate-900 border-blue-900/30">
             <div class="flex justify-between items-end mb-4">
-                <h2 class="text-xl font-bold text-slate-300">🏁 부동산 <span class="text-blue-400 text-2xl">500억</span> 달성 목표</h2>
+                <h2 class="text-xl font-bold text-slate-300">🏁 <span id="goal-title">부동산 500억</span> 달성 목표</h2>
                 <div class="text-right">
                     <span id="goal-pct" class="text-emerald-400 text-3xl font-black">0%</span>
                     <p class="text-slate-400 text-sm font-bold mt-1">D-1569</p>
@@ -110,13 +84,14 @@ window.dashboardData = {
             
             <!-- 3. 자산 현황 요약 패널 -->
             <div class="card">
-                <h3 class="text-lg font-bold text-slate-300 mb-5 border-b border-slate-700 pb-3 flex items-center">
-                    <span class="mr-2">📊</span> 포트폴리오 핵심 요약
+                <h3 class="text-lg font-bold text-slate-300 mb-5 border-b border-slate-700 pb-3 flex items-center justify-between">
+                    <span><span class="mr-2">📊</span> 포트폴리오 핵심 요약</span>
+                    <span id="prop-count" class="text-xs bg-slate-700 px-2 py-1 rounded text-slate-300">0건</span>
                 </h3>
                 <div class="space-y-5">
                     <div class="flex justify-between items-center">
                         <span class="text-slate-400">총 평가금액 (현재시세)</span>
-                        <span id="val-total" class="font-extrabold text-xl text-white">0 원</span>
+                        <span id="val-total" class="font-extrabold text-2xl text-white">0 원</span>
                     </div>
                     <div class="flex justify-between items-center">
                         <span class="text-slate-400">총 실투자금</span>
@@ -130,14 +105,16 @@ window.dashboardData = {
             </div>
 
             <!-- 4. 180일 이내 만기 알림 -->
-            <div class="card border-red-900/30 relative overflow-hidden">
+            <div class="card border-red-900/30 relative overflow-hidden flex flex-col">
                 <div class="absolute -top-10 -right-10 w-32 h-32 bg-red-500/10 blur-3xl rounded-full pointer-events-none"></div>
-                <h3 class="text-lg font-bold text-red-400 mb-5 border-b border-red-900/50 pb-3 flex items-center">
-                    <span class="mr-2 animate-pulse">🚨</span> 180일 이내 만기 알림 (<span id="warning-count">0</span>건)
+                <h3 class="text-lg font-bold text-red-400 mb-5 border-b border-red-900/50 pb-3 flex items-center justify-between">
+                    <span><span class="mr-2 animate-pulse">🚨</span> 180일 이내 만기 알림</span>
+                    <span id="warning-count" class="text-xs bg-red-900/40 px-2 py-1 rounded text-red-300">0건</span>
                 </h3>
-                <ul id="warning-list" class="space-y-3 text-sm h-48 overflow-y-auto pr-2 custom-scrollbar">
+                <ul id="warning-list" class="space-y-3 text-sm flex-1 overflow-y-auto pr-2" style="max-height: 200px;">
                     <!-- JS injected -->
                 </ul>
+                <p id="no-warnings" class="text-slate-500 text-center py-8 hidden">해당되는 만기 알림이 없습니다.</p>
             </div>
 
             <!-- 5. 자산 비중 시각화 -->
@@ -146,7 +123,7 @@ window.dashboardData = {
                     <span class="mr-2">🥧</span> 자산 비중 요약
                 </h3>
                 <div class="flex flex-col md:flex-row items-center justify-around py-4">
-                    <div id="allocation-bar" class="w-full mb-6 md:mb-0 flex h-10 rounded-full overflow-hidden shadow-inner bg-slate-800">
+                    <div id="allocation-bar" class="w-full mb-6 md:mb-0 flex h-10 rounded-full overflow-hidden shadow-inner bg-slate-800 transition-all duration-500">
                         <!-- JS injected -->
                     </div>
                 </div>
@@ -158,73 +135,184 @@ window.dashboardData = {
         </div>
     </div>
 
+    <!-- 모달 팝업 -->
+    <div id="modal" onclick="closeModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="flex justify-between items-start mb-4 border-b border-slate-700 pb-3">
+                <h3 id="modal-title" class="text-xl font-bold text-white">건물명 호수</h3>
+                <button onclick="closeModal(true)" class="text-slate-400 hover:text-white text-2xl leading-none">&times;</button>
+            </div>
+            <div class="space-y-4 text-sm">
+                <div class="flex justify-between border-b border-slate-700/50 pb-2">
+                    <span class="text-slate-400">임차인</span>
+                    <span id="modal-tenant" class="font-bold text-slate-200">-</span>
+                </div>
+                <div class="flex justify-between border-b border-slate-700/50 pb-2">
+                    <span class="text-slate-400">보증금</span>
+                    <span id="modal-deposit" class="font-bold text-emerald-400">-</span>
+                </div>
+                <div class="flex justify-between border-b border-slate-700/50 pb-2">
+                    <span class="text-slate-400">월세</span>
+                    <span id="modal-rent" class="font-bold text-blue-400">-</span>
+                </div>
+                <div class="flex justify-between pt-2">
+                    <span class="text-slate-400">남은 기간</span>
+                    <span id="modal-dday" class="font-black text-red-400 bg-red-900/30 px-2 py-1 rounded">-</span>
+                </div>
+            </div>
+            <div class="mt-6 text-center">
+                <button onclick="closeModal(true)" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-6 rounded-full w-full transition-colors">확인</button>
+            </div>
+        </div>
+    </div>
+
     <script>
+        let currentFilter = '전체';
+
         function formatMoney(num) {
+            if (num === 0) return '0 원';
             return new Intl.NumberFormat('ko-KR').format(Math.round(num)) + ' 원';
         }
 
-        window.onload = function() {
-            if (!window.dashboardData) {
-                alert("데이터 로드 실패!");
-                return;
+        function initFilters() {
+            const container = document.getElementById('filter-container');
+            // 중요 소유자만 우선 표시, 너무 많으면 지저분함
+            const topOwners = ['고미', '양아선', '위탁', '김미한']; 
+            
+            // 데이터에 있는 소유자 중 topOwners에 없는 것도 추가하되 최대 6개까지만
+            let displayOwners = [...topOwners];
+            for (let o of rawData.owners) {
+                if (!displayOwners.includes(o) && displayOwners.length < 8) {
+                    displayOwners.push(o);
+                }
             }
-            const data = window.dashboardData;
 
-            // 1. Goal
-            const target = 50000000000;
-            const current = data.metrics.total_value;
-            let pct = (current / target) * 100;
-            let displayPct = pct > 100 ? 100 : pct;
+            displayOwners.forEach(owner => {
+                if (!rawData.owners.includes(owner)) return; // 데이터에 없으면 스킵
+                const btn = document.createElement('button');
+                btn.className = 'filter-btn';
+                btn.innerText = owner;
+                btn.onclick = () => setFilter(owner);
+                container.appendChild(btn);
+            });
+        }
+
+        function setFilter(owner) {
+            currentFilter = owner;
+            // Update button styles
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                if (btn.innerText === owner) btn.classList.add('active');
+                else btn.classList.remove('active');
+            });
+            updateDashboard();
+        }
+
+        function showModal(tenant, bldg, room, deposit, rent, dday) {
+            document.getElementById('modal-title').innerText = bldg + ' ' + room + '호';
+            document.getElementById('modal-tenant').innerText = tenant;
+            document.getElementById('modal-deposit').innerText = formatMoney(deposit);
+            document.getElementById('modal-rent').innerText = formatMoney(rent);
+            document.getElementById('modal-dday').innerText = 'D-' + dday + '일';
             
-            document.getElementById('goal-pct').innerText = pct.toFixed(2) + '%';
-            setTimeout(() => {
-                document.getElementById('goal-bar').style.width = displayPct + '%';
-            }, 100);
+            const modal = document.getElementById('modal');
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('show'), 10);
+        }
 
-            // 2. Metrics
-            document.getElementById('val-total').innerText = formatMoney(current);
-            document.getElementById('val-invest').innerText = formatMoney(data.metrics.total_invest);
-            document.getElementById('val-future').innerText = formatMoney(data.metrics.total_future);
+        function closeModal(force = false) {
+            if (force || event.target.id === 'modal') {
+                const modal = document.getElementById('modal');
+                modal.classList.remove('show');
+                setTimeout(() => modal.style.display = 'none', 300);
+            }
+        }
 
-            // 3. Warnings
-            const warningList = document.getElementById('warning-list');
-            document.getElementById('warning-count').innerText = data.warnings.length;
-            warningList.innerHTML = '';
+        function updateDashboard() {
+            // Filter data
+            const props = currentFilter === '전체' ? rawData.properties : rawData.properties.filter(p => p.owner === currentFilter);
+            const rents = currentFilter === '전체' ? rawData.warnings : rawData.warnings.filter(r => r.owner === currentFilter);
+
+            // 1. Goal & Metrics
+            let tValue = 0, tInvest = 0, tFuture = 0;
+            let typeSums = {};
             
-            data.warnings.forEach(w => {
-                let badgeClass = 'bg-red-900/40 text-red-400';
-                if (w.dday > 100) badgeClass = 'bg-orange-900/30 text-orange-400';
+            props.forEach(p => {
+                tValue += p.value;
+                tInvest += p.invest;
+                tFuture += p.future;
                 
-                let li = document.createElement('li');
-                li.className = 'flex justify-between items-center bg-slate-800/80 p-3 rounded-lg border border-slate-700/50 hover:border-red-500/30 transition-colors';
-                li.innerHTML = 
-                    <span class="font-medium text-slate-200"></span>
-                    <span class="font-black px-3 py-1 rounded-md shadow-sm ">D-일</span>
-                ;
-                warningList.appendChild(li);
+                if (p.value > 0) {
+                    typeSums[p.type] = (typeSums[p.type] || 0) + p.value;
+                }
             });
 
-            // 4. Allocations
+            const target = currentFilter === '전체' ? 50000000000 : (tValue > 0 ? Math.ceil((tValue * 1.2)/100000000)*100000000 : 10000000000); // 전체가 아니면 유동적 목표
+            let pct = (tValue / target) * 100;
+            if (isNaN(pct)) pct = 0;
+            let displayPct = pct > 100 ? 100 : pct;
+
+            document.getElementById('goal-title').innerText = currentFilter === '전체' ? '부동산 500억' : currentFilter + ' 자산 목표';
+            document.getElementById('goal-pct').innerText = pct.toFixed(2) + '%';
+            document.getElementById('goal-bar').style.width = displayPct + '%';
+
+            document.getElementById('prop-count').innerText = props.length + '건';
+            document.getElementById('val-total').innerText = formatMoney(tValue);
+            document.getElementById('val-invest').innerText = formatMoney(tInvest);
+            document.getElementById('val-future').innerText = formatMoney(tFuture);
+
+            // 2. Warnings
+            const warningList = document.getElementById('warning-list');
+            const noWarnings = document.getElementById('no-warnings');
+            document.getElementById('warning-count').innerText = rents.length;
+            
+            warningList.innerHTML = '';
+            if (rents.length === 0) {
+                warningList.style.display = 'none';
+                noWarnings.style.display = 'block';
+            } else {
+                warningList.style.display = 'block';
+                noWarnings.style.display = 'none';
+                
+                rents.forEach(w => {
+                    let badgeClass = 'bg-red-900/40 text-red-400';
+                    if (w.dday > 100) badgeClass = 'bg-orange-900/30 text-orange-400';
+                    
+                    let li = document.createElement('li');
+                    li.className = 'warning-item flex justify-between items-center bg-slate-800/80 p-3 rounded-lg border border-slate-700/50';
+                    li.onclick = () => showModal(w.tenant, w.bldg, w.room, w.deposit, w.rent, w.dday);
+                    
+                    li.innerHTML = 
+                        <div class="flex flex-col">
+                            <span class="font-medium text-slate-200"> 호</span>
+                            <span class="text-xs text-slate-400"> (보증금 )</span>
+                        </div>
+                        <span class="font-black px-3 py-1 rounded-md shadow-sm whitespace-nowrap ">D-</span>
+                    ;
+                    warningList.appendChild(li);
+                });
+            }
+
+            // 3. Allocations
             const allocBar = document.getElementById('allocation-bar');
             const allocLegend = document.getElementById('allocation-legend');
+            allocBar.innerHTML = '';
+            allocLegend.innerHTML = '';
+            
             const colors = ['#3b82f6', '#10b981', '#a855f7', '#f59e0b', '#ec4899', '#06b6d4', '#eab308'];
             let cIdx = 0;
+            let totalValid = Object.values(typeSums).reduce((a,b)=>a+b, 0);
 
-            // Normalize allocations
-            let totalPct = Object.values(data.asset_allocation).reduce((a,b)=>a+b, 0);
-            
-            for (let [key, val] of Object.entries(data.asset_allocation)) {
-                if (val <= 0) continue;
-                let realPct = (val / totalPct) * 100;
+            for (let [key, val] of Object.entries(typeSums).sort((a,b)=>b[1]-a[1])) {
+                let realPct = (val / totalValid) * 100;
                 let color = colors[cIdx % colors.length];
                 cIdx++;
 
                 // Bar
                 let div = document.createElement('div');
-                div.className = 'h-full flex items-center justify-center text-xs font-bold text-white shadow-[inset_0_0_10px_rgba(0,0,0,0.2)] overflow-hidden';
+                div.className = 'h-full flex items-center justify-center text-xs font-bold text-white shadow-[inset_0_0_10px_rgba(0,0,0,0.2)] overflow-hidden transition-all duration-500';
                 div.style.width = realPct + '%';
                 div.style.backgroundColor = color;
-                div.innerText = realPct > 5 ? key : '';
+                div.innerText = realPct > 8 ? key : '';
                 allocBar.appendChild(div);
 
                 // Legend
@@ -233,8 +321,12 @@ window.dashboardData = {
                 leg.innerHTML = <span class="w-3 h-3 rounded-full mr-2" style="background-color:; box-shadow: 0 0 8px "></span><span class="text-slate-300 font-medium text-xs whitespace-nowrap"> %</span>;
                 allocLegend.appendChild(leg);
             }
+        }
+
+        window.onload = function() {
+            initFilters();
+            updateDashboard();
         };
     </script>
 </body>
 </html>
-

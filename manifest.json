@@ -1,6 +1,6 @@
 ﻿{
-  "name": "부동산의 신 (PROPERTY 333)",
-  "short_name": "프삼",
+  "name": "PROPERTY333",
+  "short_name": "PROPERTY333",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#000000",
@@ -13,3 +13,4 @@
     }
   ]
 }
+

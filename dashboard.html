@@ -106,9 +106,21 @@
 
     // Process raw GAS JSON into our structured rawData format
     function processGASData(gasData) {
-        const propSheet = gasData['매입부동산'] || [];
-        const rentSheet = gasData['RentRoll'] || [];
-        const debtSheet = gasData['부채관리'] || [];
+        const keys = Object.keys(gasData);
+        let propKey = keys.find(k => k.replace(/\s/g,'').includes('매입부동산')) || '매입부동산';
+        let rentKey = keys.find(k => k.replace(/\s/g,'').includes('RentRoll') || k.replace(/\s/g,'').includes('렌트롤')) || 'RentRoll';
+        let debtKey = keys.find(k => k.replace(/\s/g,'').includes('부채관리')) || '부채관리';
+        
+        const propSheet = gasData[propKey] || [];
+        const rentSheet = gasData[rentKey] || [];
+        const debtSheet = gasData[debtKey] || [];
+        
+        if (propSheet.length === 0) {
+            console.error("Available tabs from GAS:", keys);
+            alert("⚠️ 데이터를 찾지 못했습니다! 구글 시트의 탭 이름이 '매입부동산'인지 확인해주세요. 현재 발견된 탭: " + keys.join(", "));
+        }
+        
+        
 
         const allProps = [];
         propSheet.forEach(row => {
@@ -799,5 +811,6 @@
         </script>
 </body>
 </html>
+
 
 

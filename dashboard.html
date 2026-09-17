@@ -222,7 +222,7 @@
 
     document.addEventListener("DOMContentLoaded", () => {
         showLoading();
-        fetch(GAS_URL)
+        fetch(GAS_URL + "?t=" + new Date().getTime())
             .then(res => res.json())
             .then(gasData => {
                 processGASData(gasData);

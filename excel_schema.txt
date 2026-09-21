@@ -1,0 +1,28 @@
+
+--- Sheet: 매입부동산 ---
+Columns: ['업데이트일', '2026.09.05', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5', 'Unnamed: 6', 'Unnamed: 7', 'Unnamed: 8', 'Unnamed: 9', 'Unnamed: 10', 'Unnamed: 11', 'Unnamed: 12', 'Unnamed: 13', 'Unnamed: 14', 'Unnamed: 15', 'Unnamed: 16', 'Unnamed: 17', 'Unnamed: 18', 'Unnamed: 19', 'Unnamed: 20', 'Unnamed: 21', 'Unnamed: 22', 'Unnamed: 23', 'Unnamed: 24', 'Unnamed: 25', '업데이트 24.12.26', 'Unnamed: 27', 'Unnamed: 28']
+Sample data (first 2 rows):
+      업데이트일 2026.09.05 Unnamed: 2 Unnamed: 3 Unnamed: 4 Unnamed: 5   Unnamed: 6 Unnamed: 7 Unnamed: 8 Unnamed: 9 Unnamed: 10     Unnamed: 11 Unnamed: 12 Unnamed: 13     Unnamed: 14 Unnamed: 15 Unnamed: 16 Unnamed: 17 Unnamed: 18 Unnamed: 19 Unnamed: 20         Unnamed: 21    Unnamed: 22 Unnamed: 23 Unnamed: 24 Unnamed: 25   업데이트 24.12.26 Unnamed: 27 Unnamed: 28
+0      자산ID       관리주체        소유주         상태         유형        취득일  취득가\n(세금포함)       은행대출       지인대출     전세/보증금        실투자금  월임대수익\n(부가세포함)   현재시세/매각금액        미래가치              주소   조정대상지역 여부       비과세적용        사업방식     개발 진행단계    매도/보유 전략       예상분담금  아파트 분양 받을 명의자 (8명)            NaN         NaN          비고       전세금준비              구분    5번집(양아선)    8번집(정희영)
+1  Re_C1_01        법인1         고미        운용중         토지     2015.5    562461590  150000000        NaN          0   412461590               0   400000000   400000000  인천 운서동 3047-19           x         NaN           x      매각 진행중          매도         NaN                분양확정  주하늬, 김조영 (둔촌)         NaN         NaN         NaN  실투입비\n(필요경비포함)   357931190   375037800
+
+--- Sheet: RentRoll ---
+Columns: ['업데이트일', '2026.08.30', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5', 'Unnamed: 6', 'Unnamed: 7', 'Unnamed: 8', 'Unnamed: 9', 'Unnamed: 10', 'Unnamed: 11', 'Unnamed: 12', 'Unnamed: 13', 'Unnamed: 14', 'Unnamed: 15', 'Unnamed: 16', 'Unnamed: 17', 'Unnamed: 18', 'Unnamed: 19']
+Sample data (first 2 rows):
+      업데이트일 2026.08.30 Unnamed: 2 Unnamed: 3 Unnamed: 4     Unnamed: 5 Unnamed: 6 Unnamed: 7 Unnamed: 8 Unnamed: 9 Unnamed: 10  Unnamed: 11 Unnamed: 12          Unnamed: 13          Unnamed: 14 Unnamed: 15 Unnamed: 16 Unnamed: 17 Unnamed: 18 Unnamed: 19
+0      자산ID        건물명         유형         호수       임차인명         임차인연락처        보증금         월세        관리비        주차비        총입금액  세금계산서\n발행금액         입금일                계약시작일                계약종료일       D-Day        갱신여부      계약서 링크          메모        입금계좌
+1  Re_P1_06       고미빌딩         상가        301        허재석  010-6438-0947   10000000     700000      70000          0    847000.0     847000.0          23  2025-08-23 00:00:00  2027-08-22 00:00:00         341         NaN    301호 계약서         13평      농협.관리단
+
+--- Sheet: 부채관리 ---
+Columns: ['부채현황   ', 'Unnamed: 1', '업데이트: 230511', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5', 'Unnamed: 6', 'Unnamed: 7', 'Unnamed: 8', 'Unnamed: 9', 'Unnamed: 10', 'Unnamed: 11', 'Unnamed: 12', 'Unnamed: 13', 'Unnamed: 14', 'Unnamed: 15', 'Unnamed: 16']
+Sample data (first 2 rows):
+  부채현황    Unnamed: 1 업데이트: 230511  Unnamed: 3 Unnamed: 4 Unnamed: 5  Unnamed: 6 Unnamed: 7 Unnamed: 8 Unnamed: 9 Unnamed: 10            Unnamed: 11 Unnamed: 12          Unnamed: 13        Unnamed: 14 Unnamed: 15 Unnamed: 16
+0     NaN         대주           차주         입금일         용도        차용금       상환예정일       대출이율        NaN      월이자비용         출금일               이자송금할 통장      자동이체여부                   비고                비고2          적격     대안 / 비고
+1       1        뉴푸드           고미  2020.03.06   성수동상가계약금   80000000  2025.03.05      0.021        NaN        NaN        매월말일  신한 140-011-744054 뉴푸드           0  원천징수27.5%제하고 이자송금하기  20.04.16부터 원금7천만원           x           x
+
+--- Sheet: 자산흐름 및 관리 ---
+Columns: ['Unnamed: 0', 'Unnamed: 1', 'Unnamed: 2', 'Unnamed: 3', 'Unnamed: 4', 'Unnamed: 5', 'Unnamed: 6', 'Unnamed: 7', 'Unnamed: 8', 'Unnamed: 9', 'Unnamed: 10', 'Unnamed: 11', 'Unnamed: 12', 'Unnamed: 13', 'Unnamed: 14', 'Unnamed: 15', 'Unnamed: 16', 'Unnamed: 17', 'Unnamed: 18', 'Unnamed: 19', 'Unnamed: 20', 'Unnamed: 21', 'Unnamed: 22', 'Unnamed: 23', 'Unnamed: 24', 'Unnamed: 25', 'Unnamed: 26', 'Unnamed: 27', 'Unnamed: 28']
+Sample data (first 2 rows):
+   Unnamed: 0             Unnamed: 1 Unnamed: 2 Unnamed: 3 Unnamed: 4  Unnamed: 5 Unnamed: 6 Unnamed: 7 Unnamed: 8 Unnamed: 9 Unnamed: 10                    Unnamed: 11 Unnamed: 12 Unnamed: 13 Unnamed: 14 Unnamed: 15 Unnamed: 16 Unnamed: 17  Unnamed: 18         Unnamed: 19 Unnamed: 20    Unnamed: 21 Unnamed: 22 Unnamed: 23 Unnamed: 24 Unnamed: 25 Unnamed: 26 Unnamed: 27 Unnamed: 28
+0         NaN  현금 모니터링 업데이트 26.08.30        NaN        NaN        NaN         NaN   양아선 자금출처        NaN        NaN        NaN         NaN  (아선) 일원, 옥수, 차량 매입자금 및 커미션 흐름         NaN         NaN         NaN         NaN         NaN         NaN          NaN  [고미 이태원주택] 매각금액 흐름         NaN            NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+1         NaN                     항목         금액        NaN        NaN         NaN         연도         내용         금액         비고         NaN                             날짜          내용        필요금액        보유금액         NaN          비고         NaN          NaN              총 매각금액  1440000000  (3층보증금1천 정산후)         NaN         NaN         NaN         NaN         NaN         NaN         NaN

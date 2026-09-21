@@ -1,0 +1,17 @@
+﻿<!DOCTYPE html>
+<html>
+<body>
+    <h1>API Test</h1>
+    <pre id="result">Loading...</pre>
+    <script>
+        fetch('https://script.google.com/macros/s/AKfycbxTwh1RscCE9FDajFBXMbdaR-RiFHxrgy2jg1Mgry7qH3xnnVqH2tbtWjZIKQ58aExz/exec')
+            .then(r => r.json())
+            .then(data => {
+                document.getElementById('result').innerText = "SUCCESS! Keys: " + Object.keys(data).join(', ');
+            })
+            .catch(err => {
+                document.getElementById('result').innerText = "ERROR: " + err;
+            });
+    </script>
+</body>
+</html>

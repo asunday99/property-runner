@@ -1,0 +1,419 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PROPERTY 333</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="data.js"></script>
+    <style>
+        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+        body { background-color: #0b1120; color: #f8fafc; font-family: 'Pretendard', sans-serif; margin: 0; padding: 0; }
+        .nav-btn { padding: 12px 24px; font-weight: 700; border-radius: 8px 8px 0 0; color: #94a3b8; border-bottom: 3px solid transparent; transition: all 0.2s; white-space: nowrap; cursor: pointer;}
+        .nav-btn.active { color: #4ade80; border-bottom-color: #4ade80; background: rgba(74, 222, 128, 0.1); }
+        .nav-btn:hover:not(.active) { color: #f8fafc; background: rgba(255,255,255,0.05); }
+        .tab-content { display: none; animation: fadeIn 0.3s; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .card { background: #1e293b; border: 1px solid #334155; border-radius: 16px; padding: 24px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5); }
+        .filter-btn { padding: 6px 16px; border-radius: 9999px; font-weight: 600; font-size: 14px; cursor: pointer; transition: all 0.2s; border: 1px solid #334155; background: #1e293b; color: #94a3b8; }
+        .filter-btn.active { background: #3b82f6; color: white; border-color: #3b82f6; }
+        #modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 50; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s; }
+        #modal.show { display: flex; opacity: 1; }
+        .modal-content { background: #1e293b; border: 1px solid #334155; border-radius: 16px; padding: 24px; width: 90%; max-width: 400px; transform: scale(0.95); transition: transform 0.3s; }
+        #modal.show .modal-content { transform: scale(1); }
+        .rent-table th { background: #0f172a; padding: 12px; text-align: left; color: #94a3b8; font-weight: 600; border-bottom: 1px solid #334155; position: sticky; top: 0; }
+        .rent-table td { padding: 12px; border-bottom: 1px solid #334155; color: #cbd5e1; }
+        .rent-table tr:hover td { background: #1e293b; }
+        .timeline-item { position: relative; padding-left: 20px; border-left: 2px solid #3b82f6; margin-bottom: 15px; }
+        .timeline-item::before { content: ''; position: absolute; left: -6px; top: 5px; width: 10px; height: 10px; border-radius: 50%; background: #3b82f6; }
+    </style>
+</head>
+<body class="min-h-screen">
+    
+    <!-- 메인 앱 영역 -->
+    <div id="main-app" class="h-full flex flex-col">
+        <div class="flex border-b border-slate-700 bg-[#0f172a] pt-4 px-4 overflow-x-auto whitespace-nowrap custom-scrollbar sticky top-0 z-40 shadow-md">
+            <button class="nav-btn" onclick="switchTab('runner', this)">🏃 러너 뷰</button>
+            <button class="nav-btn" onclick="switchTab('map', this)">🗺️ 지도 뷰</button>
+            <button class="nav-btn active" onclick="switchTab('dashboard', this)">📊 자산 대시보드</button>
+            <button class="nav-btn" onclick="switchTab('investor', this)">👤 투자자별 자산</button>
+            <button class="nav-btn" onclick="switchTab('rentroll', this)">🏢 렌트롤 관리</button>
+        </div>
+
+        <div class="w-full h-full relative p-0 m-0">
+            <!-- 🌟 러너 뷰 붙여넣기 🌟 -->
+            <div id="tab-runner" class="tab-content w-full min-h-screen relative">
+                <!-- 
+                ======================================================
+                여기에 기존 러너 뷰 코드를 넣으세요.
+                ======================================================
+                -->
+                <div class="p-8 text-center text-slate-400 mt-20">
+                    <h2 class="text-2xl font-bold mb-4">러너 뷰 영역</h2>
+                    <p>index.html 코드를 열고 이 영역에 기존 러너 뷰 코드를 붙여넣으세요.</p>
+                </div>
+            </div>
+
+            <!-- 🌟 지도 뷰 붙여넣기 🌟 -->
+            <div id="tab-map" class="tab-content w-full min-h-screen relative">
+                <!-- 
+                ======================================================
+                여기에 기존 지도 뷰 코드를 넣으세요.
+                ======================================================
+                -->
+                <div class="p-8 text-center text-slate-400 mt-20">
+                    <h2 class="text-2xl font-bold mb-4">지도 뷰 영역</h2>
+                    <p>index.html 코드를 열고 이 영역에 기존 지도 뷰 코드를 붙여넣으세요.</p>
+                </div>
+            </div>
+            
+            <!-- 📊 대시보드 (회장님 뷰) -->
+            <div id="tab-dashboard" class="tab-content active pb-10">
+                <div class="max-w-6xl mx-auto p-4 md:p-8 mt-4">
+                    
+                    <!-- 핵심 목표 -->
+                    <div class="card mb-6 bg-gradient-to-br from-slate-800 to-slate-900 border-blue-900/30">
+                        <div class="flex justify-between items-end mb-4">
+                            <h2 class="text-xl md:text-2xl font-black text-slate-300 tracking-tight">🏁 통합 포트폴리오 <span class="text-blue-400">500억</span> 달성 목표</h2>
+                            <div class="text-right">
+                                <span id="dash-goal-pct" class="text-emerald-400 text-4xl font-black">0%</span>
+                                <p class="text-slate-400 text-sm font-bold mt-1">D-1569</p>
+                            </div>
+                        </div>
+                        <div class="w-full bg-slate-900 rounded-full h-5 mb-2 shadow-inner">
+                            <div id="dash-goal-bar" class="bg-gradient-to-r from-blue-600 via-blue-400 to-emerald-400 h-5 rounded-full relative" style="width: 0%; transition: width 1s ease-out;"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- 3대 핵심 리스크/액션 지표 -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        
+                        <!-- 1. 유동성 리스크 (보증금 반환) -->
+                        <div class="card border-red-900/60 relative overflow-hidden bg-slate-900/50">
+                            <div class="absolute -top-10 -right-10 w-32 h-32 bg-red-500/10 blur-3xl rounded-full pointer-events-none"></div>
+                            <h3 class="text-lg font-bold text-red-400 mb-2">🚨 6개월 내 반환 보증금</h3>
+                            <p class="text-sm text-slate-400 mb-6">최고 유동성 리스크 지표</p>
+                            <p id="dash-d180-deposit" class="text-3xl lg:text-4xl font-black text-white text-right">0 원</p>
+                            <p id="dash-d180-count" class="text-sm text-red-400 font-bold mt-2 text-right">총 0건 대기중</p>
+                        </div>
+
+                        <!-- 2. 부채 리스크 (LTV 경고) -->
+                        <div class="card border-orange-900/60 relative overflow-hidden bg-slate-900/50">
+                            <div class="absolute -top-10 -right-10 w-32 h-32 bg-orange-500/10 blur-3xl rounded-full pointer-events-none"></div>
+                            <h3 class="text-lg font-bold text-orange-400 mb-2">⚖️ LTV 위험군 (50% 초과)</h3>
+                            <p class="text-sm text-slate-400 mb-4">부채/레버리지 집중 관리 대상</p>
+                            <ul id="dash-ltv-list" class="space-y-2 mt-4 max-h-[120px] overflow-y-auto custom-scrollbar"></ul>
+                        </div>
+
+                        <!-- 3. 엑시트 알림 (재개발) -->
+                        <div class="card border-blue-900/60 relative overflow-hidden bg-slate-900/50">
+                            <div class="absolute -top-10 -right-10 w-32 h-32 bg-blue-500/10 blur-3xl rounded-full pointer-events-none"></div>
+                            <h3 class="text-lg font-bold text-blue-400 mb-2">🚧 재개발 엑시트 타점 도달</h3>
+                            <p class="text-sm text-slate-400 mb-4">조합/관리처분 인가 등 액션 요망</p>
+                            <ul id="dash-dev-list" class="space-y-2 mt-4 max-h-[120px] overflow-y-auto custom-scrollbar pr-2"></ul>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- 👤 투자자별 (실무자 뷰) -->
+            <div id="tab-investor" class="tab-content pb-10">
+                <div class="max-w-6xl mx-auto p-4 md:p-8 mt-4">
+                    <div class="mb-6 flex flex-wrap gap-2" id="inv-filter-container"></div>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <!-- 현금흐름 및 요약 -->
+                        <div class="card lg:col-span-1 h-fit space-y-6">
+                            
+                            <!-- 실무자용 현금흐름 지표 -->
+                            <div class="bg-slate-900 p-4 rounded-xl border border-slate-700 shadow-inner">
+                                <h3 class="text-sm font-bold text-slate-400 mb-4 text-center tracking-widest">💰 월간 현금 흐름 (Net)</h3>
+                                <div class="flex justify-between items-center mb-2 border-b border-slate-800 pb-2">
+                                    <span class="text-slate-500 text-sm">월세 총수입</span>
+                                    <span id="inv-rent" class="text-emerald-400 font-bold">0 원</span>
+                                </div>
+                                <div class="flex justify-between items-center mb-4 border-b border-slate-800 pb-2">
+                                    <span class="text-slate-500 text-sm">월 이자비용</span>
+                                    <span id="inv-interest" class="text-red-400 font-bold">0 원</span>
+                                </div>
+                                <div class="flex justify-between items-center pt-2">
+                                    <span class="text-slate-300 font-bold">순 흐름</span>
+                                    <span id="inv-net" class="font-black text-xl">0 원</span>
+                                </div>
+                            </div>
+
+                            <div>
+                                <h3 class="text-lg font-bold text-blue-400 mb-4 border-b border-slate-700 pb-3"><span id="inv-name-title">투자자</span> 자산 요약</h3>
+                                <div class="grid grid-cols-1 gap-3 text-sm">
+                                    <div class="bg-slate-800/50 p-3 rounded-lg border border-slate-700 flex justify-between"><span class="text-slate-400">총 평가금액</span><span id="inv-total" class="font-extrabold text-lg text-emerald-400">0 원</span></div>
+                                    <div class="bg-red-900/20 p-3 rounded-lg border border-red-900/30 flex justify-between"><span class="text-red-400">총 부채(차용금)</span><span id="inv-debt" class="font-bold text-red-300">0 원</span></div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <h3 class="text-sm font-bold text-slate-400 mb-3 text-center">⚖️ 순자산 vs 부채 (LTV)</h3>
+                                <div class="h-40 w-full relative"><canvas id="ltvChart"></canvas></div>
+                            </div>
+                        </div>
+                        
+                        <!-- 자산 리스트 및 분석 -->
+                        <div class="lg:col-span-2 space-y-6">
+                            <div class="card">
+                                <h3 class="text-lg font-bold text-slate-300 mb-5 border-b border-slate-700 pb-3">🏢 운용중인 자산 리스트 (<span id="inv-prop-count">0</span>건)</h3>
+                                <p class="text-xs text-slate-500 mb-4">※ 자산을 클릭하시면 취득정보 및 엑시트 전략을 확인할 수 있습니다.</p>
+                                <div id="inv-prop-list" class="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar"></div>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="card bg-slate-800/30">
+                                    <h3 class="text-lg font-bold text-emerald-400 mb-5 border-b border-slate-700 pb-3">💰 매각 완료 수익률 (ROI)</h3>
+                                    <div class="h-48 w-full relative mb-4"><canvas id="roiChart"></canvas></div>
+                                </div>
+                                <div class="card bg-slate-800/30 border-blue-900/30">
+                                    <h3 class="text-lg font-bold text-blue-400 mb-5 border-b border-slate-700 pb-3">💸 매각 자금 흐름 트래커</h3>
+                                    <div id="fund-flow-list" class="pl-4 max-h-[220px] overflow-y-auto custom-scrollbar"></div>
+                                    <p id="no-fund-flow" class="text-slate-500 text-sm hidden">데이터 없음</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 🏢 렌트롤 -->
+            <div id="tab-rentroll" class="tab-content pb-10">
+                <div class="max-w-6xl mx-auto p-4 md:p-8 mt-4">
+                    <div class="card">
+                        <div class="flex justify-between items-center mb-6 border-b border-slate-700 pb-4">
+                            <h3 class="text-lg font-bold text-slate-300">🏢 전체 렌트롤 현황</h3>
+                            <div class="flex gap-2">
+                                <button class="filter-btn active" id="btn-rent-all" onclick="filterRent('all')">전체 보기</button>
+                                <button class="filter-btn text-red-400 border-red-900/50" id="btn-rent-warn" onclick="filterRent('warning')">🚨 180일 만기</button>
+                            </div>
+                        </div>
+                        <div class="overflow-x-auto h-[600px] custom-scrollbar border border-slate-700 rounded-lg">
+                            <table class="w-full text-sm rent-table">
+                                <thead><tr><th>소유주</th><th>건물명 / 호수</th><th>임차인</th><th>보증금</th><th>월세</th><th>만기일 (D-Day)</th></tr></thead>
+                                <tbody id="rent-table-body"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 모달창 -->
+    <div id="modal" onclick="closeModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="flex justify-between items-start mb-4 border-b border-slate-700 pb-3">
+                <h3 id="modal-title" class="text-xl font-bold text-white">제목</h3>
+                <button onclick="closeModal(true)" class="text-slate-400 hover:text-white text-2xl">&times;</button>
+            </div>
+            <div class="space-y-4 text-sm" id="modal-body"></div>
+            <div class="mt-6 text-center">
+                <button onclick="closeModal(true)" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-6 rounded-full w-full">닫기</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 탭 전환 로직
+        function switchTab(tabId, btnElement) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.getElementById('tab-' + tabId).classList.add('active');
+            
+            document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+            btnElement.classList.add('active');
+            
+            if (typeof rawData !== 'undefined') {
+                if (tabId === 'dashboard') initDashboard();
+                if (tabId === 'investor' && !window.invInit) initInvestorTab();
+                if (tabId === 'rentroll' && !window.rentInit) initRentRollTab();
+            }
+        }
+
+        const formatMoney = (num) => { if (!num) return '0 원'; return new Intl.NumberFormat('ko-KR').format(Math.round(num)) + ' 원'; };
+        let ltvChart = null; let roiChart = null;
+        Chart.defaults.color = '#94a3b8'; Chart.defaults.font.family = 'Pretendard';
+
+        window.onload = () => {
+            const dashBtn = document.querySelectorAll('.nav-btn')[2];
+            switchTab('dashboard', dashBtn);
+        };
+
+        function initDashboard() {
+            if(typeof rawData === 'undefined') return;
+            const props = rawData.properties;
+            const devAlerts = rawData.dev_alerts;
+            const summary = rawData.summary;
+            
+            let tValue = 0;
+            props.forEach(p => tValue += p.value);
+            const target = 50000000000;
+            let pct = Math.min((tValue / target) * 100, 100) || 0;
+            document.getElementById('dash-goal-pct').innerText = pct.toFixed(2) + '%';
+            document.getElementById('dash-goal-bar').style.width = pct + '%';
+
+            // 유동성 리스크
+            document.getElementById('dash-d180-deposit').innerText = formatMoney(summary.total_d180_deposit);
+            document.getElementById('dash-d180-count').innerText = 총 건 대기중;
+
+            // 부채 위험군
+            const ltvUl = document.getElementById('dash-ltv-list');
+            ltvUl.innerHTML = '';
+            if(summary.high_ltv_alerts.length === 0) ltvUl.innerHTML = '<p class="text-slate-500 py-4 text-center text-xs">위험군 없음</p>';
+            else {
+                summary.high_ltv_alerts.forEach(a => {
+                    ltvUl.innerHTML += <li class="flex justify-between items-center bg-slate-800/80 p-2.5 rounded-lg border border-orange-900/40"><span class="font-bold text-slate-200"></span><span class="text-orange-400 font-black text-sm">LTV %</span></li>;
+                });
+            }
+
+            // 엑시트 알림
+            const devUl = document.getElementById('dash-dev-list');
+            devUl.innerHTML = '';
+            if (devAlerts.length === 0) devUl.innerHTML = '<p class="text-slate-500 py-4 text-center text-xs">알림 없음</p>';
+            else {
+                devAlerts.forEach(w => {
+                    devUl.innerHTML += <li class="flex justify-between items-center bg-slate-800/80 p-2.5 rounded-lg border border-blue-900/40 cursor-pointer hover:bg-slate-700" onclick="showDevModal('', '', '', '')"><span class="font-bold text-blue-300 text-sm truncate pr-2">[]  </span><span class="font-black text-[10px] px-1.5 py-0.5 bg-blue-900/40 text-blue-400 rounded whitespace-nowrap">클릭</span></li>;
+                });
+            }
+        }
+
+        function initInvestorTab() {
+            if(typeof rawData === 'undefined') return;
+            window.invInit = true;
+            const container = document.getElementById('inv-filter-container');
+            const topOwners = ['고미', '양아선', '위탁', '김미한']; 
+            let dOwners = [...topOwners];
+            rawData.owners.forEach(o => { if(!dOwners.includes(o) && dOwners.length<10) dOwners.push(o); });
+            
+            dOwners.forEach(o => {
+                if(!rawData.owners.includes(o)) return;
+                let btn = document.createElement('button');
+                btn.className = 'filter-btn inv-btn ' + (o === topOwners[0] ? 'active' : '');
+                btn.innerText = o;
+                btn.onclick = () => setInv(o);
+                container.appendChild(btn);
+            });
+            setInv(topOwners[0]);
+        }
+
+        function setInv(owner) {
+            document.querySelectorAll('.inv-btn').forEach(b => b.classList.toggle('active', b.innerText === owner));
+            document.getElementById('inv-name-title').innerText = owner;
+            
+            const stats = rawData.summary.investor_stats[owner] || {total_value:0, total_debt:0, monthly_rent:0, monthly_interest:0, net_cashflow:0};
+            
+            // 현금흐름 
+            document.getElementById('inv-rent').innerText = formatMoney(stats.monthly_rent);
+            document.getElementById('inv-interest').innerText = formatMoney(stats.monthly_interest);
+            document.getElementById('inv-net').innerText = formatMoney(stats.net_cashflow);
+            document.getElementById('inv-net').className = ont-black text-xl ;
+
+            document.getElementById('inv-total').innerText = formatMoney(stats.total_value);
+            document.getElementById('inv-debt').innerText = formatMoney(stats.total_debt);
+            
+            const props = rawData.properties.filter(p => p.owner === owner);
+            document.getElementById('inv-prop-count').innerText = props.length;
+            
+            const ctxLtv = document.getElementById('ltvChart').getContext('2d');
+            if(ltvChart) ltvChart.destroy();
+            let netAsset = Math.max(0, stats.total_value - stats.total_debt);
+            ltvChart = new Chart(ctxLtv, {
+                type: 'doughnut', data: { labels: ['부채', '순자산'], datasets: [{ data: stats.total_debt>0||netAsset>0 ? [stats.total_debt, netAsset] : [0, 1], backgroundColor: ['#ef4444', '#10b981'], borderWidth: 0 }] },
+                options: { responsive: true, maintainAspectRatio: false, cutout: '70%', plugins: { legend: { position: 'right', labels: { color: '#cbd5e1' } } } }
+            });
+            
+            // 깔끔한 자산 리스트 (클릭 시 모달)
+            const pl = document.getElementById('inv-prop-list');
+            pl.innerHTML = '';
+            props.forEach(p => {
+                pl.innerHTML += 
+                    <div class="bg-slate-800/80 border border-slate-700/50 rounded-lg p-3 cursor-pointer hover:bg-slate-700 transition flex justify-between items-center shadow-sm" onclick="showPropModal('', , , , '', '')">
+                        <div class="flex items-center gap-2 truncate pr-2">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
+                            <span class="font-bold text-slate-200 text-sm truncate"> </span>
+                        </div>
+                        <span class="text-emerald-400 font-bold text-sm whitespace-nowrap"></span>
+                    </div>;
+            });
+
+            // 매각 및 수익률
+            const soldProps = rawData.sold_properties.filter(p => p.owner === owner || owner === '전체');
+            const ctxRoi = document.getElementById('roiChart').getContext('2d');
+            if(roiChart) roiChart.destroy();
+            if(soldProps.length > 0) {
+                let roiLabels = soldProps.map(p => p.name.split(' ')[1] || p.name);
+                roiChart = new Chart(ctxRoi, { type: 'bar', data: { labels: roiLabels, datasets: [{ label: '수익률 (%)', data: soldProps.map(p => p.roi), backgroundColor: '#10b981', borderRadius: 4 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } } });
+            }
+            
+            // 펀드 플로우
+            const ownerFlows = rawData.flows.filter(f => f.title.includes(owner) || owner === '전체' || (owner==='고미' && f.title.includes('고미'))); 
+            const fl = document.getElementById('fund-flow-list');
+            const nfl = document.getElementById('no-fund-flow');
+            fl.innerHTML = '';
+            if (ownerFlows.length === 0) nfl.classList.remove('hidden');
+            else {
+                nfl.classList.add('hidden');
+                ownerFlows.forEach(f => {
+                    let htmlStr = <div class="mb-4"><h4 class="font-bold text-slate-300 mb-2 text-sm"></h4>;
+                    f.items.forEach(item => { htmlStr += <div class="timeline-item text-slate-400 text-xs"></div>; });
+                    fl.innerHTML += htmlStr + </div>;
+                });
+            }
+        }
+
+        function initRentRollTab() { if(typeof rawData === 'undefined') return; window.rentInit = true; filterRent('all'); }
+        function filterRent(mode) {
+            document.getElementById('btn-rent-all').classList.toggle('active', mode==='all');
+            document.getElementById('btn-rent-warn').classList.toggle('active', mode!=='all');
+            let rents = rawData.rents;
+            if (mode === 'warning') rents = rents.filter(r => r.dday <= 180).sort((a,b) => a.dday - b.dday);
+            else rents = rents.sort((a,b) => a.bldg.localeCompare(b.bldg));
+            
+            const tb = document.getElementById('rent-table-body');
+            tb.innerHTML = '';
+            rents.forEach(r => {
+                let dClass = r.dday <= 180 ? (r.dday <= 100 ? 'text-red-400 font-bold bg-red-900/20' : 'text-orange-400 font-bold') : 'text-slate-400';
+                tb.innerHTML += <tr class="cursor-pointer" onclick="showRentModal('', '', '', , , )"><td><span class="bg-slate-700 px-2 py-1 rounded text-xs"></span></td><td class="font-medium text-slate-200"> 호</td><td></td><td class="text-emerald-400"></td><td></td><td class=""> (D-)</td></tr>;
+            });
+        }
+
+        // --- Modals ---
+        function showRentModal(tenant, bldg, room, deposit, rent, dday) {
+            document.getElementById('modal-title').innerText = bldg + ' ' + room + '호';
+            document.getElementById('modal-body').innerHTML = <div class="flex justify-between border-b border-slate-700/50 pb-2"><span class="text-slate-400">임차인</span><span class="font-bold text-slate-200"></span></div><div class="flex justify-between border-b border-slate-700/50 pb-2"><span class="text-slate-400">보증금</span><span class="font-bold text-emerald-400"></span></div><div class="flex justify-between pt-2"><span class="text-slate-400">남은 기간</span><span class="font-black text-red-400 bg-red-900/30 px-2 py-1 rounded">D-일</span></div>;
+            openModal();
+        }
+        function showDevModal(name, owner, stage, strategy) {
+            document.getElementById('modal-title').innerText = [] ;
+            document.getElementById('modal-body').innerHTML = <div class="border-b border-slate-700/50 pb-2 mb-2"><span class="text-blue-400 font-bold block mb-1">진행 단계</span><span class="text-slate-200"></span></div><div class="pt-2"><span class="text-emerald-400 font-bold block mb-1">엑시트 전략</span><span class="text-slate-200"></span></div>;
+            openModal();
+        }
+        function showPropModal(name, buy_price, invest, value, strategy, tax) {
+            document.getElementById('modal-title').innerText = name;
+            document.getElementById('modal-body').innerHTML = 
+                <div class="grid grid-cols-2 gap-4 border-b border-slate-700/50 pb-3 mb-3">
+                    <div><span class="text-slate-500 block mb-1 text-xs">취득가</span><span class="text-slate-200 font-bold"></span></div>
+                    <div><span class="text-slate-500 block mb-1 text-xs">실투자금</span><span class="text-slate-300"></span></div>
+                </div>
+                <div class="border-b border-slate-700/50 pb-3 mb-3 flex justify-between items-center">
+                    <span class="text-slate-500">현재 시세</span><span class="text-emerald-400 font-black text-lg"></span>
+                </div>
+                <div class="mb-3">
+                    <span class="text-blue-400 font-bold block mb-1 text-xs">엑시트 전략</span><span class="text-slate-200 text-sm"></span>
+                </div>
+                <div>
+                    <span class="text-orange-400 font-bold block mb-1 text-xs">세금 및 비고</span><span class="text-slate-200 text-sm"></span>
+                </div>;
+            openModal();
+        }
+        function openModal() { const modal = document.getElementById('modal'); modal.style.display = 'flex'; setTimeout(() => modal.classList.add('show'), 10); }
+        function closeModal(force = false) { if (force || event.target.id === 'modal') { const modal = document.getElementById('modal'); modal.classList.remove('show'); setTimeout(() => modal.style.display = 'none', 300); } }
+    </script>
+</body>
+</html>

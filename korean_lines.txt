@@ -1,0 +1,5 @@
+104: let propKey = keys.find(k => k.replace(/\s/g,'').includes('매입부동산')) || '매입부동산';
+114: alert("⚠️ 데이터를 찾지 못했습니다! 구글 시트의 탭 이름이 '매입부동산'인지 확인해주세요. 현재 발견된 탭: " + keys.join(", "));
+258: <button class="nav-btn" onclick="switchTab('investor', this)">👤 투자자별 자산 및 성과</button>
+346: <span id="inv-name-title">투자자</span> 자산 요약
+716: document.getElementById('roiChart').parentElement.innerHTML = '<p class="text-slate-500 text-sm text-center py-10">해당 투자자의 매각 이력이 없습니다.</p>';

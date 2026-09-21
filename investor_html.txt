@@ -1,0 +1,74 @@
+<!-- 2. INVESTOR TAB -->
+        <div id="tab-investor" class="tab-content">
+            <div class="mb-6 flex flex-wrap gap-2" id="inv-filter-container"></div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- 개인 요약 & 부채 비율 그래프 -->
+                <div class="card lg:col-span-1 h-fit space-y-6">
+                    <div>
+                        <h3 class="text-lg font-bold text-blue-400 mb-4 border-b border-slate-700 pb-3">
+                            <span id="inv-name-title">투자자</span> 자산 요약
+                        </h3>
+                        <div class="grid grid-cols-2 gap-3 text-sm">
+                            <div class="bg-slate-800/50 p-3 rounded-lg border border-slate-700 col-span-2 flex justify-between items-center">
+                                <span class="text-slate-400">총 평가금액</span>
+                                <span id="inv-total" class="font-extrabold text-lg text-emerald-400">0 원</span>
+                            </div>
+                            <div class="bg-slate-800/50 p-3 rounded-lg border border-slate-700 col-span-2 flex justify-between items-center">
+                                <span class="text-slate-400">총 실투자금</span>
+                                <span id="inv-invest" class="font-bold text-slate-300">0 원</span>
+                            </div>
+                            <div class="bg-red-900/20 p-3 rounded-lg border border-red-900/30">
+                                <span class="text-red-400 block mb-1">총 부채(차용금)</span>
+                                <span id="inv-debt" class="font-bold text-red-300 block truncate">0 원</span>
+                            </div>
+                            <div class="bg-red-900/20 p-3 rounded-lg border border-red-900/30">
+                                <span class="text-red-400 block mb-1">월 이자 비용</span>
+                                <span id="inv-interest" class="font-bold text-red-300 block truncate">0 원</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-sm font-bold text-slate-400 mb-3 border-t border-slate-700 pt-4 text-center">
+                            ⚖️ 순자산 vs 부채 (LTV 비율)
+                        </h3>
+                        <div class="h-40 w-full relative">
+                            <canvas id="ltvChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="lg:col-span-2 space-y-6">
+                    <!-- 보유 부동산 -->
+                    <div class="card">
+                        <h3 class="text-lg font-bold text-slate-300 mb-5 border-b border-slate-700 pb-3">
+                            🏢 보유 부동산 및 엑시트 전략 (<span id="inv-prop-count">0</span>건)
+                        </h3>
+                        <div id="inv-prop-list" class="space-y-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar"></div>
+                    </div>
+
+                    <!-- 매각 완료 자산 및 수익률 -->
+                    <div class="card bg-slate-800/30">
+                        <h3 class="text-lg font-bold text-emerald-400 mb-5 border-b border-slate-700 pb-3">
+                            💰 매각 완료 자산 수익률 (ROI)
+                        </h3>
+                        <div class="h-48 w-full relative mb-4">
+                            <canvas id="roiChart"></canvas>
+                        </div>
+                        <div id="sold-prop-list" class="space-y-2 mt-4 text-sm"></div>
+                    </div>
+
+                    <!-- 자금 흐름 트래커 -->
+                    <div class="card bg-slate-800/30 border-blue-900/30">
+                        <h3 class="text-lg font-bold text-blue-400 mb-5 border-b border-slate-700 pb-3">
+                            💸 매각 자금 흐름 트래커 (Timeline)
+                        </h3>
+                        <div id="fund-flow-list" class="pl-4"></div>
+                        <p id="no-fund-flow" class="text-slate-500 text-sm hidden">추적된 자금 흐름 데이터가 없습니다.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. RENTROLL TAB -->

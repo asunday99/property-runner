@@ -1,0 +1,18 @@
+﻿<!DOCTYPE html>
+<html>
+<body>
+    <h1>API Fetch Diagnostic</h1>
+    <pre id="result">Fetching...</pre>
+    <script>
+        fetch('https://script.google.com/macros/s/AKfycbxTwh1RscCE9FDajFBXMbdaR-RiFHxrgy2jg1Mgry7qH3xnnVqH2tbtWjZIKQ58aExz/exec')
+            .then(res => res.text())
+            .then(text => {
+                document.getElementById('result').innerText = "DATA RECEIVED:\n" + text.substring(0, 2000);
+                require('fs').writeFileSync('C:/Users/GOMIHOUSE/Desktop/repo_temp/gas_dump.json', text);
+            })
+            .catch(err => {
+                document.getElementById('result').innerText = "ERROR: " + err;
+            });
+    </script>
+</body>
+</html>

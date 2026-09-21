@@ -1,18 +1,18 @@
 ﻿<!DOCTYPE html>
+
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="manifest" href="manifest.json">
-    <title>PROPERTY_RUNNER</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
-    <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=10d2911cc3c5bedf397ff5b602bd52dd&libraries=services"></script>
-    
-    <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="yes" name="apple-mobile-web-app-capable"/>
+<meta content="yes" name="mobile-web-app-capable"/>
+<meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
+<link href="manifest.json" rel="manifest"/>
+<title>PROPERTY_RUNNER</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<script src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=10d2911cc3c5bedf397ff5b602bd52dd&amp;libraries=services" type="text/javascript"></script>
+<style>
         body { margin: 0; overflow: hidden; font-family: 'Pretendard', sans-serif; user-select: none; background-color: #000000; }
         #app-container { position: relative; width: 100vw; height: 100vh; display: flex; flex-direction: column; }
         
@@ -236,121 +236,115 @@
 </style>
 </head>
 <body>
-    <div id="app-container">
-        <!-- Drawer Component -->
-<div id="drawer-overlay" class="drawer-overlay" onclick="toggleDrawer()"></div>
-<div id="drawer-sidebar" class="drawer-sidebar">
-    <div class="drawer-close" onclick="toggleDrawer()">&laquo;</div>
-    <div class="drawer-content">
-        <h2 class="drawer-title">PROPERTY RUNNER</h2>
-        <p class="drawer-subtitle">이 앱은 구글시트에 기록된 방대한 부동산 데이터를<br>한눈에 시각화하고 관리할 목적으로 제작되었습니다</p>
-        
-        
-        <div class="drawer-divider"></div>
+<div id="app-container">
+<!-- Drawer Component -->
+<div class="drawer-overlay" id="drawer-overlay" onclick="toggleDrawer()"></div>
+<div class="drawer-sidebar" id="drawer-sidebar">
+<div class="drawer-close" onclick="toggleDrawer()">«</div>
+<div class="drawer-content">
+<h2 class="drawer-title">PROPERTY RUNNER</h2>
+<p class="drawer-subtitle">이 앱은 구글시트에 기록된 방대한 부동산 데이터를<br/>한눈에 시각화하고 관리할 목적으로 제작되었습니다</p>
 
-        <div class="drawer-section">
-            <h3 class="drawer-section-title">러너 뷰</h3>
-            <p class="drawer-section-sub" id="drawer-runner-sub1" style="color:#ffffff;">= 아파트 분양및 개발 차익 목적 (총 00건)</p>
-            <p class="drawer-section-sub" style="color:#ffffff;">= 개발단계 및 준공까지의 예상기간</p>
-            <ul class="drawer-list">
-                <li id="drawer-gold-count"><span style="color:#b5924a;">금색 러너:</span> 위탁 투자</li>
-                <li id="drawer-purple-count"><span style="color:#c665d9;">보라색 러너:</span> 직접 투자</li>
-            </ul>
-            </div>
-        
-        <div class="drawer-divider"></div>
-        
-        <div class="drawer-section">
-            <h3 class="drawer-section-title">지도 뷰</h3>
-            <p class="drawer-section-sub" id="drawer-map-sub1" style="color:#ffffff;">= 총 보유 부동산 (총 00건)</p>
-            <ul class="drawer-list">
-                <li id="drawer-map-gold-count">금색 투자자: 위탁 투자</li>
-                <li id="drawer-map-purple-count">보라색 투자자: 직접 투자</li>
-            </ul>
-        </div>
-    </div>
+<div class="drawer-section">
+<h3 class="drawer-section-title">💻 실무 관리</h3>
+<div style="display:flex; flex-direction:column; gap:12px; margin-top:16px;">
+<button onclick="switchTab('rentroll')" style="background:#1f2937; color:white; border:none; padding:12px; border-radius:8px; font-weight:bold; font-size:16px; cursor:pointer; text-align:left;">📁 임대관리 (RentRoll)</button>
+<button onclick="switchTab('debt')" style="background:#1f2937; color:white; border:none; padding:12px; border-radius:8px; font-weight:bold; font-size:16px; cursor:pointer; text-align:left;">💳 부채관리</button>
 </div>
-
+</div>
+<div class="drawer-divider"></div>
+<div class="drawer-divider"></div>
+<div class="drawer-section">
+<h3 class="drawer-section-title">러너 뷰</h3>
+<p class="drawer-section-sub" id="drawer-runner-sub1" style="color:#ffffff;">= 아파트 분양및 개발 차익 목적 (총 00건)</p>
+<p class="drawer-section-sub" style="color:#ffffff;">= 개발단계 및 준공까지의 예상기간</p>
+<ul class="drawer-list">
+<li id="drawer-gold-count"><span style="color:#b5924a;">금색 러너:</span> 위탁 투자</li>
+<li id="drawer-purple-count"><span style="color:#c665d9;">보라색 러너:</span> 직접 투자</li>
+</ul>
+</div>
+<div class="drawer-divider"></div>
+<div class="drawer-section">
+<h3 class="drawer-section-title">지도 뷰</h3>
+<p class="drawer-section-sub" id="drawer-map-sub1" style="color:#ffffff;">= 총 보유 부동산 (총 00건)</p>
+<ul class="drawer-list">
+<li id="drawer-map-gold-count">금색 투자자: 위탁 투자</li>
+<li id="drawer-map-purple-count">보라색 투자자: 직접 투자</li>
+</ul>
+</div>
+</div>
+</div>
 <div id="header">
-    <div class="header-top">
-        <div class="header-top-left" onclick="toggleDrawer()">&raquo;</div>
-        <div class="header-top-center"></div>
-        <div class="header-top-right">
-            <span>Fork</span>
-            <svg style="width:18px; height:18px; fill:currentColor;" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-            <span style="font-size:18px;">⋮</span>
-        </div>
-    </div>
-    <div class="tabs-container">
-        <button id="btn-marathon" class="tab-btn tab-active" onclick="switchTab('marathon')">러너 뷰</button>
-        <button id="btn-map" class="tab-btn tab-inactive" onclick="switchTab('map')">지도 뷰</button>
-    </div>
-</div>
-        
-        <input type="file" id="photoInput" accept="image/*" style="display: none;">
+<div class="header-top">
+<div class="header-top-left" onclick="toggleDrawer()">»</div>
+<div class="header-top-center"></div>
+<div class="header-top-right">
+<button id="toggle-map-btn" onclick="toggleMapMode()" style="background:#2563eb; color:white; border:none; padding:6px 12px; border-radius:16px; font-weight:bold; font-size:12px; cursor:pointer;">🗺️ 지도 뷰</button>
 
-        <div id="view-marathon">
-    <div id="runners-area" style="width:100%; max-width:800px; margin:0 auto; min-height:1500px; position:relative; padding-bottom:0px; margin-bottom: 100px;">
-        <!-- Left vertical axis -->
-        <div class="y-axis-line" style="position:absolute; left:20px; top:0; bottom:0; border-left:2px solid #9ca3af; z-index:5; pointer-events:none;"></div>
-        
-        <!-- Y-axis markers -->
-        <div class="timeline-container-y" style="position:absolute; left:0; right:0; top:0; bottom:0; pointer-events:none; z-index:5;">
-            <div class="time-marker-y" style="position:absolute; top:5%; left:20px; z-index:10; background:rgba(0,0,0,0.6); padding:2px 6px; border-radius:4px;"><div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#555;"></div><div style="position:absolute; left:12px; top:-14px; font-size:22px; font-weight:900; color:#ffffff; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 0 2px 4px rgba(0,0,0,0.8); white-space:nowrap;">준공</div></div>
-            <div class="time-marker-y" style="position:absolute; top:16.33%; left:20px;"><div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#555;"></div><div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#9ca3af; white-space:nowrap;">75%</div></div>
-            <div class="time-marker-y" style="position:absolute; top:27.67%; left:20px;"><div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#555;"></div><div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#9ca3af; white-space:nowrap;">60%</div></div>
-            <div class="time-marker-y" style="position:absolute; top:39%; left:20px;"><div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#555;"></div><div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#9ca3af; white-space:nowrap;">45%</div></div>
-            <div class="time-marker-y" style="position:absolute; top:56.33%; left:20px;"><div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#555;"></div><div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#9ca3af; white-space:nowrap;">30%</div></div>
-            <div class="time-marker-y" style="position:absolute; top:73.67%; left:20px;"><div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#555;"></div><div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#9ca3af; white-space:nowrap;">15%</div></div>
-            <div class="time-marker-y" style="position:absolute; top:85%; left:20px;"><div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#555;"></div><div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#9ca3af; white-space:nowrap;">출발</div></div>
-            <div class="demolition-line" style="top:85%; border-top: 2px dashed #ef4444; opacity: 0.5;"></div>
-            <!-- Watermark -->
-            <div style="position: absolute; top: 7%; left: calc(50% + 10px); transform: translateX(-50%); text-align: center; color: rgba(255, 255, 255, 0.3); font-size: 13px; font-weight: 700; white-space: nowrap; z-index: 0; pointer-events: none; letter-spacing: -0.5px;">
+<span>Fork</span>
+<svg style="width:18px; height:18px; fill:currentColor;" viewbox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"></path></svg>
+<span style="font-size:18px;">⋮</span>
+</div>
+</div>
+<div class="tabs-container">
+<button class="tab-btn tab-inactive" id="btn-dashboard" onclick="switchTab('dashboard')">📊 대시보드</button>
+<button class="tab-btn tab-inactive" id="btn-properties" onclick="switchTab('properties')">🏢 매입부동산</button>
+<button class="tab-btn tab-active" id="btn-marathon" onclick="switchTab('marathon')">🏃 러너 뷰</button>
+</div>
+</div>
+<input accept="image/*" id="photoInput" style="display: none;" type="file"/>
+<div id="view-marathon">
+<div id="runners-area" style="width:100%; max-width:800px; margin:0 auto; min-height:1500px; position:relative; padding-bottom:0px; margin-bottom: 100px;">
+<!-- Left vertical axis -->
+<div class="y-axis-line" style="position:absolute; left:20px; top:0; bottom:0; border-left:2px solid #9ca3af; z-index:5; pointer-events:none;"></div>
+<!-- Y-axis markers -->
+<div class="timeline-container-y" style="position:absolute; left:0; right:0; top:0; bottom:0; pointer-events:none; z-index:5;">
+<div class="time-marker-y" style="position:absolute; top:5%; left:20px; z-index:10; background:rgba(0,0,0,0.6); padding:2px 6px; border-radius:4px;"><div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#555;"></div><div style="position:absolute; left:12px; top:-14px; font-size:22px; font-weight:900; color:#ffffff; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 0 2px 4px rgba(0,0,0,0.8); white-space:nowrap;">준공</div></div>
+<div class="time-marker-y" style="position:absolute; top:16.33%; left:20px;"><div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#555;"></div><div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#9ca3af; white-space:nowrap;">75%</div></div>
+<div class="time-marker-y" style="position:absolute; top:27.67%; left:20px;"><div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#555;"></div><div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#9ca3af; white-space:nowrap;">60%</div></div>
+<div class="time-marker-y" style="position:absolute; top:39%; left:20px;"><div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#555;"></div><div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#9ca3af; white-space:nowrap;">45%</div></div>
+<div class="time-marker-y" style="position:absolute; top:56.33%; left:20px;"><div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#555;"></div><div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#9ca3af; white-space:nowrap;">30%</div></div>
+<div class="time-marker-y" style="position:absolute; top:73.67%; left:20px;"><div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#555;"></div><div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#9ca3af; white-space:nowrap;">15%</div></div>
+<div class="time-marker-y" style="position:absolute; top:85%; left:20px;"><div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#555;"></div><div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#9ca3af; white-space:nowrap;">출발</div></div>
+<div class="demolition-line" style="top:85%; border-top: 2px dashed #ef4444; opacity: 0.5;"></div>
+<!-- Watermark -->
+<div style="position: absolute; top: 7%; left: calc(50% + 10px); transform: translateX(-50%); text-align: center; color: rgba(255, 255, 255, 0.3); font-size: 13px; font-weight: 700; white-space: nowrap; z-index: 0; pointer-events: none; letter-spacing: -0.5px;">
                 러너의 컨디션에 따라 순위는 변경됩니다
             </div>
+<div class="time-marker-y" style="position:absolute; top:91%; left:20px;"><div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#555;"></div><div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#9ca3af; white-space:nowrap;">준비운동</div></div>
+<div class="finish-line" style="top:5%; height:15px; background:repeating-linear-gradient(45deg, #111, #111 15px, #D4C19C 15px, #D4C19C 30px); border-bottom:1px solid #333;"></div>
+<div class="time-marker-y" style="position:absolute; top:8.78%; left:20px; z-index:10;"><div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#ef4444;"></div><div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#ef4444; white-space:nowrap;">철거</div></div>
+<div class="demolition-line" style="top:8.78%; border-top: 2px dashed #ef4444; opacity: 0.5;"></div>
+</div>
+</div>
+<div class="timeline-container" style="display:none;">
+<div class="time-marker" style="left: 5%;">
+<div class="year-label">준비운동</div>
+</div>
+<div class="time-marker" style="left: 15%;">
+<div class="year-label">출발</div>
+</div>
+<div class="time-marker" style="left: 33.75%;">
+<div class="year-label">25%</div>
+</div>
+<div class="time-marker" style="left: 52.5%;">
+<div class="year-label">50%</div>
+</div>
+<div class="time-marker" style="left: 71.25%;">
+<div class="year-label">75%</div>
+</div>
+</div>
+<div class="track-lines"></div>
+<div id="runners-area"></div>
+</div>
+<div id="view-map"></div>
 
-            <div class="time-marker-y" style="position:absolute; top:91%; left:20px;"><div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#555;"></div><div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#9ca3af; white-space:nowrap;">준비운동</div></div>
-            
-            <div class="finish-line" style="top:5%; height:15px; background:repeating-linear-gradient(45deg, #111, #111 15px, #D4C19C 15px, #D4C19C 30px); border-bottom:1px solid #333;"></div>
-            
-            <div class="time-marker-y" style="position:absolute; top:8.78%; left:20px; z-index:10;"><div style="position:absolute; left:0; top:0; width:6px; height:2px; background:#ef4444;"></div><div style="position:absolute; left:12px; top:-8px; font-size:11px; font-weight:700; color:#ef4444; white-space:nowrap;">철거</div></div>
-            <div class="demolition-line" style="top:8.78%; border-top: 2px dashed #ef4444; opacity: 0.5;"></div>
-
-        </div>
-    </div>
-
-            
-            <div class="timeline-container" style="display:none;">
-                <div class="time-marker" style="left: 5%;">
-                    <div class="year-label">준비운동</div>
-                </div>
-                <div class="time-marker" style="left: 15%;">
-                    <div class="year-label">출발</div>
-                </div>
-                <div class="time-marker" style="left: 33.75%;">
-                    <div class="year-label">25%</div>
-                </div>
-                <div class="time-marker" style="left: 52.5%;">
-                    <div class="year-label">50%</div>
-                </div>
-                <div class="time-marker" style="left: 71.25%;">
-                    <div class="year-label">75%</div>
-                </div>
-            </div>
-            <div class="track-lines"></div>
-            
-            
-            
-
-            
-            
-            <div id="runners-area"></div>
-        </div>
-
-        <div id="view-map"></div>
-    </div>
-
-    <script>
+<div id="view-dashboard" style="display:none; color:white; padding:20px; overflow-y:auto; flex-grow:1;">대시보드 화면 (데이터 연결 중...)</div>
+<div id="view-properties" style="display:none; color:white; padding:20px; overflow-y:auto; flex-grow:1;">매입부동산 화면 (데이터 연결 중...)</div>
+<div id="view-rentroll" style="display:none; color:white; padding:20px; overflow-y:auto; flex-grow:1;">임대관리 화면 (데이터 연결 중...)</div>
+<div id="view-debt" style="display:none; color:white; padding:20px; overflow-y:auto; flex-grow:1;">부채관리 화면 (데이터 연결 중...)</div>
+</div>
+<script>
         const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQUFrd48p3c6nFJA7rYjoeK43cMqrGTNT_Tv2W0QizuPnrUufbbuKfPN1VCZwtsfpmuljur_TOLtk8i/pub?gid=2053604895&single=true&output=csv';
         
         let runnersData = [];
@@ -1102,4 +1096,3 @@
     </script>
 </body>
 </html>
-

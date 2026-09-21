@@ -702,10 +702,7 @@
             
             renderMarathon();
 
-            const savedTab = localStorage.getItem('propertyRunnerTab') || 'marathon';
-            if (savedTab === 'map' || savedTab === 'properties') {
-                switchTab(savedTab);
-            }
+
         }
 
         function createCharacterDOM(data, isMapMode = false) {
@@ -1115,7 +1112,13 @@
             }
         });
 
-        window.addEventListener('DOMContentLoaded', fetchAndParseData);
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedTab = localStorage.getItem('propertyRunnerTab') || 'marathon';
+            if (savedTab !== 'marathon') {
+                switchTab(savedTab);
+            }
+            fetchAndParseData();
+        });
 
         const GAS_URL = "https://script.google.com/macros/s/AKfycbxirG8wxYgpi2CPKZwcVeTuoAH--Nk_-DRaCqex7Jpm_fHOWGQ5LIMV_lUuGV5pWydg/exec";
         window.globalData = null;

@@ -234,6 +234,7 @@
             .drawer-subtitle { font-weight: 600; }
         }
 </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 <div id="app-container">
@@ -339,9 +340,182 @@
 <div id="runners-area"></div>
 </div>
 <div id="view-map"></div>
-<div id="view-dashboard" style="display:none; color:white; padding:20px; overflow-y:auto; flex-grow:1;">대시보드 화면 (데이터 연결 중...)</div>
+
+        <div id="view-dashboard" style="display:none; overflow-y:auto; flex-grow:1; color:white; padding:20px;" class="">
+            <div class="mb-6 flex flex-wrap gap-2" id="inv-filter-container"></div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- 개인 요약 & 부채 비율 그래프 -->
+                <div class="card lg:col-span-1 h-fit space-y-6">
+                    <div>
+                        <h3 class="text-lg font-bold text-blue-400 mb-4 border-b border-slate-700 pb-3">
+                            <span id="inv-name-title">투자자</span> 자산 요약
+                        </h3>
+                        <div class="grid grid-cols-2 gap-3 text-sm">
+                            <div class="bg-slate-800/50 p-3 rounded-lg border border-slate-700 col-span-2 flex justify-between items-center">
+                                <span class="text-slate-400">총 평가금액</span>
+                                <span id="inv-total" class="font-extrabold text-lg text-emerald-400">0 원</span>
+                            </div>
+                            <div class="bg-slate-800/50 p-3 rounded-lg border border-slate-700 col-span-2 flex justify-between items-center">
+                                <span class="text-slate-400">총 실투자금</span>
+                                <span id="inv-invest" class="font-bold text-slate-300">0 원</span>
+                            </div>
+                            <div class="bg-red-900/20 p-3 rounded-lg border border-red-900/30">
+                                <span class="text-red-400 block mb-1">총 부채(차용금)</span>
+                                <span id="inv-debt" class="font-bold text-red-300 block truncate">0 원</span>
+                            </div>
+                            <div class="bg-red-900/20 p-3 rounded-lg border border-red-900/30">
+                                <span class="text-red-400 block mb-1">월 이자 비용</span>
+                                <span id="inv-interest" class="font-bold text-red-300 block truncate">0 원</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-sm font-bold text-slate-400 mb-3 border-t border-slate-700 pt-4 text-center">
+                            ⚖️ 순자산 vs 부채 (LTV 비율)
+                        </h3>
+                        <div class="h-40 w-full relative">
+                            <canvas id="ltvChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="lg:col-span-2 space-y-6">
+                    <!-- 보유 부동산 -->
+                    <div class="card">
+                        <h3 class="text-lg font-bold text-slate-300 mb-5 border-b border-slate-700 pb-3">
+                            🏢 보유 부동산 및 엑시트 전략 (<span id="inv-prop-count">0</span>건)
+                        </h3>
+                        <div id="inv-prop-list" class="space-y-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar"></div>
+                    </div>
+
+                    <!-- 매각 완료 자산 및 수익률 -->
+                    <div class="card bg-slate-800/30">
+                        <h3 class="text-lg font-bold text-emerald-400 mb-5 border-b border-slate-700 pb-3">
+                            💰 매각 완료 자산 수익률 (ROI)
+                        </h3>
+                        <div class="h-48 w-full relative mb-4">
+                            <canvas id="roiChart"></canvas>
+                        </div>
+                        <div id="sold-prop-list" class="space-y-2 mt-4 text-sm"></div>
+                    </div>
+
+                    <!-- 자금 흐름 트래커 -->
+                    <div class="card bg-slate-800/30 border-blue-900/30">
+                        <h3 class="text-lg font-bold text-blue-400 mb-5 border-b border-slate-700 pb-3">
+                            💸 매각 자금 흐름 트래커 (Timeline)
+                        </h3>
+                        <div id="fund-flow-list" class="pl-4"></div>
+                        <p id="no-fund-flow" class="text-slate-500 text-sm hidden">추적된 자금 흐름 데이터가 없습니다.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        
+            
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- 개인 요약 & 부채 비율 그래프 -->
+                <div class="card lg:col-span-1 h-fit space-y-6">
+                    <div>
+                        <h3 class="text-lg font-bold text-blue-400 mb-4 border-b border-slate-700 pb-3">
+                            <span id="inv-name-title">투자자</span> 자산 요약
+                        </h3>
+                        <div class="grid grid-cols-2 gap-3 text-sm">
+                            <div class="bg-slate-800/50 p-3 rounded-lg border border-slate-700 col-span-2 flex justify-between items-center">
+                                <span class="text-slate-400">총 평가금액</span>
+                                <span id="inv-total" class="font-extrabold text-lg text-emerald-400">0 원</span>
+                            </div>
+                            <div class="bg-slate-800/50 p-3 rounded-lg border border-slate-700 col-span-2 flex justify-between items-center">
+                                <span class="text-slate-400">총 실투자금</span>
+                                <span id="inv-invest" class="font-bold text-slate-300">0 원</span>
+                            </div>
+                            <div class="bg-red-900/20 p-3 rounded-lg border border-red-900/30">
+                                <span class="text-red-400 block mb-1">총 부채(차용금)</span>
+                                <span id="inv-debt" class="font-bold text-red-300 block truncate">0 원</span>
+                            </div>
+                            <div class="bg-red-900/20 p-3 rounded-lg border border-red-900/30">
+                                <span class="text-red-400 block mb-1">월 이자 비용</span>
+                                <span id="inv-interest" class="font-bold text-red-300 block truncate">0 원</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-sm font-bold text-slate-400 mb-3 border-t border-slate-700 pt-4 text-center">
+                            ⚖️ 순자산 vs 부채 (LTV 비율)
+                        </h3>
+                        <div class="h-40 w-full relative">
+                            <canvas id="ltvChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="lg:col-span-2 space-y-6">
+                    <!-- 보유 부동산 -->
+                    <div class="card">
+                        <h3 class="text-lg font-bold text-slate-300 mb-5 border-b border-slate-700 pb-3">
+                            🏢 보유 부동산 및 엑시트 전략 (<span id="inv-prop-count">0</span>건)
+                        </h3>
+                        <div id="inv-prop-list" class="space-y-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar"></div>
+                    </div>
+
+                    <!-- 매각 완료 자산 및 수익률 -->
+                    <div class="card bg-slate-800/30">
+                        <h3 class="text-lg font-bold text-emerald-400 mb-5 border-b border-slate-700 pb-3">
+                            💰 매각 완료 자산 수익률 (ROI)
+                        </h3>
+                        <div class="h-48 w-full relative mb-4">
+                            <canvas id="roiChart"></canvas>
+                        </div>
+                        <div id="sold-prop-list" class="space-y-2 mt-4 text-sm"></div>
+                    </div>
+
+                    <!-- 자금 흐름 트래커 -->
+                    <div class="card bg-slate-800/30 border-blue-900/30">
+                        <h3 class="text-lg font-bold text-blue-400 mb-5 border-b border-slate-700 pb-3">
+                            💸 매각 자금 흐름 트래커 (Timeline)
+                        </h3>
+                        <div id="fund-flow-list" class="pl-4"></div>
+                        <p id="no-fund-flow" class="text-slate-500 text-sm hidden">추적된 자금 흐름 데이터가 없습니다.</p>
+                    </div>
+                </div>
+            </div>
+        
+</div>
 <div id="view-properties" style="display:none; color:white; padding:20px; overflow-y:auto; flex-grow:1;">매입부동산 화면 (데이터 연결 중...)</div>
-<div id="view-rentroll" style="display:none; color:white; padding:20px; overflow-y:auto; flex-grow:1;">임대관리 화면 (데이터 연결 중...)</div>
+
+        <div id="view-rentroll" style="display:none; overflow-y:auto; flex-grow:1; color:white; padding:20px;" class="">
+            <div class="card">
+                <div class="flex flex-col md:flex-row justify-between items-center mb-6 border-b border-slate-700 pb-4 gap-4">
+                    <h3 class="text-lg font-bold text-slate-300 flex items-center">
+                        <span class="mr-2">🏢</span> 전체 렌트롤 현황
+                    </h3>
+                    <div class="flex gap-2">
+                        <button class="filter-btn active" id="btn-rent-all" onclick="filterRent('all')">전체 보기</button>
+                        <button class="filter-btn text-red-400 border-red-900/50" id="btn-rent-warn" onclick="filterRent('warning')">🚨 180일 이내 만기</button>
+                    </div>
+                </div>
+                
+                <div class="overflow-x-auto h-[600px] custom-scrollbar border border-slate-700 rounded-lg">
+                    <table class="w-full text-sm rent-table">
+                        <thead>
+                            <tr>
+                                <th>소유주</th>
+                                <th>건물명 / 호수</th>
+                                <th>임차인</th>
+                                <th>보증금</th>
+                                <th>월세</th>
+                                <th>만기일 (D-Day)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="rent-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    
 <div id="view-debt" style="display:none; color:white; padding:20px; overflow-y:auto; flex-grow:1;">부채관리 화면 (데이터 연결 중...)</div>
 </div>
 <script>
@@ -437,21 +611,55 @@
                 const propSheet = rawData[propKey] || [];
                 
                 window.globalData = { props: propSheet, raw: rawData };
+                  
+                  // Initialize Dashboard Tab Logic
+                  processGASData(rawData);
+                  initInvestorTab();
+                  initRentRollTab();
+                  
+                  // Initialize Dashboard Tab Logic
+                  processGASData(rawData);
+                  initInvestorTab();
+                  initRentRollTab();
                 
+                
+                window.globalExitRules = { minROI: 30 }; // Phase 3 prep
+
+                function calculateTaxAndROI(buyPrice, currentPrice, owner) {
+                    if (!buyPrice || !currentPrice || buyPrice >= currentPrice) return { gain: 0, netProfit: 0, roi: 0, tax: 0, type: '알수없음' };
+                    let gain = currentPrice - buyPrice;
+                    let isCorp = owner.includes('법인') || owner.includes('주식회사') || owner.includes('(주)');
+                    let tax = isCorp ? gain * 0.40 : gain * 0.45;
+                    let netProfit = gain - tax;
+                    return { gain, netProfit, roi: (netProfit / buyPrice) * 100, tax, type: isCorp ? '법인' : '개인' };
+                }
+
                 const parsedProps = propSheet.map(row => {
                     let rKeys = Object.keys(row);
                     let nameKey = rKeys.find(k => k.replace(/\s/g,'') === '주소') || '주소';
                     let ownerKey = rKeys.find(k => k.replace(/\s/g,'') === '소유주') || '소유주';
                     let valKey = rKeys.find(k => k.includes('현재시세') || k.includes('매각금액')) || '현재시세/매각금액';
                     let locKey = rKeys.find(k => k.replace(/\s/g,'') === '지역') || '지역';
+                    let buyKey = rKeys.find(k => k.includes('취득가')) || '취득가';
+                    
+                    let buyPriceStr = (row[buyKey] || '0').toString().replace(/,/g, '').replace(/[^0-9.-]+/g,"");
+                    let buyPrice = parseFloat(buyPriceStr) || 0;
+                    
+                    let valStr = (row[valKey] || '0').toString().replace(/,/g, '').replace(/[^0-9.-]+/g,"");
+                    let currentPrice = parseFloat(valStr) || 0;
+                    
+                    let taxInfo = calculateTaxAndROI(buyPrice, currentPrice, row[ownerKey] || '');
                     
                     return {
                         name: row[nameKey] || '이름 없음',
                         owner: row[ownerKey] || '미상',
-                        value: row[valKey] || 0,
-                        loc: row[locKey] || ''
+                        value: currentPrice,
+                        buyPrice: buyPrice,
+                        loc: row[locKey] || '',
+                        taxInfo: taxInfo
                     };
                 });
+
 
                 const propHTML = `
                     <div style="max-width:800px; margin:0 auto;">
@@ -465,6 +673,7 @@
                                     </div>
                                     <div style="text-align:right;">
                                         <div style="color:#10b981; font-weight:bold;">${p.value ? '시세/매각가: ' + p.value.toLocaleString() + '원' : '-'}</div>
+                                        ${p.taxInfo && p.taxInfo.gain > 0 ? `<div style="color:#f87171; font-size:12px; margin-top:4px; border: 1px solid #7f1d1d; padding:2px 6px; border-radius:4px; display:inline-block; background:#450a0a;">예상차익: +${(p.taxInfo.gain / 100000000).toFixed(1)}억 (세후수익률: ${p.taxInfo.roi.toFixed(1)}%)</div>` : ''}
                                         <div style="color:#60a5fa; font-size:12px; margin-top:4px;">${p.loc}</div>
                                     </div>
                                 </div>
@@ -475,13 +684,7 @@
 
                 if(document.getElementById('view-properties')) document.getElementById('view-properties').innerHTML = propHTML;
                 
-                const dashHTML = `
-                    <div style="max-width:800px; margin:0 auto; text-align:center; padding-top:40px;">
-                        <h2 style="font-size:20px; color:#8ab4f8; font-weight:bold; margin-bottom:12px;">✅ 매입부동산 연동 완료!</h2>
-                        <p style="color:#9ca3af;">[매입부동산] 탭을 눌러 리스트가 정상적으로 나오는지 확인해 주세요.</p>
-                    </div>
-                `;
-                if(document.getElementById('view-dashboard')) document.getElementById('view-dashboard').innerHTML = dashHTML;
+                
 
             } catch (e) {
                 console.error(e);
@@ -1194,6 +1397,531 @@
         });
 
         window.addEventListener('DOMContentLoaded', fetchAndParseData);
-    </script>
+    
+
+// --- DASHBOARD PORTED CODE ---
+let dashRawData = {
+        properties: [], sold_properties: [], dev_alerts: [], rents: [], debts: [], owners: []
+    };
+
+function processGASData(gasData) {
+        const keys = Object.keys(gasData);
+        // Fuzzy matching logic
+        let propKey = keys.find(k => k.replace(/\s/g,'').includes('매입부동산')) || '매입부동산';
+        let rentKey = keys.find(k => k.replace(/\s/g,'').includes('RentRoll') || k.replace(/\s/g,'').includes('렌트롤')) || 'RentRoll';
+        let debtKey = keys.find(k => k.replace(/\s/g,'').includes('부채관리')) || '부채관리';
+        
+        const propSheet = gasData[propKey] || [];
+        const rentSheet = gasData[rentKey] || [];
+        const debtSheet = gasData[debtKey] || [];
+        
+        if (propSheet.length === 0) {
+            console.error("Available tabs:", keys);
+            alert("⚠️ 데이터를 찾지 못했습니다! 구글 시트의 탭 이름이 '매입부동산'인지 확인해주세요. 현재 발견된 탭: " + keys.join(", "));
+        }
+
+        const allProps = [];
+        propSheet.forEach(row => {
+            // Flexible matching for '소유주'
+            let ownerKey = Object.keys(row).find(k => k.replace(/\s/g,'') === '소유주') || '소유주';
+            let memoKey = Object.keys(row).find(k => k.includes('비고')) || '비고';
+            let owner8Key = Object.keys(row).find(k => k.includes('분양')) || '아파트 분양 받을 명의자 (8명)';
+            let idKey = Object.keys(row).find(k => k.replace(/\s/g,'') === '자산ID') || '자산ID';
+            let typeKey = Object.keys(row).find(k => k.replace(/\s/g,'') === '유형') || '유형';
+            let valKey = Object.keys(row).find(k => k.includes('현재시세')) || '현재시세/매각금액';
+            let invKey = Object.keys(row).find(k => k.includes('실투자금')) || '실투자금';
+            let futKey = Object.keys(row).find(k => k.includes('미래가치')) || '미래가치';
+            let nameKey = Object.keys(row).find(k => k.replace(/\s/g,'') === '주소') || '주소';
+            let buyDateKey = Object.keys(row).find(k => k.replace(/\s/g,'') === '취득일') || '취득일';
+            let buyPriceKey = Object.keys(row).find(k => k.includes('취득가')) || '취득가';
+            let statKey = Object.keys(row).find(k => k.replace(/\s/g,'') === '상태') || '상태';
+            let devKey = Object.keys(row).find(k => k.includes('개발')) || '개발 진행단계';
+            let exitKey = Object.keys(row).find(k => k.includes('매도') || k.includes('전략')) || '매도/보유 전략';
+            let taxKey = Object.keys(row).find(k => k.includes('비과세')) || '비과세적용';
+
+            const owner = safeStr(row[ownerKey]);
+            if(!owner || owner === 'nan') return;
+
+            let memoParts = [];
+            if(safeStr(row[memoKey])) memoParts.push(safeStr(row[memoKey]));
+            if(safeStr(row[owner8Key])) memoParts.push("분양: " + safeStr(row[owner8Key]));
+
+            allProps.push({
+                'id': safeStr(row[idKey]),
+                'owner': owner,
+                'type': safeStr(row[typeKey]),
+                'value': safeFloat(row[valKey]),
+                'invest': safeFloat(row[invKey]),
+                'future': safeFloat(row[futKey]),
+                'name': safeStr(row[nameKey]),
+                'buy_date': safeStr(row[buyDateKey]),
+                'buy_price': safeFloat(row[buyPriceKey]),
+                'status': safeStr(row[statKey]),
+                'dev_stage': safeStr(row[devKey]),
+                'exit_strategy': safeStr(row[exitKey]),
+                'tax_note': safeStr(row[taxKey]),
+                'memo': memoParts.join(" / ")
+            });
+        });
+
+        dashRawData.properties = allProps.filter(p => !p.status.includes('매각완료'));
+        dashRawData.sold_properties = allProps.filter(p => p.status.includes('매각완료'));
+        dashRawData.sold_properties.forEach(p => {
+            const profit = p.value - p.invest;
+            p.roi = p.invest > 0 ? (profit / p.invest * 100) : 0;
+        });
+
+        dashRawData.dev_alerts = dashRawData.properties.filter(p => 
+            p.dev_stage.includes('조합') || p.dev_stage.includes('관리처분') || 
+            p.exit_strategy.includes('조합') || p.exit_strategy.includes('관리처분')
+        );
+
+        const propOwnerMap = {};
+        allProps.forEach(p => propOwnerMap[p.id] = p.owner);
+
+        rentSheet.forEach(row => {
+            let bldgKey = Object.keys(row).find(k => k.replace(/\s/g,'') === '건물명') || '건물명';
+            let rIdKey = Object.keys(row).find(k => k.replace(/\s/g,'') === '자산ID') || '자산ID';
+            let ddayKey = Object.keys(row).find(k => k.replace(/\s/g,'').toUpperCase() === 'D-DAY') || 'D-Day';
+            let roomKey = Object.keys(row).find(k => k.replace(/\s/g,'') === '호수') || '호수';
+            let tenKey = Object.keys(row).find(k => k.replace(/\s/g,'').includes('임차인')) || '임차인명';
+            let depKey = Object.keys(row).find(k => k.replace(/\s/g,'') === '보증금') || '보증금';
+            let rentMKey = Object.keys(row).find(k => k.replace(/\s/g,'') === '월세') || '월세';
+            let endKey = Object.keys(row).find(k => k.includes('종료')) || '계약종료일';
+
+            const bldg = safeStr(row[bldgKey]);
+            if(!bldg || bldg === 'nan') return;
+            const dday = safeFloat(row[ddayKey]);
+            
+            const rId = safeStr(row[rIdKey]);
+            dashRawData.rents.push({
+                'id': rId,
+                'bldg': bldg,
+                'room': safeStr(row[roomKey]),
+                'tenant': safeStr(row[tenKey]),
+                'deposit': safeFloat(row[depKey]),
+                'rent': safeFloat(row[rentMKey]),
+                'dday': dday !== 0 ? Math.floor(dday) : 9999,
+                'end_date': safeStr(row[endKey]),
+                'owner': propOwnerMap[rId] || '기타'
+            });
+        });
+
+        debtSheet.forEach(row => {
+            let bKey = Object.keys(row).find(k => k.replace(/\s/g,'') === '차주') || '차주';
+            let pKey = Object.keys(row).find(k => k.replace(/\s/g,'') === '차용금') || '차용금';
+            let mKey = Object.keys(row).find(k => k.includes('이자비용')) || '월이자비용';
+
+            const borrower = safeStr(row[bKey]);
+            if(!borrower || borrower === 'nan') return;
+            dashRawData.debts.push({
+                'borrower': borrower,
+                'principal': safeFloat(row[pKey]),
+                'monthly_interest': safeFloat(row[mKey])
+            });
+        });
+
+        const ownerSet = new Set(allProps.map(p => p.owner));
+        dashRawData.owners = Array.from(ownerSet).sort();
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        showLoading();
+}
+
+
+        const formatMoney = (num) => {
+            if (!num) return '0 원';
+            return new Intl.NumberFormat('ko-KR').format(Math.round(num)) + ' 원';
+        };
+
+        // Chart instances
+        let growthChart = null;
+        let ltvChart = null;
+        let roiChart = null;
+        
+        Chart.defaults.color = '#94a3b8';
+        Chart.defaults.font.family = 'Pretendard';
+        
+        // Navigation
+        function switchTab(tabId, btnElement) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.getElementById('tab-' + tabId).classList.add('active');
+            
+            document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+            btnElement.classList.add('active');
+            
+            if (tabId === 'dashboard') initDashboard();
+            if (tabId === 'investor' && !window.invInit) initInvestorTab();
+            if (tabId === 'rentroll' && !window.rentInit) initRentRollTab();
+        }
+
+        // 1. Dashboard
+        function initDashboard() {
+            const props = dashRawData.properties;
+            const rents = dashRawData.rents.filter(r => r.dday <= 180).sort((a,b) => a.dday - b.dday);
+            const devAlerts = dashRawData.dev_alerts;
+
+            let tValue = 0, tInvest = 0, tFuture = 0;
+            let typeSums = {};
+            props.forEach(p => {
+                tValue += p.value; tInvest += p.invest; tFuture += p.future;
+                if (p.value > 0) typeSums[p.type] = (typeSums[p.type] || 0) + p.value;
+            });
+
+            const target = 50000000000;
+            let pct = Math.min((tValue / target) * 100, 100) || 0;
+            document.getElementById('dash-goal-pct').innerText = pct.toFixed(2) + '%';
+            document.getElementById('dash-goal-bar').style.width = pct + '%';
+
+            document.getElementById('dash-prop-count').innerText = props.length + '건';
+            document.getElementById('dash-val-total').innerText = formatMoney(tValue);
+            document.getElementById('dash-val-invest').innerText = formatMoney(tInvest);
+
+            // Chart.js Bar Chart (Growth)
+            const ctxGrowth = document.getElementById('growthChart').getContext('2d');
+            if(growthChart) growthChart.destroy();
+            growthChart = new Chart(ctxGrowth, {
+                type: 'bar',
+                data: {
+                    labels: ['총 실투자금', '현재 시세', '미래 가치'],
+                    datasets: [{
+                        data: [tInvest, tValue, tFuture],
+                        backgroundColor: ['#64748b', '#3b82f6', '#10b981'],
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { display: false },
+                        x: { grid: { display: false }, border: { display: false } }
+                    }
+                }
+            });
+            
+            // Dev Alerts
+            const dl = document.getElementById('dash-dev-list');
+            document.getElementById('dash-dev-count').innerText = devAlerts.length;
+            dl.innerHTML = '';
+            if (devAlerts.length === 0) {
+                document.getElementById('dash-no-dev').classList.remove('hidden');
+            } else {
+                document.getElementById('dash-no-dev').classList.add('hidden');
+                devAlerts.forEach(w => {
+                    dl.innerHTML += `
+                        <li class="flex justify-between items-center bg-slate-800/80 p-3 rounded-lg border border-slate-700/50 cursor-pointer hover:bg-slate-700 transition" onclick="showDevModal('${w.name}', '${w.owner}', '${w.dev_stage}', '${w.exit_strategy}')">
+                            <div class="flex flex-col">
+                                <span class="font-bold text-blue-300">[${w.owner}] ${w.name}</span>
+                                <span class="text-xs text-slate-400 mt-1">단계: ${w.dev_stage}</span>
+                            </div>
+                            <span class="font-black px-3 py-1 rounded-md shadow-sm whitespace-nowrap bg-blue-900/40 text-blue-400">엑시트 주의</span>
+                        </li>
+                    `;
+                });
+            }
+
+            // Warnings
+            const wl = document.getElementById('dash-warning-list');
+            document.getElementById('dash-warning-count').innerText = rents.length;
+            wl.innerHTML = '';
+            if (rents.length === 0) {
+                document.getElementById('dash-no-warnings').classList.remove('hidden');
+            } else {
+                document.getElementById('dash-no-warnings').classList.add('hidden');
+                rents.forEach(w => {
+                    let badgeClass = w.dday > 100 ? 'bg-orange-900/30 text-orange-400' : 'bg-red-900/40 text-red-400';
+                    wl.innerHTML += `
+                        <li class="flex justify-between items-center bg-slate-800/80 p-3 rounded-lg border border-slate-700/50 cursor-pointer hover:bg-slate-700 transition" onclick="showModal('${w.tenant}', '${w.bldg}', '${w.room}', ${w.deposit}, ${w.rent}, ${w.dday})">
+                            <div class="flex flex-col">
+                                <span class="font-medium text-slate-200">${w.bldg} ${w.room}호</span>
+                                <span class="text-xs text-slate-400">${w.tenant} (${w.owner})</span>
+                            </div>
+                            <span class="font-black px-3 py-1 rounded-md shadow-sm whitespace-nowrap ${badgeClass}">D-${w.dday}</span>
+                        </li>
+                    `;
+                });
+            }
+
+            // Allocations
+            const aBar = document.getElementById('dash-alloc-bar');
+            const aLeg = document.getElementById('dash-alloc-legend');
+            aBar.innerHTML = ''; aLeg.innerHTML = '';
+            const colors = ['#3b82f6', '#10b981', '#a855f7', '#f59e0b', '#ec4899', '#06b6d4', '#eab308'];
+            let cIdx = 0;
+            let totalValid = Object.values(typeSums).reduce((a,b)=>a+b, 0);
+            
+            Object.entries(typeSums).sort((a,b)=>b[1]-a[1]).forEach(([key, val]) => {
+                let p = (val / totalValid) * 100;
+                let c = colors[cIdx % colors.length];
+                cIdx++;
+                aBar.innerHTML += `<div class="h-full flex items-center justify-center text-xs font-bold text-white overflow-hidden" style="width:${p}%; background:${c}">${p>8?key:''}</div>`;
+                aLeg.innerHTML += `<div class="flex items-center bg-slate-800/50 p-2 rounded-lg"><span class="w-3 h-3 rounded-full mr-2" style="background:${c}"></span><span class="text-slate-300 font-medium text-xs">${key} ${p.toFixed(1)}%</span></div>`;
+            });
+        }
+
+        // 2. Investor Tab
+        function initInvestorTab() {
+            window.invInit = true;
+            const container = document.getElementById('inv-filter-container');
+            const topOwners = ['고미', '양아선', '위탁', '김미한']; 
+            let dOwners = [...topOwners];
+            dashRawData.owners.forEach(o => { if(!dOwners.includes(o) && dOwners.length<10) dOwners.push(o); });
+            
+            dOwners.forEach(o => {
+                if(!dashRawData.owners.includes(o)) return;
+                let btn = document.createElement('button');
+                btn.className = 'filter-btn inv-btn ' + (o === topOwners[0] ? 'active' : '');
+                btn.innerText = o;
+                btn.onclick = () => setInv(o);
+                container.appendChild(btn);
+            });
+            setInv(topOwners[0]);
+        }
+
+        function setInv(owner) {
+            document.querySelectorAll('.inv-btn').forEach(b => {
+                b.classList.toggle('active', b.innerText === owner);
+            });
+            document.getElementById('inv-name-title').innerText = owner;
+            
+            const props = dashRawData.properties.filter(p => p.owner === owner);
+            const soldProps = dashRawData.sold_properties.filter(p => p.owner === owner || owner === '전체'); // If we want to show all sold
+            const debts = dashRawData.debts.filter(d => d.borrower === owner);
+            const ownerFlows = dashRawData.flows.filter(f => f.title.includes(owner) || owner === '전체' || (owner==='고미' && f.title.includes('고미'))); // Basic heuristic
+            
+            let tValue=0, tInvest=0, tDebt=0, tInt=0;
+            props.forEach(p => { tValue+=p.value; tInvest+=p.invest; });
+            debts.forEach(d => { tDebt+=d.principal; tInt+=d.monthly_interest; });
+            
+            document.getElementById('inv-total').innerText = formatMoney(tValue);
+            document.getElementById('inv-invest').innerText = formatMoney(tInvest);
+            document.getElementById('inv-debt').innerText = formatMoney(tDebt);
+            document.getElementById('inv-interest').innerText = formatMoney(tInt);
+            document.getElementById('inv-prop-count').innerText = props.length;
+            
+            // LTV Chart
+            const ctxLtv = document.getElementById('ltvChart').getContext('2d');
+            if(ltvChart) ltvChart.destroy();
+            let netAsset = Math.max(0, tValue - tDebt);
+            let hasDebt = tDebt > 0;
+            
+            ltvChart = new Chart(ctxLtv, {
+                type: 'doughnut',
+                data: {
+                    labels: ['부채 (차용금)', '순자산 (자본)'],
+                    datasets: [{
+                        data: hasDebt || netAsset > 0 ? [tDebt, netAsset] : [0, 1],
+                        backgroundColor: ['#ef4444', '#10b981'],
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    cutout: '70%',
+                    plugins: {
+                        legend: { position: 'right', labels: { color: '#cbd5e1', font: {size: 11} } },
+                        tooltip: { callbacks: { label: (ctx) => ' ' + formatMoney(ctx.raw) } }
+                    }
+                }
+            });
+            
+            // Active Property List
+            const pl = document.getElementById('inv-prop-list');
+            pl.innerHTML = '';
+            props.forEach(p => {
+                let bg = p.status === '운용중' ? 'bg-emerald-900/20 text-emerald-400 border-emerald-900/50' : 'bg-slate-700 text-slate-300';
+                pl.innerHTML += `
+                    <div class="accordion-item bg-slate-800 border border-slate-700 rounded-lg overflow-hidden">
+                        <div class="p-4 cursor-pointer hover:bg-slate-700/50 flex justify-between items-center" onclick="this.parentElement.classList.toggle('active')">
+                            <div>
+                                <span class="text-xs px-2 py-0.5 rounded mr-2 border ${bg}">${p.status||'상태모름'}</span>
+                                <span class="font-bold text-slate-200">${p.name}</span>
+                            </div>
+                            <span class="text-slate-400">▼</span>
+                        </div>
+                        <div class="accordion-content bg-slate-900/50 border-t border-slate-700">
+                            <div class="p-4 space-y-3 text-sm">
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div><span class="text-slate-500 block mb-1">취득일/취득가</span><span class="text-slate-200">${p.buy_date} / ${formatMoney(p.buy_price)}</span></div>
+                                    <div><span class="text-slate-500 block mb-1">현재시세/실투자금</span><span class="text-emerald-400 font-bold">${formatMoney(p.value)}</span> / ${formatMoney(p.invest)}</div>
+                                </div>
+                                <div class="border-t border-slate-700/50 pt-3">
+                                    <span class="text-slate-500 block mb-1">매도/보유 엑시트 전략</span>
+                                    <p class="text-blue-300">${p.exit_strategy || '전략 미입력'}</p>
+                                </div>
+                                <div class="border-t border-slate-700/50 pt-3">
+                                    <span class="text-slate-500 block mb-1">세금/가족상황/비고</span>
+                                    <p class="text-slate-300">비과세: ${p.tax_note || '-'} | 메모: ${p.memo || '-'}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            // ROI Chart
+            const ctxRoi = document.getElementById('roiChart').getContext('2d');
+            if(roiChart) roiChart.destroy();
+            let roiLabels = soldProps.map(p => p.name.split(' ')[1] || p.name);
+            let roiData = soldProps.map(p => p.roi);
+            
+            if(soldProps.length > 0) {
+                roiChart = new Chart(ctxRoi, {
+                    type: 'bar',
+                    data: {
+                        labels: roiLabels,
+                        datasets: [{
+                            label: '수익률 (%)',
+                            data: roiData,
+                            backgroundColor: '#10b981',
+                            borderRadius: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
+                        scales: { y: { beginAtZero: true } }
+                    }
+                });
+            } else {
+                document.getElementById('roiChart').parentElement.innerHTML = '<p class="text-slate-500 text-sm text-center py-10">해당 투자자의 매각 이력이 없습니다.</p>';
+            }
+
+            const sl = document.getElementById('sold-prop-list');
+            sl.innerHTML = '';
+            soldProps.forEach(p => {
+                sl.innerHTML += `
+                    <div class="flex justify-between items-center bg-slate-800/50 p-2 rounded">
+                        <span>${p.name}</span>
+                        <span class="text-emerald-400 font-bold">${p.roi.toFixed(1)}% 수익</span>
+                    </div>
+                `;
+            });
+
+            // Fund Flow Timeline
+            const fl = document.getElementById('fund-flow-list');
+            const nfl = document.getElementById('no-fund-flow');
+            fl.innerHTML = '';
+            let flowsToShow = ownerFlows.length > 0 ? ownerFlows : dashRawData.flows.slice(0,2); // show some generic if none match exactly for demo
+            
+            if (flowsToShow.length === 0) {
+                nfl.classList.remove('hidden');
+            } else {
+                nfl.classList.add('hidden');
+                flowsToShow.forEach(f => {
+                    let htmlStr = `<div class="mb-6"><h4 class="font-bold text-slate-300 mb-2">${f.title}</h4>`;
+                    f.items.forEach(item => {
+                        htmlStr += `<div class="timeline-item text-slate-400 text-sm">${item}</div>`;
+                    });
+                    htmlStr += `</div>`;
+                    fl.innerHTML += htmlStr;
+                });
+            }
+        }
+
+        // 3. RentRoll Tab
+        function initRentRollTab() {
+            window.rentInit = true;
+            filterRent('all');
+        }
+
+        function filterRent(mode) {
+            document.getElementById('btn-rent-all').classList.toggle('active', mode==='all');
+            document.getElementById('btn-rent-warn').classList.toggle('active', mode!=='all');
+            
+            let rents = dashRawData.rents;
+            if (mode === 'warning') {
+                rents = rents.filter(r => r.dday <= 180).sort((a,b) => a.dday - b.dday);
+            } else {
+                rents = rents.sort((a,b) => a.bldg.localeCompare(b.bldg));
+            }
+            
+            const tb = document.getElementById('rent-table-body');
+            tb.innerHTML = '';
+            rents.forEach(r => {
+                let dClass = r.dday <= 180 ? (r.dday <= 100 ? 'text-red-400 font-bold bg-red-900/20' : 'text-orange-400 font-bold') : 'text-slate-400';
+                tb.innerHTML += `
+                    <tr class="cursor-pointer" onclick="showModal('${r.tenant}', '${r.bldg}', '${r.room}', ${r.deposit}, ${r.rent}, ${r.dday})">
+                        <td><span class="bg-slate-700 px-2 py-1 rounded text-xs">${r.owner}</span></td>
+                        <td class="font-medium text-slate-200">${r.bldg} ${r.room}호</td>
+                        <td>${r.tenant}</td>
+                        <td class="text-emerald-400">${formatMoney(r.deposit)}</td>
+                        <td>${formatMoney(r.rent)}</td>
+                        <td class="${dClass}">${r.end_date||'-'} (D-${r.dday === 9999 ? '?' : r.dday})</td>
+                    </tr>
+                `;
+            });
+        }
+
+        // Modals
+        function showModal(tenant, bldg, room, deposit, rent, dday) {
+            document.getElementById('modal-title').innerText = bldg + ' ' + room + '호';
+            document.getElementById('modal-body').innerHTML = `
+                <div class="flex justify-between border-b border-slate-700/50 pb-2">
+                    <span class="text-slate-400">임차인</span><span class="font-bold text-slate-200">${tenant}</span>
+                </div>
+                <div class="flex justify-between border-b border-slate-700/50 pb-2">
+                    <span class="text-slate-400">보증금</span><span class="font-bold text-emerald-400">${formatMoney(deposit)}</span>
+                </div>
+                <div class="flex justify-between border-b border-slate-700/50 pb-2">
+                    <span class="text-slate-400">월세</span><span class="font-bold text-blue-400">${formatMoney(rent)}</span>
+                </div>
+                <div class="flex justify-between pt-2">
+                    <span class="text-slate-400">남은 기간</span><span class="font-black text-red-400 bg-red-900/30 px-2 py-1 rounded">D-${dday===9999 ? '?' : dday}일</span>
+                </div>
+            `;
+            const modal = document.getElementById('modal');
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('show'), 10);
+        }
+        
+        function showDevModal(name, owner, stage, strategy) {
+            document.getElementById('modal-title').innerText = `[${owner}] ${name}`;
+            document.getElementById('modal-body').innerHTML = `
+                <div class="border-b border-slate-700/50 pb-2 mb-2">
+                    <span class="text-blue-400 font-bold block mb-1">개발 진행 단계</span>
+                    <span class="text-slate-200">${stage}</span>
+                </div>
+                <div class="pt-2">
+                    <span class="text-emerald-400 font-bold block mb-1">매도/보유 엑시트 전략</span>
+                    <span class="text-slate-200">${strategy}</span>
+                </div>
+            `;
+            const modal = document.getElementById('modal');
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('show'), 10);
+        }
+
+        function closeModal(force = false) {
+            if (force || event.target.id === 'modal') {
+                const modal = document.getElementById('modal');
+                modal.classList.remove('show');
+                setTimeout(() => modal.style.display = 'none', 300);
+            }
+        }
+
+        
+// --- END DASHBOARD PORTED CODE ---
+</script>
+
+    <div id="modal" onclick="closeModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="flex justify-between items-start mb-4 border-b border-slate-700 pb-3">
+                <h3 id="modal-title" class="text-xl font-bold text-white">건물명 호수</h3>
+                <button onclick="closeModal(true)" class="text-slate-400 hover:text-white text-2xl leading-none">&times;</button>
+            </div>
+            <div class="space-y-4 text-sm" id="modal-body">
+                <!-- Injected via JS -->
+            </div>
+            <div class="mt-6 text-center">
+                <button onclick="closeModal(true)" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-6 rounded-full w-full transition-colors">확인</button>
+            </div>
+        </div>
+    </div>
+
+    
 </body>
 </html>

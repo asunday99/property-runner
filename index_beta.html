@@ -703,8 +703,8 @@
             renderMarathon();
 
             const savedTab = localStorage.getItem('propertyRunnerTab') || 'marathon';
-            if (savedTab === 'map') {
-                switchTab('map');
+            if (savedTab === 'map' || savedTab === 'properties') {
+                switchTab(savedTab);
             }
         }
 

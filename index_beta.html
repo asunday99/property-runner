@@ -398,20 +398,6 @@
                     initDataEngine();
                 }
             }
-        } else {
-                btnMap.className = 'tab-btn tab-active';
-                btnMarathon.className = 'tab-btn tab-inactive';
-                if (!mapInitialized) {
-                    initKakaoMap();
-                    mapInitialized = true;
-                }
-                setTimeout(() => {
-                    if (typeof kakaoMap !== 'undefined' && kakaoMap) {
-                        kakaoMap.relayout();
-                        kakaoMap.setCenter(new kakao.maps.LatLng(37.5255, 126.9954));
-                    }
-                }, 100);
-            }
         }
 
         photoInput.addEventListener('change', (e) => {
